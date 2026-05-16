@@ -25,3 +25,8 @@ pnpm --dir web dev          # public site
 
 `admin/` is excluded from `default-members`: it targets `wasm32` and is built
 with `trunk`, so host `cargo` commands stay fast and green.
+
+DB-backed tests `TRUNCATE` tables: they use `TEST_DATABASE_URL` (a dedicated
+database, e.g. `syle_test`) and only fall back to `DATABASE_URL` if it is
+unset. Keep them pointed at separate databases so `cargo test` never wipes
+development data.

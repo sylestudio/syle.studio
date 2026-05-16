@@ -12,7 +12,11 @@ use uuid::Uuid;
 
 pub async fn setup() -> Option<(axum::Router, sqlx::PgPool, tempfile::TempDir)> {
     dotenvy::from_path("../.env").ok();
-    let url = std::env::var("DATABASE_URL").ok()?;
+    // Tests TRUNCATE; never point them at the dev database. Prefer the
+    // dedicated TEST_DATABASE_URL and fall back to DATABASE_URL only if unset.
+    let url = std::env::var("TEST_DATABASE_URL")
+        .or_else(|_| std::env::var("DATABASE_URL"))
+        .ok()?;
     let pool = syle_core::db::connect(&url).await.unwrap();
     syle_core::db::migrate(&pool).await.unwrap();
     sqlx::query(
