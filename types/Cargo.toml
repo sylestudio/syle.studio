@@ -7,3 +7,8 @@ authors.workspace = true
 
 [dependencies]
 serde.workspace = true
+uuid = { version = "1", features = ["serde", "v4", "js"] }
+
+[dev-dependencies]
+serde_json = "1"
+uuid = { version = "1", features = ["serde", "v4"] }
