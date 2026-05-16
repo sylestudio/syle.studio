@@ -6,7 +6,7 @@ use uuid::Uuid;
 #[serde(rename_all = "lowercase")]
 pub enum ImageFormat {
     Avif,
-    Webp,
+    Jpeg,
 }
 
 /// One responsive derivative: a `(format, width)` rendition at a stable path.

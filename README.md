@@ -13,6 +13,9 @@ sites, one Rust workspace.
 
 ## Develop
 
+Build prerequisites: a Rust stable toolchain and **nasm** (assembler used by
+the AVIF encoder; build-time only).
+
 ```sh
 cargo test                  # host workspace
 cargo check                 # api + core + types (host)
