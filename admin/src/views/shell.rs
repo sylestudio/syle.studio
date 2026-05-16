@@ -11,11 +11,11 @@ use leptos_router::hooks::{use_location, use_navigate};
 use wasm_bindgen_futures::spawn_local;
 
 const ITEM: &str = "relative flex w-full items-center gap-3 rounded-lg px-2 py-2 \
-    text-left text-sm/5 font-medium text-zinc-400 \
-    hover:bg-white/5 hover:text-white transition-colors";
-const ITEM_CURRENT: &str = "relative flex w-full items-center gap-3 rounded-lg \
-    px-2 py-2 text-left text-sm/5 font-medium text-white bg-white/5 \
-    transition-colors";
+    text-left text-sm/5 font-medium text-zinc-400 hover:bg-white/5 \
+    hover:text-white transition duration-200 ease-fluid";
+const ITEM_CURRENT: &str = "bezel-core relative flex w-full items-center gap-3 \
+    rounded-lg px-2 py-2 text-left text-sm/5 font-medium text-white bg-white/5 \
+    transition duration-200 ease-fluid";
 
 #[component]
 fn NavItem(
@@ -56,6 +56,7 @@ pub fn StudioShell() -> impl IntoView {
     });
 
     let palette = RwSignal::new(false);
+    let loc = use_location();
 
     let navigate = use_navigate();
     let logout = move |_| {
@@ -83,7 +84,9 @@ pub fn StudioShell() -> impl IntoView {
                         <button
                             class="mb-6 flex items-center justify-between rounded-lg \
                                 border border-white/10 bg-white/5 px-3 py-2 text-sm/5 \
-                                text-zinc-400 hover:bg-white/10 hover:text-white transition-colors"
+                                text-zinc-400 hover:bg-white/10 hover:text-white \
+                                transition duration-200 ease-fluid active:scale-[0.98] \
+                                motion-reduce:transition-none motion-reduce:active:scale-100"
                             on:click=move |_| palette.set(true)
                         >
                             <span>"Buscar…"</span>
@@ -119,7 +122,12 @@ pub fn StudioShell() -> impl IntoView {
                 <div class="grow p-6 lg:rounded-2xl lg:bg-zinc-900 lg:p-10 \
                     lg:shadow-sm lg:ring-1 lg:ring-white/10">
                     <div class="mx-auto max-w-6xl">
-                        <Outlet />
+                        // Re-mount on pathname change so the CSS fade-up
+                        // re-triggers on every route navigation.
+                        {move || {
+                            let _ = loc.pathname.get();
+                            view! { <div class="route-fade"><Outlet /></div> }
+                        }}
                     </div>
                 </div>
             </main>

@@ -128,11 +128,12 @@ pub fn CommandPalette(open: RwSignal<bool>) -> impl IntoView {
             view! {
                 <div class="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[12vh]">
                     <div
-                        class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        class="fade-in absolute inset-0 bg-black/60 backdrop-blur-sm"
                         on:click=move |_| open.set(false)
                     ></div>
-                    <div class="relative w-full max-w-xl overflow-hidden rounded-2xl \
-                        border border-white/10 bg-zinc-900/95 shadow-2xl backdrop-blur-xl">
+                    <div class="pop-in relative w-full max-w-xl overflow-hidden \
+                        rounded-2xl border border-white/10 bg-zinc-900/95 shadow-2xl \
+                        backdrop-blur-xl">
                         <input
                             node_ref=input_ref
                             class="w-full border-b border-white/10 bg-transparent px-5 \
@@ -160,11 +161,13 @@ pub fn CommandPalette(open: RwSignal<bool>) -> impl IntoView {
                                         view! {
                                             <button
                                                 class=move || if active() {
-                                                    "flex w-full items-center gap-3 rounded-lg \
-                                                     bg-white/10 px-3 py-2.5 text-left transition-colors"
+                                                    "reveal-item flex w-full items-center gap-3 \
+                                                     rounded-lg bg-white/10 px-3 py-2.5 text-left \
+                                                     transition-colors"
                                                 } else {
-                                                    "flex w-full items-center gap-3 rounded-lg \
-                                                     px-3 py-2.5 text-left hover:bg-white/5 transition-colors"
+                                                    "reveal-item flex w-full items-center gap-3 \
+                                                     rounded-lg px-3 py-2.5 text-left \
+                                                     hover:bg-white/5 transition-colors"
                                                 }
                                                 on:mouseenter=move |_| sel.set(i)
                                                 on:click=move |_| go(href.clone())
