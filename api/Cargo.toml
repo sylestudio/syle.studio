@@ -37,3 +37,5 @@ dotenvy = "0.15"
 tower = { version = "0.5", features = ["util"] }
 http-body-util = "0.1"
 serial_test = "3"
+image = { version = "0.25", default-features = false, features = ["png"] }
+tempfile = "3"

@@ -5,7 +5,9 @@ use crate::error::ApiError;
 use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
-use syle_types::{Gallery, GalleryDetail, ImageFormat, ImageVariant, Photo};
+use syle_types::{
+    BlogPost, Gallery, GalleryDetail, ImageFormat, ImageVariant, Photo, PostStatus,
+};
 use uuid::Uuid;
 
 fn parse_format(s: &str) -> Result<ImageFormat, ApiError> {
@@ -13,6 +15,26 @@ fn parse_format(s: &str) -> Result<ImageFormat, ApiError> {
         "avif" => Ok(ImageFormat::Avif),
         "jpeg" => Ok(ImageFormat::Jpeg),
         _ => Err(ApiError::Internal),
+    }
+}
+
+fn parse_status(s: &str) -> PostStatus {
+    match s {
+        "published" => PostStatus::Published,
+        _ => PostStatus::Draft,
+    }
+}
+
+type PostRow = (Uuid, String, String, String, String, Option<i64>);
+
+fn into_post((id, slug, title, body_md, status, published_at): PostRow) -> BlogPost {
+    BlogPost {
+        id,
+        slug,
+        title,
+        body_md,
+        status: parse_status(&status),
+        published_at,
     }
 }
 
@@ -94,4 +116,33 @@ pub async fn get_gallery(
     }
 
     Ok(Json(GalleryDetail { gallery, photos }))
+}
+
+/// Published posts, newest first.
+pub async fn list_posts(
+    State(state): State<AppState>,
+) -> Result<Json<Vec<BlogPost>>, ApiError> {
+    let rows: Vec<PostRow> = sqlx::query_as(
+        "SELECT id, slug, title, body_md, status, published_at FROM blog_posts \
+         WHERE status = 'published' ORDER BY published_at DESC NULLS LAST",
+    )
+    .fetch_all(&state.pool)
+    .await?;
+    Ok(Json(rows.into_iter().map(into_post).collect()))
+}
+
+/// One published post by slug; drafts are 404 to the public.
+pub async fn get_post(
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+) -> Result<Json<BlogPost>, ApiError> {
+    let row: PostRow = sqlx::query_as(
+        "SELECT id, slug, title, body_md, status, published_at FROM blog_posts \
+         WHERE slug = $1 AND status = 'published'",
+    )
+    .bind(&slug)
+    .fetch_optional(&state.pool)
+    .await?
+    .ok_or(ApiError::NotFound)?;
+    Ok(Json(into_post(row)))
 }
