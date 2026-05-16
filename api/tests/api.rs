@@ -352,6 +352,79 @@ async fn admin_create_post_requires_auth_and_persists() {
     assert_eq!(count.0, 1);
 }
 
+#[tokio::test]
+#[serial_test::serial]
+async fn admin_list_galleries_includes_unpublished() {
+    let Some((app, pool, _media)) = setup().await else { return };
+    for (slug, pubd) in [("p", true), ("d", false)] {
+        sqlx::query(
+            "INSERT INTO galleries (id, slug, title, position, published) \
+             VALUES ($1,$2,$3,0,$4)",
+        )
+        .bind(Uuid::new_v4())
+        .bind(slug)
+        .bind(slug)
+        .bind(pubd)
+        .execute(&pool)
+        .await
+        .unwrap();
+    }
+
+    let unauth = app
+        .clone()
+        .oneshot(
+            Request::get("/api/admin/galleries")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(unauth.status(), StatusCode::UNAUTHORIZED);
+
+    let cookie = login_cookie(&app, &pool).await;
+    let resp = app
+        .oneshot(
+            Request::get("/api/admin/galleries")
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let galleries: Vec<Gallery> = body_json(resp).await;
+    assert_eq!(galleries.len(), 2);
+}
+
+#[tokio::test]
+#[serial_test::serial]
+async fn admin_list_posts_includes_drafts() {
+    let Some((app, pool, _media)) = setup().await else { return };
+    sqlx::query(
+        "INSERT INTO blog_posts (id, slug, title, body_md, status, published_at) \
+         VALUES ($1,'a','A','x','published',1),($2,'b','B','y','draft',NULL)",
+    )
+    .bind(Uuid::new_v4())
+    .bind(Uuid::new_v4())
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    let cookie = login_cookie(&app, &pool).await;
+    let resp = app
+        .oneshot(
+            Request::get("/api/admin/posts")
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let posts: Vec<BlogPost> = body_json(resp).await;
+    assert_eq!(posts.len(), 2);
+}
+
 fn synthetic_png(w: u32, h: u32) -> Vec<u8> {
     let img = RgbImage::from_fn(w, h, |x, y| {
         image::Rgb([(x % 256) as u8, (y % 256) as u8, 90])
