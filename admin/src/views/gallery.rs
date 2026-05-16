@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{Button, Card, Field, Heading, INPUT};
+use crate::ui::{use_toaster, Button, Card, Field, Heading, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
 use syle_types::{GalleryDetail, Photo, Reorder, UpdateGallery, UpdatePhoto};
@@ -26,6 +26,11 @@ pub fn GalleryView() -> impl IntoView {
     let detail = RwSignal::new(None::<GalleryDetail>);
     let title = RwSignal::new(String::new());
     let slug = RwSignal::new(String::new());
+    let loaded = RwSignal::new(false);
+    let saving = RwSignal::new(false);
+    let confirm_photo = RwSignal::new(None::<String>);
+    let uploading = RwSignal::new(String::new());
+    let toast = use_toaster();
 
     let load = {
         let navigate = navigate.clone();
@@ -41,11 +46,12 @@ pub fn GalleryView() -> impl IntoView {
                         title.set(d.gallery.title.clone());
                         slug.set(d.gallery.slug.clone());
                         detail.set(Some(d));
+                        loaded.set(true);
                     }
                     Err(ApiError::Unauthorized) => {
                         navigate("/login", Default::default())
                     }
-                    Err(_) => {}
+                    Err(_) => loaded.set(true),
                 }
             });
         }
@@ -67,10 +73,20 @@ pub fn GalleryView() -> impl IntoView {
                 published: publish,
                 position: None,
             };
+            if saving.get() {
+                return;
+            }
+            saving.set(true);
             let load = load.clone();
             spawn_local(async move {
-                let _ = api::update_gallery(&id, &body).await;
-                load();
+                match api::update_gallery(&id, &body).await {
+                    Ok(_) => {
+                        toast.ok("Galería guardada");
+                        load();
+                    }
+                    Err(_) => toast.err("Error al guardar"),
+                }
+                saving.set(false);
             });
         }
     };
@@ -84,6 +100,8 @@ pub fn GalleryView() -> impl IntoView {
             spawn_local(async move {
                 if api::delete_gallery(&id).await.is_ok() {
                     navigate("/", Default::default());
+                } else {
+                    toast.err("No se pudo borrar la galería");
                 }
             });
         }
@@ -115,15 +133,47 @@ pub fn GalleryView() -> impl IntoView {
             ev.prevent_default();
             let Some(t) = ev.target() else { return };
             let form: web_sys::HtmlFormElement = t.unchecked_into();
-            let Ok(data) = web_sys::FormData::new_with_form(&form) else {
+            let input = |sel: &str| {
+                form.query_selector(sel)
+                    .ok()
+                    .flatten()
+                    .and_then(|e| e.dyn_into::<web_sys::HtmlInputElement>().ok())
+            };
+            let id = gid();
+            let alt = input("input[name=\"alt\"]")
+                .map(|i| i.value())
+                .unwrap_or_default();
+            let Some(files) = input("input[name=\"file\"]").and_then(|i| i.files())
+            else {
                 return;
             };
+            let n = files.length();
+            if n == 0 {
+                return;
+            }
             let load = load.clone();
             spawn_local(async move {
-                if api::upload_photo(data).await.is_ok() {
-                    form.reset();
-                    load();
+                let mut ok = 0u32;
+                for k in 0..n {
+                    let Some(file) = files.get(k) else { continue };
+                    let Ok(fd) = web_sys::FormData::new() else { continue };
+                    let _ = fd.append_with_str("gallery_id", &id);
+                    let _ = fd.append_with_str("alt", &alt);
+                    let _ = fd.append_with_blob("file", file.unchecked_ref());
+                    uploading.set(format!("Subiendo {}/{n}…", k + 1));
+                    if api::upload_photo(fd).await.is_ok() {
+                        ok += 1;
+                    }
                 }
+                uploading.set(String::new());
+                form.reset();
+                if ok > 0 {
+                    toast.ok(format!("{ok} foto(s) subidas"));
+                }
+                if ok < n {
+                    toast.err("Algunas fotos fallaron");
+                }
+                load();
             });
         }
     };
@@ -131,6 +181,9 @@ pub fn GalleryView() -> impl IntoView {
     view! {
         <div class="mx-auto max-w-5xl space-y-6 p-6">
             <a href="/" class="text-sm/6 text-zinc-500">"← Portafolio"</a>
+            {move || (!loaded.get()).then(|| view! {
+                <p class="text-sm/6 text-zinc-500">"Cargando…"</p>
+            })}
 
             <Card>
                 <div class="space-y-3">
@@ -144,10 +197,13 @@ pub fn GalleryView() -> impl IntoView {
                             on:input=move |e| slug.set(event_target_value(&e)) />
                     </Field>
                     <div class="flex gap-3">
-                        <Button on:click={
+                        <Button disabled=Signal::derive(move || saving.get())
+                            on:click={
                             let s = save_meta.clone();
                             move |_| s(None)
-                        }>"Guardar"</Button>
+                        }>
+                            {move || if saving.get() { "Guardando…" } else { "Guardar" }}
+                        </Button>
                         <Button kind="outline" on:click={
                             let s = save_meta.clone();
                             move |_| s(Some(!published()))
@@ -204,19 +260,40 @@ pub fn GalleryView() -> impl IntoView {
                                         let body = UpdatePhoto { alt: Some(alt.get()), position: None };
                                         let load = load_a.clone();
                                         spawn_local(async move {
-                                            let _ = api::update_photo(&id, &body).await;
-                                            load();
+                                            match api::update_photo(&id, &body).await {
+                                                Ok(_) => { toast.ok("Alt guardado"); load(); }
+                                                Err(_) => toast.err("Error al guardar alt"),
+                                            }
                                         });
                                     }>"Guardar alt"</button>
-                                <button class="text-red-600"
-                                    on:click=move |_| {
+                                {
+                                    let pid_c = pid_del.clone();
+                                    move || if confirm_photo.get().as_deref() == Some(pid_c.as_str()) {
                                         let id = pid_del.clone();
                                         let load = load_d.clone();
-                                        spawn_local(async move {
-                                            let _ = api::delete_photo(&id).await;
-                                            load();
-                                        });
-                                    }>"Borrar"</button>
+                                        view! {
+                                            <button class="text-red-600 font-semibold"
+                                                on:click=move |_| {
+                                                    let id = id.clone();
+                                                    let load = load.clone();
+                                                    spawn_local(async move {
+                                                        match api::delete_photo(&id).await {
+                                                            Ok(_) => { toast.ok("Foto borrada"); load(); }
+                                                            Err(_) => toast.err("No se pudo borrar"),
+                                                        }
+                                                    });
+                                                }>"Confirmar"</button>
+                                        }.into_any()
+                                    } else {
+                                        let pid_set = pid_c.clone();
+                                        view! {
+                                            <button class="text-red-600"
+                                                on:click=move |_| confirm_photo.set(Some(pid_set.clone()))>
+                                                "Borrar"
+                                            </button>
+                                        }.into_any()
+                                    }
+                                }
                             </div>
                         </div>
                     }
@@ -226,14 +303,21 @@ pub fn GalleryView() -> impl IntoView {
             <Card>
                 <h2 class="mb-3 text-sm/6 font-semibold text-zinc-950">"Subir foto"</h2>
                 <form on:submit=upload class="space-y-3">
-                    <input type="hidden" name="gallery_id" prop:value=gid />
-                    <Field label="Texto alternativo">
+                    <Field label="Texto alternativo (se aplica a todas)">
                         <input class=INPUT name="alt" />
                     </Field>
-                    <Field label="Archivo">
-                        <input class=INPUT type="file" name="file" accept="image/*" />
+                    <Field label="Archivos">
+                        <input class=INPUT type="file" name="file"
+                            accept="image/*" multiple />
                     </Field>
-                    <Button>"Subir"</Button>
+                    <div class="flex items-center gap-3">
+                        <Button disabled=Signal::derive(move || !uploading.get().is_empty())>
+                            "Subir"
+                        </Button>
+                        <span class="text-sm/6 text-zinc-500">
+                            {move || uploading.get()}
+                        </span>
+                    </div>
                 </form>
             </Card>
         </div>

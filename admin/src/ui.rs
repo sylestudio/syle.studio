@@ -64,3 +64,74 @@ pub fn Card(children: Children) -> impl IntoView {
 pub fn ErrorText(#[prop(into)] msg: String) -> impl IntoView {
     view! { <p class="text-sm/6 text-red-600">{msg}</p> }
 }
+
+// --- Toasts -----------------------------------------------------------------
+
+#[derive(Clone)]
+pub struct Toast {
+    pub id: u32,
+    pub ok: bool,
+    pub msg: String,
+}
+
+/// Cheap-to-clone toast queue, provided at the app root via context.
+#[derive(Clone, Copy)]
+pub struct Toaster {
+    items: RwSignal<Vec<Toast>>,
+    seq: RwSignal<u32>,
+}
+
+impl Toaster {
+    pub fn new() -> Self {
+        Self {
+            items: RwSignal::new(Vec::new()),
+            seq: RwSignal::new(0),
+        }
+    }
+
+    fn push(&self, ok: bool, msg: String) {
+        let id = self.seq.get_untracked() + 1;
+        self.seq.set(id);
+        self.items.update(|v| v.push(Toast { id, ok, msg }));
+        let items = self.items;
+        wasm_bindgen_futures::spawn_local(async move {
+            gloo_timers::future::TimeoutFuture::new(3500).await;
+            items.update(|v| v.retain(|t| t.id != id));
+        });
+    }
+
+    pub fn ok(&self, msg: impl Into<String>) {
+        self.push(true, msg.into());
+    }
+
+    pub fn err(&self, msg: impl Into<String>) {
+        self.push(false, msg.into());
+    }
+}
+
+impl Default for Toaster {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+pub fn use_toaster() -> Toaster {
+    use_context::<Toaster>().expect("Toaster must be provided at the app root")
+}
+
+#[component]
+pub fn ToastHost() -> impl IntoView {
+    let t = use_toaster();
+    view! {
+        <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+            {move || t.items.get().into_iter().map(|toast| {
+                let cls = if toast.ok {
+                    "rounded-lg bg-zinc-900 px-4 py-2 text-sm/6 text-white shadow-lg"
+                } else {
+                    "rounded-lg bg-red-600 px-4 py-2 text-sm/6 text-white shadow-lg"
+                };
+                view! { <div class=cls>{toast.msg}</div> }
+            }).collect_view()}
+        </div>
+    }
+}
