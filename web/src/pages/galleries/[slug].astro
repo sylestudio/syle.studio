@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import Photo from "../../components/Photo.astro";
+import { listGalleries, getGallery } from "../../lib/api";
+
+export async function getStaticPaths() {
+  const galleries = await listGalleries();
+  return galleries.map((g) => ({ params: { slug: g.slug } }));
+}
+
+const { slug } = Astro.params;
+const detail = await getGallery(slug!);
+if (!detail) return Astro.redirect("/404");
+---
+
+<Base title={detail.gallery.title}>
+  <h2 style="font-size:1.5rem;font-weight:600;margin-bottom:1.5rem">
+    {detail.gallery.title}
+  </h2>
+  <div
+    style="columns:2;column-gap:1rem"
+  >
+    {
+      detail.photos.map((p) => (
+        <div style="break-inside:avoid;margin-bottom:1rem;border-radius:0.5rem;overflow:hidden">
+          <Photo photo={p} />
+        </div>
+      ))
+    }
+  </div>
+</Base>

@@ -1,0 +1,21 @@
+{
+  "name": "syle-web",
+  "type": "module",
+  "private": true,
+  "description": "syle.studio public photography portfolio + blog (Astro SSG).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "astro": "^5.6.0",
+    "marked": "^15.0.0",
+    "thumbhash": "^0.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
