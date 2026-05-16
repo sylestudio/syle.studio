@@ -4,7 +4,7 @@ use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
 use std::time::{SystemTime, UNIX_EPOCH};
-use syle_types::{BlogPost, NewPost, PostStatus, UpdatePost};
+use syle_types::{is_valid_slug, BlogPost, NewPost, PostStatus, UpdatePost};
 use uuid::Uuid;
 
 type PostRow = (Uuid, String, String, String, String, Option<i64>);
@@ -54,6 +54,9 @@ pub async fn create_post(
     State(state): State<AppState>,
     Json(req): Json<NewPost>,
 ) -> Result<Json<BlogPost>, ApiError> {
+    if !is_valid_slug(&req.slug) {
+        return Err(ApiError::BadRequest);
+    }
     let (status_str, published_at) = match req.status {
         PostStatus::Published => ("published", Some(now())),
         PostStatus::Draft => ("draft", None),
@@ -108,6 +111,11 @@ pub async fn update_post(
     Path(id): Path<Uuid>,
     Json(req): Json<UpdatePost>,
 ) -> Result<Json<BlogPost>, ApiError> {
+    if let Some(slug) = &req.slug {
+        if !is_valid_slug(slug) {
+            return Err(ApiError::BadRequest);
+        }
+    }
     let current: Option<PostRow> = sqlx::query_as(
         "SELECT id, slug, title, body_md, status, published_at \
          FROM blog_posts WHERE id = $1",
@@ -129,20 +137,26 @@ pub async fn update_post(
 
     let row: PostRow = sqlx::query_as(
         "UPDATE blog_posts SET \
-           title = COALESCE($2, title), \
-           body_md = COALESCE($3, body_md), \
-           status = $4, \
-           published_at = $5 \
+           slug = COALESCE($2, slug), \
+           title = COALESCE($3, title), \
+           body_md = COALESCE($4, body_md), \
+           status = $5, \
+           published_at = $6 \
          WHERE id = $1 \
          RETURNING id, slug, title, body_md, status, published_at",
     )
     .bind(id)
+    .bind(req.slug)
     .bind(req.title)
     .bind(req.body_md)
     .bind(status_str)
     .bind(published_at)
     .fetch_one(&state.pool)
-    .await?;
+    .await
+    .map_err(|e| match e {
+        sqlx::Error::Database(db) if db.is_unique_violation() => ApiError::BadRequest,
+        other => other.into(),
+    })?;
     Ok(Json(into_post(row)))
 }
 

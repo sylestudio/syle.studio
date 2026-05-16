@@ -4,7 +4,10 @@ use crate::error::ApiError;
 use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
-use syle_types::{Gallery, GalleryDetail, ImageVariant, NewGallery, Photo, Reorder, UpdateGallery};
+use syle_types::{
+    is_valid_slug, Gallery, GalleryDetail, ImageVariant, NewGallery, Photo, Reorder,
+    UpdateGallery,
+};
 use uuid::Uuid;
 
 type GalleryRow = (Uuid, String, String, i32, bool);
@@ -32,6 +35,9 @@ pub async fn create_gallery(
     State(state): State<AppState>,
     Json(req): Json<NewGallery>,
 ) -> Result<Json<Gallery>, ApiError> {
+    if !is_valid_slug(&req.slug) {
+        return Err(ApiError::BadRequest);
+    }
     let id = Uuid::new_v4();
     sqlx::query(
         "INSERT INTO galleries (id, slug, title, position, published) \
@@ -113,6 +119,11 @@ pub async fn update_gallery(
     Path(id): Path<Uuid>,
     Json(req): Json<UpdateGallery>,
 ) -> Result<Json<Gallery>, ApiError> {
+    if let Some(slug) = &req.slug {
+        if !is_valid_slug(slug) {
+            return Err(ApiError::BadRequest);
+        }
+    }
     let row: Option<GalleryRow> = sqlx::query_as(
         "UPDATE galleries SET \
            title = COALESCE($2, title), \

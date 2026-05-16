@@ -2,7 +2,7 @@ use crate::api::{self, ApiError};
 use crate::ui::{use_toaster, Badge, Button, Card, Field, Modal, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
-use syle_types::{PostStatus, UpdatePost};
+use syle_types::{is_valid_slug, PostStatus, UpdatePost};
 use wasm_bindgen_futures::spawn_local;
 
 fn md_to_html(src: &str) -> String {
@@ -72,7 +72,13 @@ pub fn PostEditor() -> impl IntoView {
         let load = load.clone();
         move || {
             let id = pid();
+            let s = slug.get().trim().to_string();
+            if !is_valid_slug(&s) {
+                toast.err("Slug inválido: usa minúsculas, números y guiones");
+                return;
+            }
             let req = UpdatePost {
+                slug: Some(s),
                 title: Some(title.get()),
                 body_md: Some(body.get()),
                 status: Some(if published.get() {
@@ -116,6 +122,7 @@ pub fn PostEditor() -> impl IntoView {
     };
 
     let preview = move || md_to_html(&body.get());
+    let slug_ok = Signal::derive(move || is_valid_slug(slug.get().trim()));
     let save_btn = save.clone();
     let toggle_pub = {
         let save = save.clone();
@@ -145,7 +152,7 @@ pub fn PostEditor() -> impl IntoView {
                     view! { <Badge tone="amber">"borrador"</Badge> }.into_any()
                 }}
                 <div class="flex items-center gap-2">
-                    <Button disabled=Signal::derive(move || saving.get())
+                    <Button disabled=Signal::derive(move || saving.get() || !slug_ok.get())
                         on:click=move |_| save_btn()>
                         {move || if saving.get() { "Guardando…" } else { "Guardar" }}
                     </Button>
@@ -180,6 +187,11 @@ pub fn PostEditor() -> impl IntoView {
                 <Field label="Slug">
                     <input class=INPUT prop:value=slug
                         on:input=move |e| slug.set(event_target_value(&e)) />
+                    {move || (!slug_ok.get()).then(|| view! {
+                        <p class="text-xs/5 text-red-400">
+                            "Solo minúsculas, números y guiones (sin espacios ni puntos)."
+                        </p>
+                    })}
                 </Field>
             </Card>
 

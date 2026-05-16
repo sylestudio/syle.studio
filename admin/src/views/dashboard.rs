@@ -3,7 +3,7 @@ use crate::ui::{use_toaster, Badge, Button, Field, Heading, SlideOver, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
 use std::collections::HashMap;
-use syle_types::{BlogPost, Gallery, NewGallery, NewPost, Photo, PostStatus};
+use syle_types::{is_valid_slug, BlogPost, Gallery, NewGallery, NewPost, Photo, PostStatus};
 
 use wasm_bindgen_futures::spawn_local;
 
@@ -129,12 +129,12 @@ pub fn Dashboard() -> impl IntoView {
     let g_slug = RwSignal::new(String::new());
     let g_title = RwSignal::new(String::new());
     let g_valid = Signal::derive(move || {
-        !g_slug.get().trim().is_empty() && !g_title.get().trim().is_empty()
+        is_valid_slug(g_slug.get().trim()) && !g_title.get().trim().is_empty()
     });
     let create_gallery = move |ev: leptos::ev::SubmitEvent| {
         ev.prevent_default();
         if !g_valid.get() {
-            toast.err("Slug y título son obligatorios");
+            toast.err("Falta el título o el slug no es válido");
             return;
         }
         let n = NewGallery {
@@ -160,12 +160,12 @@ pub fn Dashboard() -> impl IntoView {
     let p_slug = RwSignal::new(String::new());
     let p_title = RwSignal::new(String::new());
     let p_valid = Signal::derive(move || {
-        !p_slug.get().trim().is_empty() && !p_title.get().trim().is_empty()
+        is_valid_slug(p_slug.get().trim()) && !p_title.get().trim().is_empty()
     });
     let create_post = move |ev: leptos::ev::SubmitEvent| {
         ev.prevent_default();
         if !p_valid.get() {
-            toast.err("Slug y título son obligatorios");
+            toast.err("Falta el título o el slug no es válido");
             return;
         }
         let n = NewPost {
@@ -271,6 +271,9 @@ pub fn Dashboard() -> impl IntoView {
                     <Field label="Slug">
                         <input class=INPUT prop:value=g_slug
                             on:input=move |e| g_slug.set(event_target_value(&e)) />
+                        <p class="text-xs/5 text-zinc-500">
+                            "Minúsculas, números y guiones."
+                        </p>
                     </Field>
                     <p class="text-xs/5 text-zinc-500">
                         "Se abrirá la galería para subir fotos."
@@ -290,6 +293,9 @@ pub fn Dashboard() -> impl IntoView {
                     <Field label="Slug">
                         <input class=INPUT prop:value=p_slug
                             on:input=move |e| p_slug.set(event_target_value(&e)) />
+                        <p class="text-xs/5 text-zinc-500">
+                            "Minúsculas, números y guiones."
+                        </p>
                     </Field>
                     <p class="text-xs/5 text-zinc-500">
                         "Se abrirá el editor con vista previa para escribir el contenido."
