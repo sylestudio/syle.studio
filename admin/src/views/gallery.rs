@@ -234,6 +234,12 @@ pub fn GalleryView() -> impl IntoView {
                     move || photos().into_iter().enumerate().map(|(i, p)| {
                     let pid = p.id.to_string();
                     let alt = RwSignal::new(p.alt.clone());
+                    let alt0 = p.alt.clone();
+                    let alt_dirty = Signal::derive(move || {
+                        let v = alt.get();
+                        let v = v.trim();
+                        !v.is_empty() && v != alt0
+                    });
                     let pid_alt = pid.clone();
                     let pid_del = pid.clone();
                     let load_a = load.clone();
@@ -309,10 +315,15 @@ pub fn GalleryView() -> impl IntoView {
                                 <button
                                     class="shrink-0 rounded-lg px-2 py-1 text-xs/5 \
                                         font-medium text-zinc-400 hover:bg-white/10 \
-                                        hover:text-white transition-colors"
+                                        hover:text-white transition-colors \
+                                        disabled:opacity-30 disabled:pointer-events-none"
+                                    disabled=Signal::derive(move || !alt_dirty.get())
                                     on:click=move |_| {
                                         let id = pid_alt.clone();
-                                        let body = UpdatePhoto { alt: Some(alt.get()), position: None };
+                                        let body = UpdatePhoto {
+                                            alt: Some(alt.get().trim().to_string()),
+                                            position: None,
+                                        };
                                         let load = load_a.clone();
                                         spawn_local(async move {
                                             match api::update_photo(&id, &body).await {
