@@ -27,6 +27,8 @@ fn draft() -> PostStatus {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct UpdatePost {
     #[serde(default)]
+    pub slug: Option<String>,
+    #[serde(default)]
     pub title: Option<String>,
     #[serde(default)]
     pub body_md: Option<String>,

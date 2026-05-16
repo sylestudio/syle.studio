@@ -8,11 +8,13 @@ mod blog;
 pub mod endpoints;
 mod gallery;
 mod photo;
+mod slug;
 
 pub use auth::{LoginRequest, SessionToken, User};
 pub use blog::{BlogPost, NewPost, PostStatus, UpdatePost};
 pub use gallery::{Gallery, GalleryDetail, NewGallery, UpdateGallery};
 pub use photo::{ImageFormat, ImageVariant, Photo, Reorder, UpdatePhoto};
+pub use slug::is_valid_slug;
 
 use serde::{Deserialize, Serialize};
 

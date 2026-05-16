@@ -2,7 +2,7 @@ use crate::api::{self, ApiError};
 use crate::ui::{use_toaster, Badge, Button, Card, Field, Modal, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
-use syle_types::{GalleryDetail, Photo, Reorder, UpdateGallery, UpdatePhoto};
+use syle_types::{is_valid_slug, GalleryDetail, Photo, Reorder, UpdateGallery, UpdatePhoto};
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 
@@ -63,14 +63,20 @@ pub fn GalleryView() -> impl IntoView {
     });
 
     let published = move || detail.get().map(|d| d.gallery.published).unwrap_or(false);
+    let slug_ok = Signal::derive(move || is_valid_slug(slug.get().trim()));
 
     let save_meta = {
         let load = load.clone();
         move |publish: Option<bool>| {
             let id = gid();
+            let s = slug.get().trim().to_string();
+            if !is_valid_slug(&s) {
+                toast.err("Slug inválido: usa minúsculas, números y guiones");
+                return;
+            }
             let body = UpdateGallery {
                 title: Some(title.get()),
-                slug: Some(slug.get()),
+                slug: Some(s),
                 published: publish,
                 position: None,
             };
@@ -200,7 +206,7 @@ pub fn GalleryView() -> impl IntoView {
                     view! { <Badge>"borrador"</Badge> }.into_any()
                 }}
                 <div class="flex items-center gap-2">
-                    <Button disabled=Signal::derive(move || saving.get()) on:click={
+                    <Button disabled=Signal::derive(move || saving.get() || !slug_ok.get()) on:click={
                         let s = save_meta.clone();
                         move |_| s(None)
                     }>
@@ -328,6 +334,11 @@ pub fn GalleryView() -> impl IntoView {
                         <Field label="Slug">
                             <input class=INPUT prop:value=slug
                                 on:input=move |e| slug.set(event_target_value(&e)) />
+                            {move || (!slug_ok.get()).then(|| view! {
+                                <p class="text-xs/5 text-red-400">
+                                    "Solo minúsculas, números y guiones (sin espacios ni puntos)."
+                                </p>
+                            })}
                         </Field>
                     </div>
                     <div class="border-t border-white/10 pt-4">
