@@ -10,7 +10,7 @@ mod state;
 
 pub use state::AppState;
 
-use axum::routing::{get, post};
+use axum::routing::{delete, get, patch, post};
 use axum::Router;
 
 pub fn app(state: AppState) -> Router {
@@ -24,8 +24,26 @@ pub fn app(state: AppState) -> Router {
             get(admin::list_galleries).post(admin::create_gallery),
         )
         .route(
+            "/api/admin/galleries/{id}",
+            get(admin::get_gallery_detail)
+                .patch(admin::update_gallery)
+                .delete(admin::delete_gallery),
+        )
+        .route(
+            "/api/admin/galleries/{id}/photos/order",
+            patch(admin::reorder_photos),
+        )
+        .route(
+            "/api/admin/photos/{id}",
+            patch(admin::update_photo).delete(admin::delete_photo),
+        )
+        .route(
             "/api/admin/posts",
             get(admin::list_posts).post(admin::create_post),
+        )
+        .route(
+            "/api/admin/posts/{id}",
+            patch(admin::update_post).delete(admin::delete_post),
         )
         .route("/api/admin/photos", post(admin::upload_photo))
         .route("/api/admin/login", post(auth::login))

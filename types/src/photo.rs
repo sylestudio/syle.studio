@@ -1,6 +1,21 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+/// Partial update for a photo (any omitted field is left unchanged).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UpdatePhoto {
+    #[serde(default)]
+    pub alt: Option<String>,
+    #[serde(default)]
+    pub position: Option<i32>,
+}
+
+/// New ordering: `position` becomes each id's index in this list.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Reorder {
+    pub ids: Vec<Uuid>,
+}
+
 /// Encoded output format of a derivative produced by the ingest pipeline.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]

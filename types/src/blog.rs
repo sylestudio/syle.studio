@@ -23,6 +23,17 @@ fn draft() -> PostStatus {
     PostStatus::Draft
 }
 
+/// Partial update for a post (any omitted field is left unchanged).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UpdatePost {
+    #[serde(default)]
+    pub title: Option<String>,
+    #[serde(default)]
+    pub body_md: Option<String>,
+    #[serde(default)]
+    pub status: Option<PostStatus>,
+}
+
 /// A blog post authored in the CRM and rendered statically by the public site.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BlogPost {
