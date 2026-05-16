@@ -9,8 +9,8 @@ mod gallery;
 mod photo;
 
 pub use auth::{LoginRequest, SessionToken, User};
-pub use blog::{BlogPost, PostStatus};
-pub use gallery::Gallery;
+pub use blog::{BlogPost, NewPost, PostStatus};
+pub use gallery::{Gallery, GalleryDetail, NewGallery};
 pub use photo::{ImageFormat, ImageVariant, Photo};
 
 use serde::{Deserialize, Serialize};

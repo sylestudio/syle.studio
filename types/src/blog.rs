@@ -9,6 +9,20 @@ pub enum PostStatus {
     Published,
 }
 
+/// Payload to create a blog post from the CRM.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct NewPost {
+    pub slug: String,
+    pub title: String,
+    pub body_md: String,
+    #[serde(default = "draft")]
+    pub status: PostStatus,
+}
+
+fn draft() -> PostStatus {
+    PostStatus::Draft
+}
+
 /// A blog post authored in the CRM and rendered statically by the public site.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BlogPost {
