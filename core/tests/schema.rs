@@ -1,5 +1,5 @@
 //! Schema test: applies migrations against the dev DB and round-trips a row.
-//! Requires DATABASE_URL (workspace `.env`); skips cleanly if unset.
+//! Uses TEST_DATABASE_URL (falls back to DATABASE_URL); skips if neither set.
 
 use syle_core::db;
 use uuid::Uuid;
@@ -7,8 +7,10 @@ use uuid::Uuid;
 #[tokio::test]
 async fn migrations_apply_and_gallery_roundtrips() {
     dotenvy::from_path("../.env").ok();
-    let Ok(url) = std::env::var("DATABASE_URL") else {
-        eprintln!("DATABASE_URL unset — skipping DB test");
+    let Ok(url) = std::env::var("TEST_DATABASE_URL")
+        .or_else(|_| std::env::var("DATABASE_URL"))
+    else {
+        eprintln!("no test DB url — skipping DB test");
         return;
     };
 
