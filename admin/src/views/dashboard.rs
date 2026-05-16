@@ -130,7 +130,8 @@ pub fn Dashboard() -> impl IntoView {
                     <ul class="mb-4 divide-y divide-zinc-950/5">
                         {move || posts.get().into_iter().map(|p| view! {
                             <li class="flex justify-between py-2 text-sm/6">
-                                <span class="text-zinc-950">{p.title}</span>
+                                <a href=format!("/posts/{}", p.id)
+                                    class="text-zinc-950 hover:underline">{p.title}</a>
                                 <span class="text-zinc-500">
                                     {match p.status {
                                         PostStatus::Published => "publicado",
