@@ -104,7 +104,8 @@ pub fn Dashboard() -> impl IntoView {
                     <ul class="mb-4 divide-y divide-zinc-950/5">
                         {move || galleries.get().into_iter().map(|g| view! {
                             <li class="flex justify-between py-2 text-sm/6">
-                                <span class="text-zinc-950">{g.title}</span>
+                                <a href=format!("/galleries/{}", g.id)
+                                    class="text-zinc-950 hover:underline">{g.title}</a>
                                 <span class="text-zinc-500">
                                     {if g.published { "publicada" } else { "borrador" }}
                                 </span>

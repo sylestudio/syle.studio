@@ -224,3 +224,35 @@ async fn admin_upload_photo_ingests_and_persists() {
     assert_eq!(pc, 1);
     assert_eq!(vc as usize, photo.variants.len());
 }
+
+#[tokio::test]
+#[serial_test::serial]
+async fn uploaded_derivative_is_served_under_media() {
+    let Some((app, pool, _m)) = setup().await else { return };
+    let cookie = login_cookie(&app, &pool).await;
+    let gid = make_gallery(&pool, "g", true).await;
+
+    let (ct, body) = multipart(gid, "x", &synthetic_png(640, 480));
+    let up = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/photos")
+                .header(header::CONTENT_TYPE, ct)
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(body))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    let photo: Photo = body_json(up).await;
+
+    let served = app
+        .oneshot(
+            Request::get(&photo.variants[0].path)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(served.status(), StatusCode::OK);
+}

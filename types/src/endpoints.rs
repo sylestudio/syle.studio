@@ -12,6 +12,22 @@ pub const ADMIN_PHOTOS: &str = "/api/admin/photos";
 pub const PUBLIC_GALLERIES: &str = "/api/public/galleries";
 pub const PUBLIC_POSTS: &str = "/api/public/posts";
 
+pub fn admin_gallery(id: &str) -> String {
+    format!("{ADMIN_GALLERIES}/{id}")
+}
+
+pub fn admin_gallery_order(id: &str) -> String {
+    format!("{ADMIN_GALLERIES}/{id}/photos/order")
+}
+
+pub fn admin_photo(id: &str) -> String {
+    format!("{ADMIN_PHOTOS}/{id}")
+}
+
+pub fn admin_post(id: &str) -> String {
+    format!("{ADMIN_POSTS}/{id}")
+}
+
 pub fn public_gallery(slug: &str) -> String {
     format!("{PUBLIC_GALLERIES}/{slug}")
 }
