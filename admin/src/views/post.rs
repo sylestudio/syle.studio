@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{use_toaster, Badge, Button, Card, Field, INPUT};
+use crate::ui::{use_toaster, Badge, Button, Card, Field, Modal, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
 use syle_types::{PostStatus, UpdatePost};
@@ -152,20 +152,9 @@ pub fn PostEditor() -> impl IntoView {
                     <Button kind="outline" on:click=toggle_pub>
                         {move || if published.get() { "Despublicar" } else { "Publicar" }}
                     </Button>
-                    {move || if confirm_del.get() {
-                        view! {
-                            <Button kind="danger" on:click=delete.clone()>
-                                "Confirmar"
-                            </Button>
-                        }.into_any()
-                    } else {
-                        view! {
-                            <Button kind="plain"
-                                on:click=move |_| confirm_del.set(true)>
-                                "Borrar"
-                            </Button>
-                        }.into_any()
-                    }}
+                    <Button kind="plain" on:click=move |_| confirm_del.set(true)>
+                        "Borrar"
+                    </Button>
                 </div>
             </div>
 
@@ -193,6 +182,20 @@ pub fn PostEditor() -> impl IntoView {
                         on:input=move |e| slug.set(event_target_value(&e)) />
                 </Field>
             </Card>
+
+            <Modal open=confirm_del title="Eliminar entrada">
+                <p class="text-sm/6 text-zinc-400">
+                    "Esta acción no se puede deshacer."
+                </p>
+                <div class="mt-5 flex justify-end gap-2">
+                    <Button kind="plain" on:click=move |_| confirm_del.set(false)>
+                        "Cancelar"
+                    </Button>
+                    <Button kind="danger" on:click=delete.clone()>
+                        "Eliminar"
+                    </Button>
+                </div>
+            </Modal>
         </div>
     }
 }

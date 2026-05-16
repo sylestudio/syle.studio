@@ -122,6 +122,34 @@ pub fn SlideOver(
     }
 }
 
+/// Centered modal dialog. The backdrop covers the whole page so it blocks
+/// every other action until the user resolves it (used for destructive
+/// confirmations). Backdrop click cancels.
+#[component]
+pub fn Modal(
+    open: RwSignal<bool>,
+    #[prop(into)] title: String,
+    children: ChildrenFn,
+) -> impl IntoView {
+    view! {
+        {move || open.get().then(|| view! {
+            <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div
+                    class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    on:click=move |_| open.set(false)
+                ></div>
+                <div class="relative w-full max-w-md rounded-2xl border border-white/10 \
+                    bg-zinc-900 p-6 shadow-2xl">
+                    <h2 class="text-base/7 font-semibold text-white">
+                        {title.clone()}
+                    </h2>
+                    <div class="mt-3">{children()}</div>
+                </div>
+            </div>
+        })}
+    }
+}
+
 // --- Toasts -----------------------------------------------------------------
 
 #[derive(Clone)]
