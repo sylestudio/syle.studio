@@ -1,0 +1,19 @@
+/target
+**/*.rs.bk
+*.pdb
+
+# Leptos / trunk
+/admin/dist
+
+# Astro
+/web/node_modules
+/web/dist
+/web/.astro
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# media store (originals + derivatives live on the VPS, not in git)
+/media

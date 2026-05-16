@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = ["api", "core", "types", "admin"]
+# admin is a wasm32 (Leptos CSR) crate built via `trunk`; keep it out of the
+# default host `cargo check`/`build` so native tooling stays fast and green.
+default-members = ["api", "core", "types"]
+
+[workspace.package]
+edition = "2021"
+license = "UNLICENSED"
+authors = ["Eduardo Alonso <eddndev@gmail.com>"]
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+anyhow = "1"
+thiserror = "2"
+syle-types = { path = "types" }
+syle-core = { path = "core" }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
