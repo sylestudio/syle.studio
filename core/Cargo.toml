@@ -10,3 +10,15 @@ syle-types.workspace = true
 serde.workspace = true
 anyhow.workspace = true
 thiserror.workspace = true
+uuid = { version = "1", features = ["serde", "v4"] }
+sqlx = { version = "0.8", default-features = false, features = [
+  "runtime-tokio",
+  "postgres",
+  "uuid",
+  "migrate",
+  "macros",
+] }
+
+[dev-dependencies]
+tokio.workspace = true
+dotenvy = "0.15"
