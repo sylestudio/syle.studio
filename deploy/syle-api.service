@@ -1,0 +1,23 @@
+[Unit]
+Description=syle.studio API (Axum)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=syle
+Group=syle
+WorkingDirectory=/opt/syle
+EnvironmentFile=/etc/syle/api.env
+ExecStart=/opt/syle/bin/syle-api
+Restart=on-failure
+RestartSec=2
+# Hardening: the API only needs its media dir and a loopback socket.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/syle/media
+
+[Install]
+WantedBy=multi-user.target
