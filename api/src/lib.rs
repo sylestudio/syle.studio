@@ -12,9 +12,16 @@ pub use state::AppState;
 
 use axum::routing::{delete, get, patch, post};
 use axum::Router;
+use tower_http::services::ServeDir;
 
 pub fn app(state: AppState) -> Router {
+    // Serve ingested derivatives. In prod the CDN/Caddy front this; the admin
+    // origin proxies it so the CRM can preview thumbnails.
+    // Files are written under `<media_dir>/media/...` and `nest_service`
+    // strips the `/media` prefix, so serve the inner directory.
+    let media = ServeDir::new(state.media_dir.join("media"));
     Router::new()
+        .nest_service("/media", media)
         .route("/api/public/galleries", get(public::list_galleries))
         .route("/api/public/galleries/{slug}", get(public::get_gallery))
         .route("/api/public/posts", get(public::list_posts))
