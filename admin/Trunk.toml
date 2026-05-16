@@ -7,6 +7,11 @@ dist = "dist"
 addresses = ["127.0.0.1"]
 port = 8081
 
+# Dev only: make /api same-origin by proxying to the local API, emulating the
+# production same-origin setup (Caddy in front of the Tunnel).
+[[proxy]]
+backend = "http://127.0.0.1:8080/api/"
+
 # Compile Tailwind v4 before trunk processes the linked stylesheet.
 [[hooks]]
 stage = "pre_build"
