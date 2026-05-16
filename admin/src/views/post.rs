@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{use_toaster, Button, Card, Field, Heading, INPUT};
+use crate::ui::{use_toaster, Badge, Button, Card, Field, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
 use syle_types::{PostStatus, UpdatePost};
@@ -11,6 +11,18 @@ fn md_to_html(src: &str) -> String {
     pulldown_cmark::html::push_html(&mut out, parser);
     out
 }
+
+/// Readable prose styling for the dark live preview (no typography plugin).
+const PROSE: &str = "min-h-[60vh] overflow-y-auto rounded-xl border border-white/10 \
+    bg-white/5 p-5 text-sm/6 text-zinc-300 \
+    [&_h1]:mt-0 [&_h1]:mb-2 [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:text-white \
+    [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white \
+    [&_h3]:mt-3 [&_h3]:font-semibold [&_h3]:text-white \
+    [&_p]:my-2 [&_a]:text-blue-400 [&_a]:underline \
+    [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 \
+    [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-zinc-200 \
+    [&_blockquote]:border-l-2 [&_blockquote]:border-white/20 [&_blockquote]:pl-3 [&_blockquote]:text-zinc-400 \
+    [&_img]:rounded-lg";
 
 #[component]
 pub fn PostEditor() -> impl IntoView {
@@ -58,7 +70,7 @@ pub fn PostEditor() -> impl IntoView {
 
     let save = {
         let load = load.clone();
-        move |_| {
+        move || {
             let id = pid();
             let req = UpdatePost {
                 title: Some(title.get()),
@@ -104,67 +116,82 @@ pub fn PostEditor() -> impl IntoView {
     };
 
     let preview = move || md_to_html(&body.get());
+    let save_btn = save.clone();
+    let toggle_pub = {
+        let save = save.clone();
+        move |_| {
+            published.update(|p| *p = !*p);
+            save();
+        }
+    };
 
     view! {
-        <div class="mx-auto max-w-5xl space-y-6 p-6">
-            <a href="/" class="text-sm/6 text-zinc-500">"← Portafolio"</a>
+        <div class="space-y-8">
+            <div class="sticky top-0 z-20 -mx-6 -mt-6 flex flex-wrap items-center gap-4 \
+                border-b border-white/10 bg-zinc-900/80 px-6 py-4 backdrop-blur \
+                lg:-mx-10 lg:-mt-10 lg:px-10">
+                <a href="/" class="rounded-lg p-1.5 text-zinc-400 hover:bg-white/10 \
+                    hover:text-white transition-colors" aria-label="Volver">"←"</a>
+                <input
+                    class="min-w-40 flex-1 bg-transparent text-xl font-semibold \
+                        tracking-tight text-white outline-none placeholder:text-zinc-600"
+                    prop:value=title
+                    placeholder="Título de la entrada"
+                    on:input=move |e| title.set(event_target_value(&e))
+                />
+                {move || if published.get() {
+                    view! { <Badge tone="green">"publicado"</Badge> }.into_any()
+                } else {
+                    view! { <Badge tone="amber">"borrador"</Badge> }.into_any()
+                }}
+                <div class="flex items-center gap-2">
+                    <Button disabled=Signal::derive(move || saving.get())
+                        on:click=move |_| save_btn()>
+                        {move || if saving.get() { "Guardando…" } else { "Guardar" }}
+                    </Button>
+                    <Button kind="outline" on:click=toggle_pub>
+                        {move || if published.get() { "Despublicar" } else { "Publicar" }}
+                    </Button>
+                    {move || if confirm_del.get() {
+                        view! {
+                            <Button kind="danger" on:click=delete.clone()>
+                                "Confirmar"
+                            </Button>
+                        }.into_any()
+                    } else {
+                        view! {
+                            <Button kind="plain"
+                                on:click=move |_| confirm_del.set(true)>
+                                "Borrar"
+                            </Button>
+                        }.into_any()
+                    }}
+                </div>
+            </div>
+
             {move || (!loaded.get()).then(|| view! {
                 <p class="text-sm/6 text-zinc-500">"Cargando…"</p>
             })}
-            <Card>
-                <div class="space-y-4">
-                    <Heading text="Editar entrada" />
-                    <Field label="Título">
-                        <input class=INPUT prop:value=title
-                            on:input=move |e| title.set(event_target_value(&e)) />
-                    </Field>
-                    <Field label="Slug">
-                        <input class=INPUT prop:value=slug
-                            on:input=move |e| slug.set(event_target_value(&e)) />
-                    </Field>
-                    <div class="grid gap-4 lg:grid-cols-2">
-                        <Field label="Contenido (Markdown)">
-                            <textarea class=format!("{INPUT} font-mono") rows="16"
-                                prop:value=body
-                                on:input=move |e| body.set(event_target_value(&e)) />
-                        </Field>
-                        <div>
-                            <p class="mb-1.5 text-sm/6 font-medium text-zinc-950">
-                                "Vista previa"
-                            </p>
-                            <div
-                                class="min-h-80 rounded-lg border border-zinc-950/10 bg-white p-4 text-sm/6"
-                                inner_html=preview
-                            ></div>
-                        </div>
-                    </div>
-                    <label class="flex items-center gap-2 text-sm/6 text-zinc-950">
-                        <input type="checkbox" prop:checked=published
-                            on:change=move |e| published.set(event_target_checked(&e)) />
-                        "Publicado"
-                    </label>
-                    <div class="flex items-center gap-3">
-                        <Button disabled=Signal::derive(move || saving.get())
-                            on:click=save.clone()>
-                            {move || if saving.get() { "Guardando…" } else { "Guardar" }}
-                        </Button>
-                        <span class="grow"></span>
-                        {move || if confirm_del.get() {
-                            view! {
-                                <Button kind="plain" on:click=delete.clone()>
-                                    "Confirmar borrado"
-                                </Button>
-                            }.into_any()
-                        } else {
-                            view! {
-                                <Button kind="plain"
-                                    on:click=move |_| confirm_del.set(true)>
-                                    "Borrar"
-                                </Button>
-                            }.into_any()
-                        }}
-                    </div>
+
+            <div class="grid gap-6 lg:grid-cols-2">
+                <div class="space-y-1.5">
+                    <p class="text-sm/6 font-medium text-zinc-300">"Markdown"</p>
+                    <textarea
+                        class=format!("{INPUT} min-h-[60vh] font-mono leading-relaxed")
+                        prop:value=body
+                        on:input=move |e| body.set(event_target_value(&e)) />
                 </div>
+                <div class="space-y-1.5">
+                    <p class="text-sm/6 font-medium text-zinc-300">"Vista previa"</p>
+                    <div class=PROSE inner_html=preview></div>
+                </div>
+            </div>
+
+            <Card>
+                <Field label="Slug">
+                    <input class=INPUT prop:value=slug
+                        on:input=move |e| slug.set(event_target_value(&e)) />
+                </Field>
             </Card>
         </div>
     }
