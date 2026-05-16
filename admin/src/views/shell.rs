@@ -68,6 +68,8 @@ pub fn StudioShell() -> impl IntoView {
 
     view! {
         <div class="relative isolate flex min-h-svh w-full bg-zinc-950">
+            // Film-grain texture layer (fixed, inert, below overlays)
+            <div class="studio-grain"></div>
             // Fixed dark sidebar
             <div class="fixed inset-y-0 left-0 w-64 max-lg:hidden">
                 <nav class="flex h-full min-h-0 flex-col">

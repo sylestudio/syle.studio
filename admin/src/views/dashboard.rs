@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{use_toaster, Badge, Button, Field, Heading, SlideOver, INPUT};
+use crate::ui::{use_toaster, Badge, Button, Field, Heading, Skeleton, SlideOver, Tile, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
 use std::collections::HashMap;
@@ -59,38 +59,43 @@ fn GalleryCard(g: Gallery, covers: Covers) -> impl IntoView {
     let href = format!("/galleries/{id}");
     let published = g.published;
     view! {
-        <a href=href class="group block">
-            <div class="relative aspect-4/3 overflow-hidden rounded-xl bg-zinc-800 ring-1 ring-white/10">
-                {move || match covers.get().get(&id) {
-                    Some(Some(src)) => view! {
-                        <img src=src.clone() alt=""
-                            class="absolute inset-0 block h-full w-full object-cover transition duration-300 group-hover:scale-105" />
-                    }.into_any(),
-                    Some(None) => view! {
-                        <div class="flex h-full w-full flex-col items-center justify-center gap-2 text-zinc-600">
-                            <svg viewBox="0 0 24 24" fill="none" class="size-8"
-                                stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-                            </svg>
-                            <span class="text-xs/5">"Sin fotos"</span>
-                        </div>
-                    }.into_any(),
-                    None => view! {
-                        <div class="h-full w-full animate-pulse bg-white/5"></div>
-                    }.into_any(),
-                }}
-            </div>
-            <div class="mt-3 flex items-center justify-between gap-3">
-                <span class="truncate text-sm/6 font-medium text-white group-hover:text-zinc-300 transition-colors">
-                    {g.title}
-                </span>
-                {if published {
-                    view! { <Badge tone="green">"publicada"</Badge> }.into_any()
-                } else {
-                    view! { <Badge>"borrador"</Badge> }.into_any()
-                }}
-            </div>
+        <a href=href class="group reveal-item block">
+            <Tile>
+                <div class="relative aspect-4/3 bg-zinc-800">
+                    {move || match covers.get().get(&id) {
+                        Some(Some(src)) => view! {
+                            <img src=src.clone() alt=""
+                                class="absolute inset-0 block h-full w-full object-cover \
+                                    transition duration-500 ease-fluid group-hover:scale-105 \
+                                    motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
+                        }.into_any(),
+                        Some(None) => view! {
+                            <div class="flex h-full w-full flex-col items-center justify-center gap-2 text-zinc-600">
+                                <svg viewBox="0 0 24 24" fill="none" class="size-8"
+                                    stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                                </svg>
+                                <span class="text-xs/5">"Sin fotos"</span>
+                            </div>
+                        }.into_any(),
+                        None => view! {
+                            <Skeleton class="absolute inset-0" />
+                        }.into_any(),
+                    }}
+                </div>
+                <div class="flex items-center justify-between gap-3 px-4 py-3">
+                    <span class="truncate text-sm/6 font-medium text-white \
+                        transition-colors group-hover:text-zinc-300">
+                        {g.title}
+                    </span>
+                    {if published {
+                        view! { <Badge tone="green">"publicada"</Badge> }.into_any()
+                    } else {
+                        view! { <Badge>"borrador"</Badge> }.into_any()
+                    }}
+                </div>
+            </Tile>
         </a>
     }
 }
@@ -239,13 +244,16 @@ pub fn Dashboard() -> impl IntoView {
                         }.into_any()
                     } else {
                         view! {
-                            <ul class="divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-white/2.5">
+                            <div class="rounded-2xl border border-white/10 bg-white/4 p-1.5">
+                            <ul class="bezel-core divide-y divide-white/5 overflow-hidden rounded-xl bg-zinc-900">
                                 {ps.into_iter().map(|p| {
                                     let pub_ = p.status == PostStatus::Published;
                                     view! {
-                                        <li class="flex items-center justify-between gap-3 px-5 py-4">
+                                        <li class="reveal-item flex items-center justify-between gap-3 \
+                                            px-5 py-4 transition-colors hover:bg-white/3">
                                             <a href=format!("/posts/{}", p.id)
-                                                class="truncate text-sm/6 font-medium text-white hover:text-zinc-300 transition-colors">
+                                                class="truncate text-sm/6 font-medium text-white \
+                                                    transition-colors hover:text-zinc-300">
                                                 {p.title}
                                             </a>
                                             {if pub_ {
@@ -257,6 +265,7 @@ pub fn Dashboard() -> impl IntoView {
                                     }
                                 }).collect_view()}
                             </ul>
+                            </div>
                         }.into_any()
                     }
                 }}

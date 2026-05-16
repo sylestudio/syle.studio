@@ -8,3 +8,74 @@
 
 /* Catalyst design language: zinc neutrals, blue focus. Defaults already
    match Tailwind v4, so no token overrides are needed yet. */
+
+/* --- Tactile-depth layer ---------------------------------------------------
+   "Studio" material: nested-bezel cards, film grain, weighted motion. Authored
+   here (not as Rust-built classes) so Tailwind v4's @source scanner is bypassed
+   for these literal CSS rules. One fluid easing token drives all motion. */
+
+@theme {
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Inner highlight that makes a panel read as a machined surface, not a flat
+   fill. Pair with a bezel "shell" wrapper for concentric depth. */
+.bezel-core {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+/* Film grain: thematically earned for a photography studio. Fixed, inert,
+   z-30 so it textures content but never sits over modals/slide-overs
+   (z-40/z-50). ~0.035 — a touch more than render A, without render B's warmth. */
+.studio-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0.035;
+  /* saturate 0 → neutral luminance noise (feTurbulence is colored by default;
+     left as-is it tints the edges warm — exactly render B's vibe we did not
+     pick). */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Entrance: a fast, heavy fade-up. Kept short (≈0.5s, small travel) — this is
+   a tool used all day, not a landing. Stagger via nth-child so it stays pure
+   CSS (no IntersectionObserver, no JS, no new testable logic). */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.reveal-item {
+  opacity: 0;
+  animation: reveal-up 0.5s var(--ease-fluid) forwards;
+}
+.reveal-item:nth-child(1)  { animation-delay: 0.02s; }
+.reveal-item:nth-child(2)  { animation-delay: 0.06s; }
+.reveal-item:nth-child(3)  { animation-delay: 0.10s; }
+.reveal-item:nth-child(4)  { animation-delay: 0.14s; }
+.reveal-item:nth-child(5)  { animation-delay: 0.18s; }
+.reveal-item:nth-child(6)  { animation-delay: 0.22s; }
+.reveal-item:nth-child(7)  { animation-delay: 0.26s; }
+.reveal-item:nth-child(8)  { animation-delay: 0.30s; }
+.reveal-item:nth-child(n+9){ animation-delay: 0.34s; }
+
+/* Loading shimmer for media placeholders (covers) — replaces dead "cargando". */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.skeleton { position: relative; overflow: hidden; background: rgb(255 255 255 / 0.04); }
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg, transparent, rgb(255 255 255 / 0.06), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+/* Accessibility: this is a daily-driver tool. Honor reduced-motion fully —
+   no entrance travel, no shimmer; final state shown instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-item { animation: none; opacity: 1; }
+  .skeleton::after { animation: none; }
+}

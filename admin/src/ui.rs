@@ -10,7 +10,9 @@ const BTN: &str = "relative inline-flex items-center justify-center gap-x-2 \
     rounded-lg border border-transparent px-3.5 py-2.5 sm:px-3 sm:py-1.5 \
     text-base/6 sm:text-sm/6 font-semibold \
     focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 \
-    disabled:opacity-50 disabled:pointer-events-none transition-colors";
+    disabled:opacity-50 disabled:pointer-events-none \
+    transition duration-200 ease-fluid active:scale-[0.98] \
+    motion-reduce:transition-none motion-reduce:active:scale-100";
 
 #[component]
 pub fn Button(
@@ -63,6 +65,32 @@ pub fn Card(children: Children) -> impl IntoView {
             {children()}
         </div>
     }
+}
+
+/// Tactile-depth media tile: a nested-bezel enclosure (outer "shell" + inner
+/// "core") that makes gallery/post cards read as physical objects instead of
+/// flat fills. Lifts and brightens its hairline on hover with the fluid easing;
+/// motion is suppressed under `prefers-reduced-motion`. The caller supplies the
+/// inner content (cover + meta); concentric radii are handled here.
+#[component]
+pub fn Tile(children: Children) -> impl IntoView {
+    view! {
+        <div class="rounded-2xl border border-white/10 bg-white/4 p-1.5 \
+            transition duration-300 ease-fluid \
+            hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/6 \
+            motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+            <div class="bezel-core overflow-hidden rounded-xl bg-zinc-900">
+                {children()}
+            </div>
+        </div>
+    }
+}
+
+/// Shimmering placeholder block (use while a cover/image loads). Pass extra
+/// classes for sizing/shape, e.g. `class="aspect-square rounded-xl"`.
+#[component]
+pub fn Skeleton(#[prop(optional, into)] class: String) -> impl IntoView {
+    view! { <div class=format!("skeleton {class}")></div> }
 }
 
 #[component]
