@@ -19,6 +19,9 @@ http://syle.studio {
 http://127.0.0.1:8081 {
 	@api path /api/*
 	reverse_proxy @api 127.0.0.1:8080
+	# Photo previews for the CRM come from the API's media dir.
+	@media path /media/*
+	reverse_proxy @media 127.0.0.1:8080
 
 	root * /opt/syle/admin
 	file_server

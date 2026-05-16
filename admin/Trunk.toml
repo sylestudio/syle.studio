@@ -12,6 +12,9 @@ port = 8081
 [[proxy]]
 backend = "http://127.0.0.1:8080/api/"
 
+[[proxy]]
+backend = "http://127.0.0.1:8080/media/"
+
 # Compile Tailwind v4 before trunk processes the linked stylesheet.
 [[hooks]]
 stage = "pre_build"
