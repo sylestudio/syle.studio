@@ -29,11 +29,17 @@ pub fn Dashboard() -> impl IntoView {
     let galleries: Galleries = RwSignal::new(Vec::new());
     let posts: Posts = RwSignal::new(Vec::new());
     let auth_failed = RwSignal::new(false);
+    // Obtained in the component body so the Router context is in scope; the
+    // returned closure is cloned into effects/handlers.
+    let navigate = use_navigate();
 
     Effect::new(move |_| reload(galleries, posts, auth_failed));
-    Effect::new(move |_| {
-        if auth_failed.get() {
-            use_navigate()("/login", Default::default());
+    Effect::new({
+        let navigate = navigate.clone();
+        move |_| {
+            if auth_failed.get() {
+                navigate("/login", Default::default());
+            }
         }
     });
 
@@ -78,9 +84,10 @@ pub fn Dashboard() -> impl IntoView {
     };
 
     let logout = move |_| {
+        let navigate = navigate.clone();
         spawn_local(async move {
             api::logout().await;
-            use_navigate()("/login", Default::default());
+            navigate("/login", Default::default());
         });
     };
 

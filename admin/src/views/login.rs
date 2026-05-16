@@ -10,6 +10,9 @@ pub fn Login() -> impl IntoView {
     let (password, set_password) = signal(String::new());
     let error = RwSignal::new(Option::<String>::None);
     let pending = RwSignal::new(false);
+    // Must be obtained in the component body (Router context lives on the
+    // reactive owner here, not inside the async task below).
+    let navigate = use_navigate();
 
     let submit = move |ev: leptos::ev::SubmitEvent| {
         ev.prevent_default();
@@ -22,10 +25,10 @@ pub fn Login() -> impl IntoView {
         };
         pending.set(true);
         error.set(None);
-        let nav = use_navigate();
+        let navigate = navigate.clone();
         wasm_bindgen_futures::spawn_local(async move {
             match api::login(&req).await {
-                Ok(_) => nav("/", Default::default()),
+                Ok(_) => navigate("/", Default::default()),
                 Err(_) => error.set(Some("Credenciales inválidas".into())),
             }
             pending.set(false);
