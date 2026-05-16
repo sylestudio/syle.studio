@@ -1,0 +1,27 @@
+---
+import type { Photo } from "../lib/api";
+import { buildSources, thumbDataUrl } from "../lib/images";
+
+interface Props {
+  photo: Photo;
+}
+const { photo } = Astro.props;
+const s = buildSources(photo.variants);
+const placeholder = thumbDataUrl(photo.thumbhash);
+---
+
+<picture>
+  {s.avif && <source srcset={s.avif} sizes="(min-width: 48rem) 50vw, 100vw" type="image/avif" />}
+  {s.jpeg && <source srcset={s.jpeg} sizes="(min-width: 48rem) 50vw, 100vw" type="image/jpeg" />}
+  <img
+    src={s.fallback}
+    alt={photo.alt}
+    width={photo.width}
+    height={photo.height}
+    loading="lazy"
+    decoding="async"
+    style={placeholder
+      ? `background-image:url(${placeholder});background-size:cover`
+      : undefined}
+  />
+</picture>

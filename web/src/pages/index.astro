@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { listGalleries } from "../lib/api";
+
+const galleries = await listGalleries();
+---
+
+<Base title="Portafolio">
+  {galleries.length === 0 && (
+    <p style="color:#71717a">Aún no hay galerías publicadas.</p>
+  )}
+  <ul
+    style="list-style:none;padding:0;display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fill,minmax(18rem,1fr))"
+  >
+    {
+      galleries.map((g) => (
+        <li>
+          <a href={`/galleries/${g.slug}`} style="font-size:1.25rem;font-weight:600">
+            {g.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

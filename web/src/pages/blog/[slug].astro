@@ -1,0 +1,25 @@
+---
+import Base from "../../layouts/Base.astro";
+import { listPosts, getPost } from "../../lib/api";
+import { marked } from "marked";
+
+export async function getStaticPaths() {
+  const posts = await listPosts();
+  return posts.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = await getPost(slug!);
+if (!post) return Astro.redirect("/404");
+
+const html = marked.parse(post.body_md);
+---
+
+<Base title={post.title}>
+  <article>
+    <h2 style="font-size:1.75rem;font-weight:600;margin-bottom:1.5rem">
+      {post.title}
+    </h2>
+    <div set:html={html} />
+  </article>
+</Base>

@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/Base.astro";
+import { listPosts } from "../../lib/api";
+
+const posts = await listPosts();
+const fmt = (s: number | null) =>
+  s ? new Date(s * 1000).toLocaleDateString("es-MX") : "";
+---
+
+<Base title="Blog">
+  {posts.length === 0 && <p style="color:#71717a">Aún no hay entradas.</p>}
+  <ul style="list-style:none;padding:0;display:grid;gap:1.5rem">
+    {
+      posts.map((p) => (
+        <li>
+          <a href={`/blog/${p.slug}`}>
+            <span style="font-size:1.25rem;font-weight:600">{p.title}</span>
+          </a>
+          <div style="color:#71717a;font-size:0.875rem">{fmt(p.published_at)}</div>
+        </li>
+      ))
+    }
+  </ul>
+</Base>
