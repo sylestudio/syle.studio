@@ -5,7 +5,8 @@ use gloo_net::http::Request;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use syle_types::{
-    endpoints as ep, BlogPost, Gallery, LoginRequest, NewGallery, NewPost, Photo, User,
+    endpoints as ep, BlogPost, Gallery, GalleryDetail, LoginRequest, NewGallery, NewPost,
+    Photo, Reorder, UpdateGallery, UpdatePhoto, User,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -55,6 +56,37 @@ async fn post_json<B: Serialize, T: DeserializeOwned>(
     }
 }
 
+async fn patch_json<B: Serialize, T: DeserializeOwned>(
+    url: &str,
+    body: &B,
+) -> Result<T, ApiError> {
+    let resp = Request::patch(url)
+        .credentials(RequestCredentials::Include)
+        .json(body)
+        .map_err(|_| ApiError::Network)?
+        .send()
+        .await
+        .map_err(|_| ApiError::Network)?;
+    if resp.status() == 200 {
+        resp.json().await.map_err(|_| ApiError::Network)
+    } else {
+        Err(classify(resp.status()))
+    }
+}
+
+async fn send_empty(req: gloo_net::http::RequestBuilder) -> Result<(), ApiError> {
+    let resp = req
+        .credentials(RequestCredentials::Include)
+        .send()
+        .await
+        .map_err(|_| ApiError::Network)?;
+    if resp.status() == 200 {
+        Ok(())
+    } else {
+        Err(classify(resp.status()))
+    }
+}
+
 pub async fn me() -> Result<User, ApiError> {
     get_json(ep::ME).await
 }
@@ -84,6 +116,51 @@ pub async fn list_posts() -> Result<Vec<BlogPost>, ApiError> {
 
 pub async fn create_post(n: &NewPost) -> Result<BlogPost, ApiError> {
     post_json(ep::ADMIN_POSTS, n).await
+}
+
+pub async fn gallery_detail(id: &str) -> Result<GalleryDetail, ApiError> {
+    get_json(&ep::admin_gallery(id)).await
+}
+
+pub async fn update_gallery(
+    id: &str,
+    body: &UpdateGallery,
+) -> Result<Gallery, ApiError> {
+    patch_json(&ep::admin_gallery(id), body).await
+}
+
+pub async fn delete_gallery(id: &str) -> Result<(), ApiError> {
+    send_empty(Request::delete(&ep::admin_gallery(id))).await
+}
+
+pub async fn reorder_photos(
+    gallery_id: &str,
+    body: &Reorder,
+) -> Result<(), ApiError> {
+    // 200 with empty body.
+    let resp = Request::patch(&ep::admin_gallery_order(gallery_id))
+        .credentials(RequestCredentials::Include)
+        .json(body)
+        .map_err(|_| ApiError::Network)?
+        .send()
+        .await
+        .map_err(|_| ApiError::Network)?;
+    if resp.status() == 200 {
+        Ok(())
+    } else {
+        Err(classify(resp.status()))
+    }
+}
+
+pub async fn update_photo(
+    id: &str,
+    body: &UpdatePhoto,
+) -> Result<Photo, ApiError> {
+    patch_json(&ep::admin_photo(id), body).await
+}
+
+pub async fn delete_photo(id: &str) -> Result<(), ApiError> {
+    send_empty(Request::delete(&ep::admin_photo(id))).await
 }
 
 pub async fn upload_photo(form: FormData) -> Result<Photo, ApiError> {

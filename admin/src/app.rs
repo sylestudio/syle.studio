@@ -1,4 +1,4 @@
-use crate::views::{Dashboard, Login};
+use crate::views::{Dashboard, GalleryView, Login};
 use leptos::prelude::*;
 use leptos_router::components::{Route, Router, Routes};
 use leptos_router::path;
@@ -9,6 +9,7 @@ pub fn App() -> impl IntoView {
         <Router>
             <Routes fallback=|| view! { <p class="p-6">"No encontrado"</p> }>
                 <Route path=path!("/login") view=Login />
+                <Route path=path!("/galleries/:id") view=GalleryView />
                 <Route path=path!("/") view=Dashboard />
             </Routes>
         </Router>
