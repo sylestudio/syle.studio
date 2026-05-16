@@ -46,9 +46,12 @@ pub fn PhotoTile(
     let src = thumb_src(&photo);
 
     view! {
-        <div class="group space-y-2">
-            <div class="relative aspect-square overflow-hidden rounded-xl \
-                bg-zinc-800 ring-1 ring-white/10">
+        <div class="reveal-item group rounded-2xl border border-white/10 \
+            bg-white/4 p-1.5 transition duration-300 ease-fluid \
+            hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/6 \
+            motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+            <div class="bezel-core overflow-hidden rounded-xl bg-zinc-900">
+            <div class="relative aspect-square bg-zinc-800">
                 {if src.is_empty() {
                     view! {
                         <div class="flex h-full w-full items-center \
@@ -59,7 +62,9 @@ pub fn PhotoTile(
                 } else {
                     view! {
                         <img src=src alt=photo.alt.clone()
-                            class="absolute inset-0 block h-full w-full object-cover" />
+                            class="absolute inset-0 block h-full w-full object-cover \
+                                transition duration-500 ease-fluid group-hover:scale-105 \
+                                motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
                     }.into_any()
                 }}
                 <div class="pointer-events-none absolute inset-0 \
@@ -101,9 +106,9 @@ pub fn PhotoTile(
                         on:click=move |_| reorder.run((index, index + 1))>"→"</button>
                 </div>
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 p-2">
                 <input
-                    class="block w-full rounded-lg border border-white/10 \
+                    class="block w-full rounded-lg border-0 \
                         bg-white/5 px-2.5 py-1 text-xs/5 text-white \
                         placeholder:text-zinc-600 focus:outline-2 \
                         focus:-outline-offset-2 focus:outline-blue-500"
@@ -129,6 +134,7 @@ pub fn PhotoTile(
                             }
                         });
                     }>"Guardar"</button>
+            </div>
             </div>
         </div>
     }
