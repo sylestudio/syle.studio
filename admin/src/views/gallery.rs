@@ -1,21 +1,11 @@
+use super::gallery_tile::PhotoTile;
 use crate::api::{self, ApiError};
 use crate::ui::{use_toaster, Badge, Button, Card, Field, Modal, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
-use syle_types::{is_valid_slug, GalleryDetail, Photo, Reorder, UpdateGallery, UpdatePhoto};
+use syle_types::{is_valid_slug, GalleryDetail, Reorder, UpdateGallery};
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
-
-/// Smallest JPEG variant (or any variant) for a grid thumbnail.
-fn thumb_src(p: &Photo) -> String {
-    p.variants
-        .iter()
-        .filter(|v| v.path.ends_with(".jpeg"))
-        .min_by_key(|v| v.width)
-        .or_else(|| p.variants.first())
-        .map(|v| v.path.clone())
-        .unwrap_or_default()
-}
 
 #[component]
 pub fn GalleryView() -> impl IntoView {
@@ -231,111 +221,31 @@ pub fn GalleryView() -> impl IntoView {
             <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {
                     let load = load.clone();
-                    move || photos().into_iter().enumerate().map(|(i, p)| {
-                    let pid = p.id.to_string();
-                    let alt = RwSignal::new(p.alt.clone());
-                    let alt0 = p.alt.clone();
-                    let alt_dirty = Signal::derive(move || {
-                        let v = alt.get();
-                        let v = v.trim();
-                        !v.is_empty() && v != alt0
-                    });
-                    let pid_alt = pid.clone();
-                    let pid_del = pid.clone();
-                    let load_a = load.clone();
-                    let reorder_u = reorder.clone();
-                    let reorder_d = reorder.clone();
-                    let total = photos().len();
-                    let src = thumb_src(&p);
-                    view! {
-                        <div class="group space-y-2">
-                            <div class="relative aspect-square overflow-hidden rounded-xl \
-                                bg-zinc-800 ring-1 ring-white/10">
-                                {if src.is_empty() {
-                                    view! {
-                                        <div class="flex h-full w-full items-center \
-                                            justify-center text-xs/5 text-zinc-600">
-                                            "sin derivados"
-                                        </div>
-                                    }.into_any()
-                                } else {
-                                    view! {
-                                        <img src=src alt=p.alt.clone()
-                                            class="absolute inset-0 block h-full w-full object-cover" />
-                                    }.into_any()
-                                }}
-                                <div class="pointer-events-none absolute inset-0 \
-                                    bg-linear-to-t from-black/70 via-black/0 to-black/0 \
-                                    opacity-0 transition group-hover:opacity-100"></div>
-                                // top-right delete
-                                <div class="absolute right-2 top-2 opacity-0 transition \
-                                    group-hover:opacity-100">
-                                    {
-                                        let pid_set = pid_del.clone();
-                                        view! {
-                                            <button
-                                                class="rounded-lg bg-black/60 px-2 py-1 \
-                                                    text-xs font-semibold text-white \
-                                                    backdrop-blur hover:bg-red-600"
-                                                on:click=move |_| {
-                                                    confirm_photo.set(Some(pid_set.clone()));
-                                                    confirm_photo_open.set(true);
-                                                }>
-                                                "Borrar"
-                                            </button>
-                                        }
-                                    }
-                                </div>
-                                // bottom reorder controls
-                                <div class="absolute inset-x-2 bottom-2 flex gap-1 \
-                                    opacity-0 transition group-hover:opacity-100">
-                                    <button
-                                        class="rounded-lg bg-black/60 px-2 py-1 text-xs \
-                                            text-white backdrop-blur hover:bg-white/20 \
-                                            disabled:opacity-30"
-                                        disabled={i == 0}
-                                        on:click=move |_| reorder_u(i, i.wrapping_sub(1))>"←"</button>
-                                    <button
-                                        class="rounded-lg bg-black/60 px-2 py-1 text-xs \
-                                            text-white backdrop-blur hover:bg-white/20 \
-                                            disabled:opacity-30"
-                                        disabled={i + 1 >= total}
-                                        on:click=move |_| reorder_d(i, i + 1)>"→"</button>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <input
-                                    class="block w-full rounded-lg border border-white/10 \
-                                        bg-white/5 px-2.5 py-1 text-xs/5 text-white \
-                                        placeholder:text-zinc-600 focus:outline-2 \
-                                        focus:-outline-offset-2 focus:outline-blue-500"
-                                    prop:value=alt
-                                    placeholder="Texto alternativo"
-                                    on:input=move |e| alt.set(event_target_value(&e)) />
-                                <button
-                                    class="shrink-0 rounded-lg px-2 py-1 text-xs/5 \
-                                        font-medium text-zinc-400 hover:bg-white/10 \
-                                        hover:text-white transition-colors \
-                                        disabled:opacity-30 disabled:pointer-events-none"
-                                    disabled=Signal::derive(move || !alt_dirty.get())
-                                    on:click=move |_| {
-                                        let id = pid_alt.clone();
-                                        let body = UpdatePhoto {
-                                            alt: Some(alt.get().trim().to_string()),
-                                            position: None,
-                                        };
-                                        let load = load_a.clone();
-                                        spawn_local(async move {
-                                            match api::update_photo(&id, &body).await {
-                                                Ok(_) => { toast.ok("Alt guardado"); load(); }
-                                                Err(_) => toast.err("Error al guardar alt"),
-                                            }
-                                        });
-                                    }>"Guardar"</button>
-                            </div>
-                        </div>
+                    let reorder = reorder.clone();
+                    move || {
+                        let total = photos().len();
+                        photos().into_iter().enumerate().map({
+                            let load = load.clone();
+                            let reorder = reorder.clone();
+                            move |(i, p)| {
+                                let reload = Callback::new({
+                                    let load = load.clone();
+                                    move |_| load()
+                                });
+                                let reorder_cb = Callback::new({
+                                    let reorder = reorder.clone();
+                                    move |(f, t)| reorder(f, t)
+                                });
+                                view! {
+                                    <PhotoTile
+                                        photo=p index=i total=total
+                                        confirm_photo=confirm_photo
+                                        confirm_photo_open=confirm_photo_open
+                                        reorder=reorder_cb reload=reload />
+                                }
+                            }
+                        }).collect_view()
                     }
-                    }).collect_view()
                 }
             </div>
 

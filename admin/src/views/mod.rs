@@ -1,6 +1,7 @@
 pub mod command_palette;
 pub mod dashboard;
 pub mod gallery;
+pub mod gallery_tile;
 pub mod login;
 pub mod post;
 pub mod shell;
