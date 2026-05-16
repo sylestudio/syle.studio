@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{Button, Card, Field, Heading, INPUT};
+use crate::ui::{use_toaster, Button, Card, Field, Heading, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
 use syle_types::{PostStatus, UpdatePost};
@@ -22,7 +22,9 @@ pub fn PostEditor() -> impl IntoView {
     let slug = RwSignal::new(String::new());
     let body = RwSignal::new(String::new());
     let published = RwSignal::new(false);
-    let msg = RwSignal::new(String::new());
+    let loaded = RwSignal::new(false);
+    let saving = RwSignal::new(false);
+    let toast = use_toaster();
 
     let load = {
         let navigate = navigate.clone();
@@ -39,11 +41,12 @@ pub fn PostEditor() -> impl IntoView {
                         slug.set(p.slug);
                         body.set(p.body_md);
                         published.set(p.status == PostStatus::Published);
+                        loaded.set(true);
                     }
                     Err(ApiError::Unauthorized) => {
                         navigate("/login", Default::default())
                     }
-                    Err(_) => {}
+                    Err(_) => loaded.set(true),
                 }
             });
         }
@@ -66,15 +69,20 @@ pub fn PostEditor() -> impl IntoView {
                     PostStatus::Draft
                 }),
             };
+            if saving.get() {
+                return;
+            }
+            saving.set(true);
             let load = load.clone();
             spawn_local(async move {
                 match api::update_post(&id, &req).await {
                     Ok(_) => {
-                        msg.set("Guardado".into());
+                        toast.ok("Entrada guardada");
                         load();
                     }
-                    Err(_) => msg.set("Error al guardar".into()),
+                    Err(_) => toast.err("Error al guardar"),
                 }
+                saving.set(false);
             });
         }
     };
@@ -88,6 +96,8 @@ pub fn PostEditor() -> impl IntoView {
             spawn_local(async move {
                 if api::delete_post(&id).await.is_ok() {
                     navigate("/", Default::default());
+                } else {
+                    toast.err("No se pudo borrar");
                 }
             });
         }
@@ -98,6 +108,9 @@ pub fn PostEditor() -> impl IntoView {
     view! {
         <div class="mx-auto max-w-5xl space-y-6 p-6">
             <a href="/" class="text-sm/6 text-zinc-500">"← Portafolio"</a>
+            {move || (!loaded.get()).then(|| view! {
+                <p class="text-sm/6 text-zinc-500">"Cargando…"</p>
+            })}
             <Card>
                 <div class="space-y-4">
                     <Heading text="Editar entrada" />
@@ -131,7 +144,10 @@ pub fn PostEditor() -> impl IntoView {
                         "Publicado"
                     </label>
                     <div class="flex items-center gap-3">
-                        <Button on:click=save.clone()>"Guardar"</Button>
+                        <Button disabled=Signal::derive(move || saving.get())
+                            on:click=save.clone()>
+                            {move || if saving.get() { "Guardando…" } else { "Guardar" }}
+                        </Button>
                         <span class="grow"></span>
                         {move || if confirm_del.get() {
                             view! {
@@ -148,7 +164,6 @@ pub fn PostEditor() -> impl IntoView {
                             }.into_any()
                         }}
                     </div>
-                    <p class="text-sm/6 text-zinc-500">{move || msg.get()}</p>
                 </div>
             </Card>
         </div>

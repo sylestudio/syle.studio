@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{Button, Card, Field, Heading, INPUT};
+use crate::ui::{use_toaster, Button, Card, Field, Heading, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
 use syle_types::{BlogPost, Gallery, NewGallery, NewPost, PostStatus};
@@ -43,6 +43,8 @@ pub fn Dashboard() -> impl IntoView {
         }
     });
 
+    let toast = use_toaster();
+
     let g_slug = RwSignal::new(String::new());
     let g_title = RwSignal::new(String::new());
     let create_gallery = move |ev: leptos::ev::SubmitEvent| {
@@ -54,10 +56,14 @@ pub fn Dashboard() -> impl IntoView {
             published: false,
         };
         spawn_local(async move {
-            if api::create_gallery(&n).await.is_ok() {
-                g_slug.set(String::new());
-                g_title.set(String::new());
-                reload(galleries, posts, auth_failed);
+            match api::create_gallery(&n).await {
+                Ok(_) => {
+                    g_slug.set(String::new());
+                    g_title.set(String::new());
+                    toast.ok("Galería creada");
+                    reload(galleries, posts, auth_failed);
+                }
+                Err(_) => toast.err("No se pudo crear la galería"),
             }
         });
     };
@@ -74,11 +80,15 @@ pub fn Dashboard() -> impl IntoView {
             status: PostStatus::Draft,
         };
         spawn_local(async move {
-            if api::create_post(&n).await.is_ok() {
-                p_slug.set(String::new());
-                p_title.set(String::new());
-                p_body.set(String::new());
-                reload(galleries, posts, auth_failed);
+            match api::create_post(&n).await {
+                Ok(_) => {
+                    p_slug.set(String::new());
+                    p_title.set(String::new());
+                    p_body.set(String::new());
+                    toast.ok("Borrador creado");
+                    reload(galleries, posts, auth_failed);
+                }
+                Err(_) => toast.err("No se pudo crear el borrador"),
             }
         });
     };
