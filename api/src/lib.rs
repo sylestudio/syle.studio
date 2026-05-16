@@ -10,7 +10,7 @@ mod state;
 
 pub use state::AppState;
 
-use axum::routing::{delete, get, patch, post};
+use axum::routing::{get, patch, post};
 use axum::Router;
 use tower_http::services::ServeDir;
 
