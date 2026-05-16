@@ -20,6 +20,19 @@ pub struct GalleryDetail {
     pub photos: Vec<Photo>,
 }
 
+/// Partial update for a gallery (any omitted field is left unchanged).
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct UpdateGallery {
+    #[serde(default)]
+    pub title: Option<String>,
+    #[serde(default)]
+    pub slug: Option<String>,
+    #[serde(default)]
+    pub published: Option<bool>,
+    #[serde(default)]
+    pub position: Option<i32>,
+}
+
 /// Payload to create a gallery from the CRM.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NewGallery {
