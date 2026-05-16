@@ -101,6 +101,7 @@ pub fn Dashboard() -> impl IntoView {
     let posts: Posts = RwSignal::new(Vec::new());
     let covers: Covers = RwSignal::new(HashMap::new());
     let auth_failed = RwSignal::new(false);
+    let goto = RwSignal::new(None::<String>);
     let navigate = use_navigate();
 
     Effect::new(move |_| reload(galleries, posts, covers, auth_failed));
@@ -112,6 +113,14 @@ pub fn Dashboard() -> impl IntoView {
             }
         }
     });
+    Effect::new({
+        let navigate = navigate.clone();
+        move |_| {
+            if let Some(path) = goto.get() {
+                navigate(&path, Default::default());
+            }
+        }
+    });
 
     let toast = use_toaster();
     let g_open = RwSignal::new(false);
@@ -119,22 +128,29 @@ pub fn Dashboard() -> impl IntoView {
 
     let g_slug = RwSignal::new(String::new());
     let g_title = RwSignal::new(String::new());
+    let g_valid = Signal::derive(move || {
+        !g_slug.get().trim().is_empty() && !g_title.get().trim().is_empty()
+    });
     let create_gallery = move |ev: leptos::ev::SubmitEvent| {
         ev.prevent_default();
+        if !g_valid.get() {
+            toast.err("Slug y título son obligatorios");
+            return;
+        }
         let n = NewGallery {
-            slug: g_slug.get(),
-            title: g_title.get(),
+            slug: g_slug.get().trim().into(),
+            title: g_title.get().trim().into(),
             position: 0,
             published: false,
         };
         spawn_local(async move {
             match api::create_gallery(&n).await {
-                Ok(_) => {
+                Ok(g) => {
                     g_slug.set(String::new());
                     g_title.set(String::new());
                     g_open.set(false);
                     toast.ok("Galería creada");
-                    reload(galleries, posts, covers, auth_failed);
+                    goto.set(Some(format!("/galleries/{}", g.id)));
                 }
                 Err(_) => toast.err("No se pudo crear la galería"),
             }
@@ -143,24 +159,29 @@ pub fn Dashboard() -> impl IntoView {
 
     let p_slug = RwSignal::new(String::new());
     let p_title = RwSignal::new(String::new());
-    let p_body = RwSignal::new(String::new());
+    let p_valid = Signal::derive(move || {
+        !p_slug.get().trim().is_empty() && !p_title.get().trim().is_empty()
+    });
     let create_post = move |ev: leptos::ev::SubmitEvent| {
         ev.prevent_default();
+        if !p_valid.get() {
+            toast.err("Slug y título son obligatorios");
+            return;
+        }
         let n = NewPost {
-            slug: p_slug.get(),
-            title: p_title.get(),
-            body_md: p_body.get(),
+            slug: p_slug.get().trim().into(),
+            title: p_title.get().trim().into(),
+            body_md: String::new(),
             status: PostStatus::Draft,
         };
         spawn_local(async move {
             match api::create_post(&n).await {
-                Ok(_) => {
+                Ok(p) => {
                     p_slug.set(String::new());
                     p_title.set(String::new());
-                    p_body.set(String::new());
                     p_open.set(false);
                     toast.ok("Borrador creado");
-                    reload(galleries, posts, covers, auth_failed);
+                    goto.set(Some(format!("/posts/{}", p.id)));
                 }
                 Err(_) => toast.err("No se pudo crear el borrador"),
             }
@@ -243,33 +264,39 @@ pub fn Dashboard() -> impl IntoView {
 
             <SlideOver open=g_open title="Nueva galería">
                 <form on:submit=create_gallery class="space-y-4">
-                    <Field label="Slug">
-                        <input class=INPUT prop:value=g_slug
-                            on:input=move |e| g_slug.set(event_target_value(&e)) />
-                    </Field>
                     <Field label="Título">
                         <input class=INPUT prop:value=g_title
                             on:input=move |e| g_title.set(event_target_value(&e)) />
                     </Field>
-                    <Button>"Crear galería"</Button>
+                    <Field label="Slug">
+                        <input class=INPUT prop:value=g_slug
+                            on:input=move |e| g_slug.set(event_target_value(&e)) />
+                    </Field>
+                    <p class="text-xs/5 text-zinc-500">
+                        "Se abrirá la galería para subir fotos."
+                    </p>
+                    <Button disabled=Signal::derive(move || !g_valid.get())>
+                        "Crear galería"
+                    </Button>
                 </form>
             </SlideOver>
 
             <SlideOver open=p_open title="Nueva entrada">
                 <form on:submit=create_post class="space-y-4">
-                    <Field label="Slug">
-                        <input class=INPUT prop:value=p_slug
-                            on:input=move |e| p_slug.set(event_target_value(&e)) />
-                    </Field>
                     <Field label="Título">
                         <input class=INPUT prop:value=p_title
                             on:input=move |e| p_title.set(event_target_value(&e)) />
                     </Field>
-                    <Field label="Contenido (Markdown)">
-                        <textarea class=INPUT rows="6" prop:value=p_body
-                            on:input=move |e| p_body.set(event_target_value(&e)) />
+                    <Field label="Slug">
+                        <input class=INPUT prop:value=p_slug
+                            on:input=move |e| p_slug.set(event_target_value(&e)) />
                     </Field>
-                    <Button>"Crear borrador"</Button>
+                    <p class="text-xs/5 text-zinc-500">
+                        "Se abrirá el editor con vista previa para escribir el contenido."
+                    </p>
+                    <Button disabled=Signal::derive(move || !p_valid.get())>
+                        "Crear borrador"
+                    </Button>
                 </form>
             </SlideOver>
         </div>

@@ -1,5 +1,5 @@
 use crate::api::{self, ApiError};
-use crate::ui::{use_toaster, Badge, Button, Card, Field, INPUT};
+use crate::ui::{use_toaster, Badge, Button, Card, Field, Modal, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
 use syle_types::{GalleryDetail, Photo, Reorder, UpdateGallery, UpdatePhoto};
@@ -29,6 +29,7 @@ pub fn GalleryView() -> impl IntoView {
     let loaded = RwSignal::new(false);
     let saving = RwSignal::new(false);
     let confirm_photo = RwSignal::new(None::<String>);
+    let confirm_photo_open = RwSignal::new(false);
     let uploading = RwSignal::new(String::new());
     let toast = use_toaster();
 
@@ -211,20 +212,9 @@ pub fn GalleryView() -> impl IntoView {
                     }>
                         {move || if published() { "Despublicar" } else { "Publicar" }}
                     </Button>
-                    {move || if confirm_del.get() {
-                        view! {
-                            <Button kind="danger" on:click=delete_gallery.clone()>
-                                "Confirmar"
-                            </Button>
-                        }.into_any()
-                    } else {
-                        view! {
-                            <Button kind="plain"
-                                on:click=move |_| confirm_del.set(true)>
-                                "Borrar"
-                            </Button>
-                        }.into_any()
-                    }}
+                    <Button kind="plain" on:click=move |_| confirm_del.set(true)>
+                        "Borrar"
+                    </Button>
                 </div>
             </div>
 
@@ -233,13 +223,14 @@ pub fn GalleryView() -> impl IntoView {
             })}
 
             <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {move || photos().into_iter().enumerate().map(|(i, p)| {
+                {
+                    let load = load.clone();
+                    move || photos().into_iter().enumerate().map(|(i, p)| {
                     let pid = p.id.to_string();
                     let alt = RwSignal::new(p.alt.clone());
                     let pid_alt = pid.clone();
                     let pid_del = pid.clone();
                     let load_a = load.clone();
-                    let load_d = load.clone();
                     let reorder_u = reorder.clone();
                     let reorder_d = reorder.clone();
                     let total = photos().len();
@@ -268,37 +259,18 @@ pub fn GalleryView() -> impl IntoView {
                                 <div class="absolute right-2 top-2 opacity-0 transition \
                                     group-hover:opacity-100">
                                     {
-                                        let pid_c = pid_del.clone();
-                                        move || if confirm_photo.get().as_deref() == Some(pid_c.as_str()) {
-                                            let id = pid_del.clone();
-                                            let load = load_d.clone();
-                                            view! {
-                                                <button
-                                                    class="rounded-lg bg-red-600 px-2 py-1 \
-                                                        text-xs font-semibold text-white \
-                                                        shadow hover:bg-red-500"
-                                                    on:click=move |_| {
-                                                        let id = id.clone();
-                                                        let load = load.clone();
-                                                        spawn_local(async move {
-                                                            match api::delete_photo(&id).await {
-                                                                Ok(_) => { toast.ok("Foto borrada"); load(); }
-                                                                Err(_) => toast.err("No se pudo borrar"),
-                                                            }
-                                                        });
-                                                    }>"Confirmar"</button>
-                                            }.into_any()
-                                        } else {
-                                            let pid_set = pid_c.clone();
-                                            view! {
-                                                <button
-                                                    class="rounded-lg bg-black/60 px-2 py-1 \
-                                                        text-xs font-semibold text-white \
-                                                        backdrop-blur hover:bg-red-600"
-                                                    on:click=move |_| confirm_photo.set(Some(pid_set.clone()))>
-                                                    "Borrar"
-                                                </button>
-                                            }.into_any()
+                                        let pid_set = pid_del.clone();
+                                        view! {
+                                            <button
+                                                class="rounded-lg bg-black/60 px-2 py-1 \
+                                                    text-xs font-semibold text-white \
+                                                    backdrop-blur hover:bg-red-600"
+                                                on:click=move |_| {
+                                                    confirm_photo.set(Some(pid_set.clone()));
+                                                    confirm_photo_open.set(true);
+                                                }>
+                                                "Borrar"
+                                            </button>
                                         }
                                     }
                                 </div>
@@ -346,7 +318,8 @@ pub fn GalleryView() -> impl IntoView {
                             </div>
                         </div>
                     }
-                }).collect_view()}
+                    }).collect_view()
+                }
             </div>
 
             <Card>
@@ -381,6 +354,47 @@ pub fn GalleryView() -> impl IntoView {
                     </div>
                 </div>
             </Card>
+
+            <Modal open=confirm_del title="Eliminar galería">
+                <p class="text-sm/6 text-zinc-400">
+                    "Se eliminará la galería y todas sus fotos. Esta acción no se puede deshacer."
+                </p>
+                <div class="mt-5 flex justify-end gap-2">
+                    <Button kind="plain" on:click=move |_| confirm_del.set(false)>
+                        "Cancelar"
+                    </Button>
+                    <Button kind="danger" on:click=delete_gallery.clone()>
+                        "Eliminar"
+                    </Button>
+                </div>
+            </Modal>
+
+            <Modal open=confirm_photo_open title="Eliminar foto">
+                <p class="text-sm/6 text-zinc-400">
+                    "Esta acción no se puede deshacer."
+                </p>
+                <div class="mt-5 flex justify-end gap-2">
+                    <Button kind="plain" on:click=move |_| confirm_photo_open.set(false)>
+                        "Cancelar"
+                    </Button>
+                    <Button kind="danger" on:click={
+                        let load = load.clone();
+                        move |_| {
+                            let Some(id) = confirm_photo.get() else { return };
+                            let load = load.clone();
+                            confirm_photo_open.set(false);
+                            spawn_local(async move {
+                                match api::delete_photo(&id).await {
+                                    Ok(_) => { toast.ok("Foto borrada"); load(); }
+                                    Err(_) => toast.err("No se pudo borrar"),
+                                }
+                            });
+                        }
+                    }>
+                        "Eliminar"
+                    </Button>
+                </div>
+            </Modal>
         </div>
     }
 }
