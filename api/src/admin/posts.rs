@@ -87,6 +87,21 @@ pub async fn create_post(
     }))
 }
 
+pub async fn get_post(
+    _user: AuthUser,
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<BlogPost>, ApiError> {
+    let row: Option<PostRow> = sqlx::query_as(
+        "SELECT id, slug, title, body_md, status, published_at \
+         FROM blog_posts WHERE id = $1",
+    )
+    .bind(id)
+    .fetch_optional(&state.pool)
+    .await?;
+    Ok(Json(into_post(row.ok_or(ApiError::NotFound)?)))
+}
+
 pub async fn update_post(
     _user: AuthUser,
     State(state): State<AppState>,

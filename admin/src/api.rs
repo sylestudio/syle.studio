@@ -6,7 +6,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use syle_types::{
     endpoints as ep, BlogPost, Gallery, GalleryDetail, LoginRequest, NewGallery, NewPost,
-    Photo, Reorder, UpdateGallery, UpdatePhoto, User,
+    Photo, Reorder, UpdateGallery, UpdatePhoto, UpdatePost, User,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -161,6 +161,21 @@ pub async fn update_photo(
 
 pub async fn delete_photo(id: &str) -> Result<(), ApiError> {
     send_empty(Request::delete(&ep::admin_photo(id))).await
+}
+
+pub async fn get_post(id: &str) -> Result<BlogPost, ApiError> {
+    get_json(&ep::admin_post(id)).await
+}
+
+pub async fn update_post(
+    id: &str,
+    body: &UpdatePost,
+) -> Result<BlogPost, ApiError> {
+    patch_json(&ep::admin_post(id), body).await
+}
+
+pub async fn delete_post(id: &str) -> Result<(), ApiError> {
+    send_empty(Request::delete(&ep::admin_post(id))).await
 }
 
 pub async fn upload_photo(form: FormData) -> Result<Photo, ApiError> {

@@ -50,7 +50,9 @@ pub fn app(state: AppState) -> Router {
         )
         .route(
             "/api/admin/posts/{id}",
-            patch(admin::update_post).delete(admin::delete_post),
+            get(admin::get_post)
+                .patch(admin::update_post)
+                .delete(admin::delete_post),
         )
         .route("/api/admin/photos", post(admin::upload_photo))
         .route("/api/admin/login", post(auth::login))
