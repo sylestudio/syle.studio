@@ -6,7 +6,8 @@ use crate::state::AppState;
 use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 use argon2::Argon2;
-use axum::extract::State;
+use axum::extract::{FromRequestParts, State};
+use axum::http::request::Parts;
 use axum::Json;
 use axum_extra::extract::cookie::{Cookie, CookieJar, SameSite};
 use rand::RngCore;
@@ -66,6 +67,22 @@ async fn current_user(jar: &CookieJar, state: &AppState) -> Result<User, ApiErro
     .await?;
     row.map(|(id, email)| User { id, email })
         .ok_or(ApiError::Unauthorized)
+}
+
+/// Extractor that rejects with 401 unless a valid session cookie is present.
+/// Use it on every `/api/admin/*` write handler.
+pub struct AuthUser(pub User);
+
+impl FromRequestParts<AppState> for AuthUser {
+    type Rejection = ApiError;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        let jar = CookieJar::from_headers(&parts.headers);
+        Ok(AuthUser(current_user(&jar, state).await?))
+    }
 }
 
 pub async fn login(

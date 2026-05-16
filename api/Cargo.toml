@@ -36,3 +36,4 @@ tokio.workspace = true
 dotenvy = "0.15"
 tower = { version = "0.5", features = ["util"] }
 http-body-util = "0.1"
+serial_test = "3"
