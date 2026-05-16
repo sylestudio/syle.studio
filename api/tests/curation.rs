@@ -227,3 +227,55 @@ async fn patch_post_publish_and_delete() {
         .unwrap();
     assert_eq!(c, 0);
 }
+
+#[tokio::test]
+#[serial_test::serial]
+async fn admin_get_post_returns_draft_and_404s() {
+    let Some((app, pool, _m)) = setup().await else { return };
+    let cookie = login_cookie(&app, &pool).await;
+    let pid = Uuid::new_v4();
+    sqlx::query(
+        "INSERT INTO blog_posts (id, slug, title, body_md, status, published_at) \
+         VALUES ($1,'d','Draft','# x','draft',NULL)",
+    )
+    .bind(pid)
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    let unauth = app
+        .clone()
+        .oneshot(
+            Request::get(format!("/api/admin/posts/{pid}"))
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(unauth.status(), StatusCode::UNAUTHORIZED);
+
+    let ok = app
+        .clone()
+        .oneshot(
+            Request::get(format!("/api/admin/posts/{pid}"))
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(ok.status(), StatusCode::OK);
+    let p: BlogPost = body_json(ok).await;
+    assert_eq!(p.status, PostStatus::Draft);
+
+    let missing = app
+        .oneshot(
+            Request::get(format!("/api/admin/posts/{}", Uuid::new_v4()))
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(missing.status(), StatusCode::NOT_FOUND);
+}
