@@ -26,6 +26,59 @@ fn ext(f: ImageFormat) -> &'static str {
     }
 }
 
+/// All galleries including unpublished (CRM list).
+pub async fn list_galleries(
+    _user: AuthUser,
+    State(state): State<AppState>,
+) -> Result<Json<Vec<Gallery>>, ApiError> {
+    let rows: Vec<(Uuid, String, String, i32, bool)> = sqlx::query_as(
+        "SELECT id, slug, title, position, published FROM galleries \
+         ORDER BY position, slug",
+    )
+    .fetch_all(&state.pool)
+    .await?;
+    Ok(Json(
+        rows.into_iter()
+            .map(|(id, slug, title, position, published)| Gallery {
+                id,
+                slug,
+                title,
+                position,
+                published,
+            })
+            .collect(),
+    ))
+}
+
+/// All posts including drafts (CRM list).
+pub async fn list_posts(
+    _user: AuthUser,
+    State(state): State<AppState>,
+) -> Result<Json<Vec<BlogPost>>, ApiError> {
+    let rows: Vec<(Uuid, String, String, String, String, Option<i64>)> = sqlx::query_as(
+        "SELECT id, slug, title, body_md, status, published_at FROM blog_posts \
+         ORDER BY COALESCE(published_at, 0) DESC, slug",
+    )
+    .fetch_all(&state.pool)
+    .await?;
+    Ok(Json(
+        rows.into_iter()
+            .map(|(id, slug, title, body_md, status, published_at)| BlogPost {
+                id,
+                slug,
+                title,
+                body_md,
+                status: if status == "published" {
+                    PostStatus::Published
+                } else {
+                    PostStatus::Draft
+                },
+                published_at,
+            })
+            .collect(),
+    ))
+}
+
 pub async fn create_gallery(
     _user: AuthUser,
     State(state): State<AppState>,

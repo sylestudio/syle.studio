@@ -19,9 +19,15 @@ pub fn app(state: AppState) -> Router {
         .route("/api/public/galleries/{slug}", get(public::get_gallery))
         .route("/api/public/posts", get(public::list_posts))
         .route("/api/public/posts/{slug}", get(public::get_post))
-        .route("/api/admin/galleries", post(admin::create_gallery))
+        .route(
+            "/api/admin/galleries",
+            get(admin::list_galleries).post(admin::create_gallery),
+        )
+        .route(
+            "/api/admin/posts",
+            get(admin::list_posts).post(admin::create_post),
+        )
         .route("/api/admin/photos", post(admin::upload_photo))
-        .route("/api/admin/posts", post(admin::create_post))
         .route("/api/admin/login", post(auth::login))
         .route("/api/admin/logout", post(auth::logout))
         .route("/api/admin/me", get(auth::me))

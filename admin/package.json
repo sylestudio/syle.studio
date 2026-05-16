@@ -1,0 +1,12 @@
+{
+  "name": "syle-admin-styles",
+  "private": true,
+  "description": "Tailwind v4 build for the Leptos CRM (design system derived from Catalyst).",
+  "scripts": {
+    "build:css": "tailwindcss -i styles/main.css -o styles/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.4",
+    "tailwindcss": "^4.1.4"
+  }
+}

@@ -1,7 +1,17 @@
+# Paths here are relative to this file's directory (admin/).
 [build]
-target = "admin/index.html"
-dist = "admin/dist"
+target = "index.html"
+dist = "dist"
 
 [serve]
-address = "127.0.0.1"
+addresses = ["127.0.0.1"]
 port = 8081
+
+# Compile Tailwind v4 before trunk processes the linked stylesheet.
+[[hooks]]
+stage = "pre_build"
+command = "sh"
+command_arguments = [
+  "-c",
+  "pnpm exec tailwindcss -i styles/main.css -o styles/tailwind.css --minify",
+]

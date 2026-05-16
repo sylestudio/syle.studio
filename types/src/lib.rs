@@ -5,6 +5,7 @@
 
 mod auth;
 mod blog;
+pub mod endpoints;
 mod gallery;
 mod photo;
 
