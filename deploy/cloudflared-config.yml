@@ -1,0 +1,10 @@
+# Cloudflare Tunnel for the CRM. The admin surface is NEVER exposed via a
+# public DNS A record — only through this tunnel. Replace <TUNNEL_ID> after
+# `cloudflared tunnel create syle-admin`.
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  - hostname: admin.syle.studio
+    service: http://127.0.0.1:8081
+  - service: http_status:404
