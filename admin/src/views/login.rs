@@ -36,12 +36,18 @@ pub fn Login() -> impl IntoView {
     };
 
     view! {
-        <div class="flex min-h-full items-center justify-center p-6 bg-zinc-50">
+        <div class="flex min-h-svh items-center justify-center bg-zinc-950 p-6">
             <div class="w-full max-w-sm">
+                <div class="mb-8 text-center">
+                    <span class="text-2xl font-semibold tracking-tight text-white">
+                        "syle"<span class="text-zinc-500">".studio"</span>
+                    </span>
+                    <p class="mt-1 text-sm/6 text-zinc-500">"estudio · CRM"</p>
+                </div>
                 <Card>
                     <form on:submit=submit class="space-y-6">
-                        <h1 class="text-xl/8 font-semibold text-zinc-950">
-                            "syle.studio · CRM"
+                        <h1 class="text-base/7 font-semibold text-white">
+                            "Inicia sesión"
                         </h1>
                         <Field label="Correo">
                             <input

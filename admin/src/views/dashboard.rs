@@ -1,21 +1,50 @@
 use crate::api::{self, ApiError};
-use crate::ui::{use_toaster, Button, Card, Field, Heading, INPUT};
+use crate::ui::{use_toaster, Badge, Button, Field, Heading, SlideOver, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
-use syle_types::{BlogPost, Gallery, NewGallery, NewPost, PostStatus};
-use wasm_bindgen::JsCast;
+use std::collections::HashMap;
+use syle_types::{BlogPost, Gallery, NewGallery, NewPost, Photo, PostStatus};
+
 use wasm_bindgen_futures::spawn_local;
 
 type Galleries = RwSignal<Vec<Gallery>>;
 type Posts = RwSignal<Vec<BlogPost>>;
+/// gallery id → its cover image path (absent = still loading, None = no photo).
+type Covers = RwSignal<HashMap<String, Option<String>>>;
 
-fn reload(galleries: Galleries, posts: Posts, auth_failed: RwSignal<bool>) {
+/// Smallest JPEG variant (any variant as fallback) for a cover thumbnail.
+fn cover_src(p: &Photo) -> String {
+    p.variants
+        .iter()
+        .filter(|v| v.path.ends_with(".jpeg"))
+        .min_by_key(|v| v.width)
+        .or_else(|| p.variants.first())
+        .map(|v| v.path.clone())
+        .unwrap_or_default()
+}
+
+fn reload(galleries: Galleries, posts: Posts, covers: Covers, auth_failed: RwSignal<bool>) {
     spawn_local(async move {
         if api::me().await == Err(ApiError::Unauthorized) {
             auth_failed.set(true);
             return;
         }
         if let Ok(v) = api::list_galleries().await {
+            for g in &v {
+                let id = g.id;
+                spawn_local(async move {
+                    if let Ok(d) = api::gallery_detail(&id.to_string()).await {
+                        let cover = d
+                            .photos
+                            .first()
+                            .map(cover_src)
+                            .filter(|s| !s.is_empty());
+                        covers.update(|m| {
+                            m.insert(id.to_string(), cover);
+                        });
+                    }
+                });
+            }
             galleries.set(v);
         }
         if let Ok(v) = api::list_posts().await {
@@ -25,15 +54,56 @@ fn reload(galleries: Galleries, posts: Posts, auth_failed: RwSignal<bool>) {
 }
 
 #[component]
+fn GalleryCard(g: Gallery, covers: Covers) -> impl IntoView {
+    let id = g.id.to_string();
+    let href = format!("/galleries/{id}");
+    let published = g.published;
+    view! {
+        <a href=href class="group block">
+            <div class="relative aspect-4/3 overflow-hidden rounded-xl bg-zinc-800 ring-1 ring-white/10">
+                {move || match covers.get().get(&id) {
+                    Some(Some(src)) => view! {
+                        <img src=src.clone() alt=""
+                            class="absolute inset-0 block h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+                    }.into_any(),
+                    Some(None) => view! {
+                        <div class="flex h-full w-full flex-col items-center justify-center gap-2 text-zinc-600">
+                            <svg viewBox="0 0 24 24" fill="none" class="size-8"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                            </svg>
+                            <span class="text-xs/5">"Sin fotos"</span>
+                        </div>
+                    }.into_any(),
+                    None => view! {
+                        <div class="h-full w-full animate-pulse bg-white/5"></div>
+                    }.into_any(),
+                }}
+            </div>
+            <div class="mt-3 flex items-center justify-between gap-3">
+                <span class="truncate text-sm/6 font-medium text-white group-hover:text-zinc-300 transition-colors">
+                    {g.title}
+                </span>
+                {if published {
+                    view! { <Badge tone="green">"publicada"</Badge> }.into_any()
+                } else {
+                    view! { <Badge>"borrador"</Badge> }.into_any()
+                }}
+            </div>
+        </a>
+    }
+}
+
+#[component]
 pub fn Dashboard() -> impl IntoView {
     let galleries: Galleries = RwSignal::new(Vec::new());
     let posts: Posts = RwSignal::new(Vec::new());
+    let covers: Covers = RwSignal::new(HashMap::new());
     let auth_failed = RwSignal::new(false);
-    // Obtained in the component body so the Router context is in scope; the
-    // returned closure is cloned into effects/handlers.
     let navigate = use_navigate();
 
-    Effect::new(move |_| reload(galleries, posts, auth_failed));
+    Effect::new(move |_| reload(galleries, posts, covers, auth_failed));
     Effect::new({
         let navigate = navigate.clone();
         move |_| {
@@ -44,6 +114,8 @@ pub fn Dashboard() -> impl IntoView {
     });
 
     let toast = use_toaster();
+    let g_open = RwSignal::new(false);
+    let p_open = RwSignal::new(false);
 
     let g_slug = RwSignal::new(String::new());
     let g_title = RwSignal::new(String::new());
@@ -60,8 +132,9 @@ pub fn Dashboard() -> impl IntoView {
                 Ok(_) => {
                     g_slug.set(String::new());
                     g_title.set(String::new());
+                    g_open.set(false);
                     toast.ok("Galería creada");
-                    reload(galleries, posts, auth_failed);
+                    reload(galleries, posts, covers, auth_failed);
                 }
                 Err(_) => toast.err("No se pudo crear la galería"),
             }
@@ -85,135 +158,120 @@ pub fn Dashboard() -> impl IntoView {
                     p_slug.set(String::new());
                     p_title.set(String::new());
                     p_body.set(String::new());
+                    p_open.set(false);
                     toast.ok("Borrador creado");
-                    reload(galleries, posts, auth_failed);
+                    reload(galleries, posts, covers, auth_failed);
                 }
                 Err(_) => toast.err("No se pudo crear el borrador"),
             }
         });
     };
 
-    let logout = move |_| {
-        let navigate = navigate.clone();
-        spawn_local(async move {
-            api::logout().await;
-            navigate("/login", Default::default());
-        });
-    };
-
     view! {
-        <div class="mx-auto max-w-5xl space-y-8 p-6">
-            <div class="flex items-center justify-between">
-                <Heading text="Portafolio" />
-                <Button kind="plain" on:click=logout>"Salir"</Button>
+        <div class="space-y-12">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div class="space-y-1">
+                    <Heading text="Portafolio" />
+                    <p class="text-sm/6 text-zinc-400">"Galerías y blog del estudio"</p>
+                </div>
+                <div class="flex gap-3">
+                    <Button kind="outline" on:click=move |_| p_open.set(true)>
+                        "Nueva entrada"
+                    </Button>
+                    <Button on:click=move |_| g_open.set(true)>"Nueva galería"</Button>
+                </div>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-2">
-                <Card>
-                    <h2 class="mb-4 text-sm/6 font-semibold text-zinc-950">"Galerías"</h2>
-                    <ul class="mb-4 divide-y divide-zinc-950/5">
-                        {move || galleries.get().into_iter().map(|g| view! {
-                            <li class="flex justify-between py-2 text-sm/6">
-                                <a href=format!("/galleries/{}", g.id)
-                                    class="text-zinc-950 hover:underline">{g.title}</a>
-                                <span class="text-zinc-500">
-                                    {if g.published { "publicada" } else { "borrador" }}
-                                </span>
-                            </li>
-                        }).collect_view()}
-                    </ul>
-                    <form on:submit=create_gallery class="space-y-3">
-                        <Field label="Slug">
-                            <input class=INPUT prop:value=g_slug
-                                on:input=move |e| g_slug.set(event_target_value(&e)) />
-                        </Field>
-                        <Field label="Título">
-                            <input class=INPUT prop:value=g_title
-                                on:input=move |e| g_title.set(event_target_value(&e)) />
-                        </Field>
-                        <Button>"Crear galería"</Button>
-                    </form>
-                </Card>
+            <section class="space-y-4">
+                <h2 class="text-xs/6 font-medium tracking-wide text-zinc-500 uppercase">
+                    "Galerías"
+                </h2>
+                {move || {
+                    let gs = galleries.get();
+                    if gs.is_empty() {
+                        view! {
+                            <p class="text-sm/6 text-zinc-500">
+                                "Aún no hay galerías. Crea la primera."
+                            </p>
+                        }.into_any()
+                    } else {
+                        view! {
+                            <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+                                {gs.into_iter().map(|g| view! {
+                                    <GalleryCard g=g covers=covers />
+                                }).collect_view()}
+                            </div>
+                        }.into_any()
+                    }
+                }}
+            </section>
 
-                <Card>
-                    <h2 class="mb-4 text-sm/6 font-semibold text-zinc-950">"Blog"</h2>
-                    <ul class="mb-4 divide-y divide-zinc-950/5">
-                        {move || posts.get().into_iter().map(|p| view! {
-                            <li class="flex justify-between py-2 text-sm/6">
-                                <a href=format!("/posts/{}", p.id)
-                                    class="text-zinc-950 hover:underline">{p.title}</a>
-                                <span class="text-zinc-500">
-                                    {match p.status {
-                                        PostStatus::Published => "publicado",
-                                        PostStatus::Draft => "borrador",
-                                    }}
-                                </span>
-                            </li>
-                        }).collect_view()}
-                    </ul>
-                    <form on:submit=create_post class="space-y-3">
-                        <Field label="Slug">
-                            <input class=INPUT prop:value=p_slug
-                                on:input=move |e| p_slug.set(event_target_value(&e)) />
-                        </Field>
-                        <Field label="Título">
-                            <input class=INPUT prop:value=p_title
-                                on:input=move |e| p_title.set(event_target_value(&e)) />
-                        </Field>
-                        <Field label="Contenido (Markdown)">
-                            <textarea class=INPUT rows="4" prop:value=p_body
-                                on:input=move |e| p_body.set(event_target_value(&e)) />
-                        </Field>
-                        <Button>"Crear borrador"</Button>
-                    </form>
-                </Card>
-            </div>
+            <section class="space-y-4">
+                <h2 class="text-xs/6 font-medium tracking-wide text-zinc-500 uppercase">
+                    "Blog"
+                </h2>
+                {move || {
+                    let ps = posts.get();
+                    if ps.is_empty() {
+                        view! {
+                            <p class="text-sm/6 text-zinc-500">"Sin entradas todavía."</p>
+                        }.into_any()
+                    } else {
+                        view! {
+                            <ul class="divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-white/2.5">
+                                {ps.into_iter().map(|p| {
+                                    let pub_ = p.status == PostStatus::Published;
+                                    view! {
+                                        <li class="flex items-center justify-between gap-3 px-5 py-4">
+                                            <a href=format!("/posts/{}", p.id)
+                                                class="truncate text-sm/6 font-medium text-white hover:text-zinc-300 transition-colors">
+                                                {p.title}
+                                            </a>
+                                            {if pub_ {
+                                                view! { <Badge tone="green">"publicado"</Badge> }.into_any()
+                                            } else {
+                                                view! { <Badge tone="amber">"borrador"</Badge> }.into_any()
+                                            }}
+                                        </li>
+                                    }
+                                }).collect_view()}
+                            </ul>
+                        }.into_any()
+                    }
+                }}
+            </section>
 
-            <PhotoUpload galleries=galleries />
+            <SlideOver open=g_open title="Nueva galería">
+                <form on:submit=create_gallery class="space-y-4">
+                    <Field label="Slug">
+                        <input class=INPUT prop:value=g_slug
+                            on:input=move |e| g_slug.set(event_target_value(&e)) />
+                    </Field>
+                    <Field label="Título">
+                        <input class=INPUT prop:value=g_title
+                            on:input=move |e| g_title.set(event_target_value(&e)) />
+                    </Field>
+                    <Button>"Crear galería"</Button>
+                </form>
+            </SlideOver>
+
+            <SlideOver open=p_open title="Nueva entrada">
+                <form on:submit=create_post class="space-y-4">
+                    <Field label="Slug">
+                        <input class=INPUT prop:value=p_slug
+                            on:input=move |e| p_slug.set(event_target_value(&e)) />
+                    </Field>
+                    <Field label="Título">
+                        <input class=INPUT prop:value=p_title
+                            on:input=move |e| p_title.set(event_target_value(&e)) />
+                    </Field>
+                    <Field label="Contenido (Markdown)">
+                        <textarea class=INPUT rows="6" prop:value=p_body
+                            on:input=move |e| p_body.set(event_target_value(&e)) />
+                    </Field>
+                    <Button>"Crear borrador"</Button>
+                </form>
+            </SlideOver>
         </div>
-    }
-}
-
-#[component]
-fn PhotoUpload(galleries: Galleries) -> impl IntoView {
-    let status = RwSignal::new(String::new());
-
-    let upload = move |ev: leptos::ev::SubmitEvent| {
-        ev.prevent_default();
-        let Some(target) = ev.target() else { return };
-        let form: web_sys::HtmlFormElement = target.unchecked_into();
-        let Ok(data) = web_sys::FormData::new_with_form(&form) else {
-            return;
-        };
-        status.set("Subiendo…".into());
-        spawn_local(async move {
-            match api::upload_photo(data).await {
-                Ok(_) => status.set("Foto subida".into()),
-                Err(_) => status.set("Error al subir".into()),
-            }
-        });
-    };
-
-    view! {
-        <Card>
-            <h2 class="mb-4 text-sm/6 font-semibold text-zinc-950">"Subir foto"</h2>
-            <form on:submit=upload class="space-y-3">
-                <Field label="Galería">
-                    <select name="gallery_id" class=INPUT>
-                        {move || galleries.get().into_iter().map(|g| view! {
-                            <option value=g.id.to_string()>{g.title}</option>
-                        }).collect_view()}
-                    </select>
-                </Field>
-                <Field label="Texto alternativo">
-                    <input class=INPUT name="alt" />
-                </Field>
-                <Field label="Archivo">
-                    <input class=INPUT type="file" name="file" accept="image/*" />
-                </Field>
-                <Button>"Subir"</Button>
-                <p class="text-sm/6 text-zinc-500">{move || status.get()}</p>
-            </form>
-        </Card>
     }
 }

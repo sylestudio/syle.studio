@@ -1,12 +1,14 @@
-//! Design-system primitives ported from Catalyst (Tailwind Plus).
-//! Visual classes are kept faithful; Headless-UI `data-*` state is replaced
-//! with native `hover:`/`focus:` since Leptos has no Headless UI.
+//! Design-system primitives ported from Catalyst (Tailwind Plus), tuned for
+//! the CRM's dark "studio" shell. Visual classes are kept faithful; Headless-UI
+//! `data-*` state is replaced with native `hover:`/`focus:` (no Headless UI in
+//! Leptos). Color/variant classes are enumerated as literal `const` strings so
+//! the Tailwind v4 `@source` scanner sees them (no `format!`-built classes).
 
 use leptos::prelude::*;
 
 const BTN: &str = "relative inline-flex items-center justify-center gap-x-2 \
     rounded-lg border border-transparent px-3.5 py-2.5 sm:px-3 sm:py-1.5 \
-    text-base/6 sm:text-sm/6 font-semibold shadow-sm \
+    text-base/6 sm:text-sm/6 font-semibold \
     focus:outline-2 focus:outline-offset-2 focus:outline-blue-500 \
     disabled:opacity-50 disabled:pointer-events-none transition-colors";
 
@@ -17,9 +19,10 @@ pub fn Button(
     children: Children,
 ) -> impl IntoView {
     let palette = match kind.as_str() {
-        "outline" => "border-zinc-950/10 text-zinc-950 bg-white hover:bg-zinc-950/2.5",
-        "plain" => "text-zinc-950 shadow-none hover:bg-zinc-950/5",
-        _ => "bg-zinc-900 text-white hover:bg-zinc-700",
+        "outline" => "border-white/15 text-white hover:bg-white/5",
+        "plain" => "text-zinc-300 hover:bg-white/10 hover:text-white",
+        "danger" => "bg-red-600 text-white shadow-sm hover:bg-red-500",
+        _ => "bg-white text-zinc-950 shadow-sm hover:bg-zinc-200",
     };
     view! {
         <button class=format!("{BTN} {palette}") disabled=disabled>
@@ -31,7 +34,9 @@ pub fn Button(
 #[component]
 pub fn Heading(#[prop(into)] text: String) -> impl IntoView {
     view! {
-        <h1 class="text-2xl/8 sm:text-xl/8 font-semibold text-zinc-950">{text}</h1>
+        <h1 class="text-2xl/8 sm:text-xl/8 font-semibold tracking-tight text-white">
+            {text}
+        </h1>
     }
 }
 
@@ -39,22 +44,22 @@ pub fn Heading(#[prop(into)] text: String) -> impl IntoView {
 pub fn Field(#[prop(into)] label: String, children: Children) -> impl IntoView {
     view! {
         <div class="space-y-1.5">
-            <label class="text-sm/6 font-medium text-zinc-950">{label}</label>
+            <label class="text-sm/6 font-medium text-zinc-300">{label}</label>
             {children()}
         </div>
     }
 }
 
-/// Class string for `<input>`/`<textarea>` matching Catalyst's input look.
-pub const INPUT: &str = "block w-full rounded-lg border border-zinc-950/10 \
-    bg-white px-3 py-1.5 text-base/6 sm:text-sm/6 text-zinc-950 shadow-sm \
+/// Class string for `<input>`/`<textarea>` matching Catalyst's dark input look.
+pub const INPUT: &str = "block w-full rounded-lg border border-white/10 \
+    bg-white/5 px-3 py-1.5 text-base/6 sm:text-sm/6 text-white shadow-sm \
     placeholder:text-zinc-500 focus:outline-2 focus:-outline-offset-2 \
     focus:outline-blue-500";
 
 #[component]
 pub fn Card(children: Children) -> impl IntoView {
     view! {
-        <div class="rounded-xl border border-zinc-950/10 bg-white p-6 shadow-sm">
+        <div class="rounded-2xl border border-white/10 bg-white/2.5 p-6">
             {children()}
         </div>
     }
@@ -62,7 +67,59 @@ pub fn Card(children: Children) -> impl IntoView {
 
 #[component]
 pub fn ErrorText(#[prop(into)] msg: String) -> impl IntoView {
-    view! { <p class="text-sm/6 text-red-600">{msg}</p> }
+    view! { <p class="text-sm/6 text-red-400">{msg}</p> }
+}
+
+const BADGE: &str = "inline-flex items-center gap-x-1.5 rounded-md px-2 py-0.5 \
+    text-xs/5 font-medium";
+
+/// Small status pill. `tone`: "green" | "amber" | "zinc" (default).
+#[component]
+pub fn Badge(#[prop(optional, into)] tone: String, children: Children) -> impl IntoView {
+    let colors = match tone.as_str() {
+        "green" => "bg-green-500/15 text-green-400",
+        "amber" => "bg-amber-400/15 text-amber-400",
+        _ => "bg-white/5 text-zinc-400",
+    };
+    view! { <span class=format!("{BADGE} {colors}")>{children()}</span> }
+}
+
+/// Right-anchored slide-over panel. Mounts only while `open` is true; the
+/// backdrop and the ✕ button both close it (no global Esc — keeps it
+/// dependency-free; Headless-UI's Dialog is not portable to Leptos).
+#[component]
+pub fn SlideOver(
+    open: RwSignal<bool>,
+    #[prop(into)] title: String,
+    children: ChildrenFn,
+) -> impl IntoView {
+    view! {
+        {move || open.get().then(|| view! {
+            <div class="fixed inset-0 z-40">
+                <div
+                    class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                    on:click=move |_| open.set(false)
+                ></div>
+                <div class="absolute inset-y-0 right-0 flex w-full max-w-md flex-col \
+                    border-l border-white/10 bg-zinc-900 p-6 shadow-2xl">
+                    <div class="mb-6 flex items-center justify-between">
+                        <h2 class="text-lg/7 font-semibold text-white">
+                            {title.clone()}
+                        </h2>
+                        <button
+                            class="rounded-lg p-1 text-zinc-400 hover:bg-white/10 \
+                                hover:text-white transition-colors"
+                            on:click=move |_| open.set(false)
+                            aria-label="Cerrar"
+                        >
+                            "✕"
+                        </button>
+                    </div>
+                    <div class="flex-1 overflow-y-auto">{children()}</div>
+                </div>
+            </div>
+        })}
+    }
 }
 
 // --- Toasts -----------------------------------------------------------------
@@ -126,9 +183,9 @@ pub fn ToastHost() -> impl IntoView {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
             {move || t.items.get().into_iter().map(|toast| {
                 let cls = if toast.ok {
-                    "rounded-lg bg-zinc-900 px-4 py-2 text-sm/6 text-white shadow-lg"
+                    "rounded-lg bg-white px-4 py-2 text-sm/6 font-medium text-zinc-950 shadow-lg"
                 } else {
-                    "rounded-lg bg-red-600 px-4 py-2 text-sm/6 text-white shadow-lg"
+                    "rounded-lg bg-red-600 px-4 py-2 text-sm/6 font-medium text-white shadow-lg"
                 };
                 view! { <div class=cls>{toast.msg}</div> }
             }).collect_view()}
