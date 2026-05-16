@@ -24,6 +24,20 @@
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
 
+/* Chrome/WebKit autofill paints a hard yellow/blue fill that breaks the dark
+   inputs (most visible on the login screen). Repaint it: mask the fill with an
+   inset box-shadow tinted to the input's own `bg-white/5`, keep text/caret
+   light, and stall the UA background transition so it can't flash through. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #fafafa;
+  caret-color: #fafafa;
+  -webkit-box-shadow: 0 0 0 1000px rgb(255 255 255 / 0.05) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
 /* Film grain: thematically earned for a photography studio. Fixed, inert,
    z-30 so it textures content but never sits over modals/slide-overs
    (z-40/z-50). ~0.035 — a touch more than render A, without render B's warmth. */
