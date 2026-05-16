@@ -4,6 +4,8 @@
 
 # Leptos / trunk
 /admin/dist
+/admin/node_modules
+/admin/styles/tailwind.css
 
 # Astro
 /web/node_modules

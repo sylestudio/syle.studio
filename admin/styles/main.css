@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Scan Leptos view! macros for class usage. */
+@source "../src/**/*.rs";
+
+/* Catalyst uses a class-based dark mode; default the CRM to light. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Catalyst design language: zinc neutrals, blue focus. Defaults already
+   match Tailwind v4, so no token overrides are needed yet. */
