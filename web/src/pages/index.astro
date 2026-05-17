@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
+import Mark from "../components/Mark.astro";
 import { listGalleries, getGallery } from "../lib/api";
 
 // Each published gallery is a "Proyecto". The list endpoint carries no cover,
@@ -23,7 +24,10 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
   <!-- HERO · light -->
   <header class="hero">
     <div class="hero-in">
-      <div class="lbl muted" data-reveal>Estudio creativo — CDMX · MMXXVI</div>
+      <div class="hero-top">
+        <div class="lbl muted" data-reveal>Estudio creativo — CDMX · MMXXVI</div>
+        <Mark class="hero-mark" />
+      </div>
       <h1 class="disp hero-h" data-reveal>
         Hacemos<br />cosas que importan
       </h1>
@@ -114,7 +118,7 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
       <div class="close-main">
         <div class="lbl dim" data-reveal>El estudio</div>
         <h2 class="disp close-h" data-reveal>Tráenos un reto</h2>
-        <a href="mailto:hola@syle.studio" class="cta" data-reveal>
+        <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal>
           Iniciar proyecto
           <span class="cta-i" aria-hidden="true">↗</span>
         </a>
@@ -148,6 +152,19 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
     flex: 1;
     display: flex;
     flex-direction: column;
+  }
+  .hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .hero-mark {
+    flex: none;
+    width: clamp(8rem, 30vw, 30rem);
+    height: auto;
+    color: var(--ink);
+    margin-top: -0.25rem;
   }
   .hero-h {
     font-size: clamp(3.25rem, 15vw, 12rem);
