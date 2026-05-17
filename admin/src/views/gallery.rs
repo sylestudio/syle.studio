@@ -157,8 +157,15 @@ pub fn GalleryView() -> impl IntoView {
                     let _ = fd.append_with_str("gallery_id", &id);
                     let _ = fd.append_with_str("alt", &alt);
                     let _ = fd.append_with_blob("file", file.unchecked_ref());
-                    uploading.set(format!("Subiendo {}/{n}…", k + 1));
-                    if api::upload_photo(fd).await.is_ok() {
+                    uploading.set(format!("Subiendo {}/{n} — 0%", k + 1));
+                    let progress = move |frac: f64| {
+                        uploading.set(format!(
+                            "Subiendo {}/{n} — {:.0}%",
+                            k + 1,
+                            frac * 100.0
+                        ));
+                    };
+                    if api::upload_photo(fd, progress).await.is_ok() {
                         ok += 1;
                     }
                 }

@@ -227,6 +227,35 @@ async fn admin_upload_photo_ingests_and_persists() {
 
 #[tokio::test]
 #[serial_test::serial]
+async fn admin_upload_accepts_image_over_default_body_limit() {
+    let Some((app, pool, _media)) = setup().await else { return };
+    let cookie = login_cookie(&app, &pool).await;
+    let gid = make_gallery(&pool, "big", true).await;
+
+    // Real shoots run 30–50MB; this fixture only has to clear Axum's 2MB
+    // default to prove the limit is lifted for the upload route.
+    let big = noise_png(1400, 1100);
+    assert!(
+        big.len() > 2 * 1024 * 1024,
+        "fixture must exceed the default 2MB limit, got {} bytes",
+        big.len()
+    );
+    let (ct, body) = multipart(gid, "huge", &big);
+    let resp = app
+        .oneshot(
+            Request::post("/api/admin/photos")
+                .header(header::CONTENT_TYPE, ct)
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(body))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+}
+
+#[tokio::test]
+#[serial_test::serial]
 async fn uploaded_derivative_is_served_under_media() {
     let Some((app, pool, _m)) = setup().await else { return };
     let cookie = login_cookie(&app, &pool).await;

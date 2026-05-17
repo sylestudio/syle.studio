@@ -71,6 +71,24 @@ pub fn synthetic_png(w: u32, h: u32) -> Vec<u8> {
     buf
 }
 
+/// Incompressible PNG: pseudo-random pixels (LCG) so deflate can't shrink it,
+/// yielding an encoded size ≈ raw RGB. Used to exceed Axum's default 2MB body
+/// limit with a payload `ingest` can still decode.
+pub fn noise_png(w: u32, h: u32) -> Vec<u8> {
+    let mut s: u32 = 0x9E37_79B9;
+    let img = RgbImage::from_fn(w, h, |_, _| {
+        let mut c = [0u8; 3];
+        for b in &mut c {
+            s = s.wrapping_mul(1_664_525).wrapping_add(1_013_904_223);
+            *b = (s >> 24) as u8;
+        }
+        image::Rgb(c)
+    });
+    let mut buf = Vec::new();
+    img.write_to(&mut Cursor::new(&mut buf), ImgFmt::Png).unwrap();
+    buf
+}
+
 /// Build a minimal multipart/form-data body: gallery_id, alt, file.
 pub fn multipart(gallery_id: Uuid, alt: &str, png: &[u8]) -> (String, Vec<u8>) {
     let b = "BOUND";

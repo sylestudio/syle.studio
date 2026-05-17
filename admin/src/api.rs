@@ -178,17 +178,61 @@ pub async fn delete_post(id: &str) -> Result<(), ApiError> {
     send_empty(Request::delete(&ep::admin_post(id))).await
 }
 
-pub async fn upload_photo(form: FormData) -> Result<Photo, ApiError> {
-    let resp = Request::post(ep::ADMIN_PHOTOS)
-        .credentials(RequestCredentials::Include)
-        .body(form)
-        .map_err(|_| ApiError::Network)?
-        .send()
+/// Multipart upload over raw `XMLHttpRequest` so `upload.onprogress` can drive
+/// a real per-file progress bar — `gloo_net`/`fetch` exposes no upload
+/// progress. `on_progress` receives a 0.0..=1.0 fraction. Handler closures are
+/// `forget()`-leaked (3 tiny closures per upload; uploads are rare admin
+/// actions) — the idiomatic xhr-in-wasm tradeoff vs. an Rc/RefCell dance.
+pub async fn upload_photo(
+    form: FormData,
+    on_progress: impl Fn(f64) + 'static,
+) -> Result<Photo, ApiError> {
+    use wasm_bindgen::closure::Closure;
+    use wasm_bindgen::{JsCast, JsValue};
+    use web_sys::{ProgressEvent, XmlHttpRequest};
+
+    let xhr = XmlHttpRequest::new().map_err(|_| ApiError::Network)?;
+    xhr.open_with_async("POST", ep::ADMIN_PHOTOS, true)
+        .map_err(|_| ApiError::Network)?;
+    xhr.set_with_credentials(true);
+
+    if let Ok(up) = xhr.upload() {
+        let cb = Closure::<dyn FnMut(ProgressEvent)>::new(move |e: ProgressEvent| {
+            if e.length_computable() && e.total() > 0.0 {
+                on_progress((e.loaded() / e.total()).clamp(0.0, 1.0));
+            }
+        });
+        up.set_onprogress(Some(cb.as_ref().unchecked_ref()));
+        cb.forget();
+    }
+
+    let done = xhr.clone();
+    let promise = js_sys::Promise::new(&mut |resolve, reject| {
+        let on_load = Closure::<dyn FnMut()>::new(move || {
+            let _ = resolve.call0(&JsValue::NULL);
+        });
+        let on_err = Closure::<dyn FnMut()>::new(move || {
+            let _ = reject.call0(&JsValue::NULL);
+        });
+        done.set_onload(Some(on_load.as_ref().unchecked_ref()));
+        done.set_onerror(Some(on_err.as_ref().unchecked_ref()));
+        on_load.forget();
+        on_err.forget();
+    });
+
+    xhr.send_with_opt_form_data(Some(&form))
+        .map_err(|_| ApiError::Network)?;
+    wasm_bindgen_futures::JsFuture::from(promise)
         .await
         .map_err(|_| ApiError::Network)?;
-    if resp.status() == 200 {
-        resp.json().await.map_err(|_| ApiError::Network)
-    } else {
-        Err(classify(resp.status()))
+
+    let status = xhr.status().map_err(|_| ApiError::Network)?;
+    if status != 200 {
+        return Err(classify(status));
     }
+    let text = xhr
+        .response_text()
+        .map_err(|_| ApiError::Network)?
+        .ok_or(ApiError::Network)?;
+    serde_json::from_str(&text).map_err(|_| ApiError::Network)
 }

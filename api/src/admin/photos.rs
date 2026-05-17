@@ -63,7 +63,7 @@ pub async fn upload_photo(
     let mut alt = String::new();
     let mut bytes: Option<Vec<u8>> = None;
 
-    while let Some(field) = mp.next_field().await.map_err(|_| ApiError::BadRequest)? {
+    while let Some(mut field) = mp.next_field().await.map_err(|_| ApiError::BadRequest)? {
         match field.name() {
             Some("gallery_id") => {
                 let t = field.text().await.map_err(|_| ApiError::BadRequest)?;
@@ -73,13 +73,20 @@ pub async fn upload_photo(
                 alt = field.text().await.map_err(|_| ApiError::BadRequest)?;
             }
             Some("file") => {
-                bytes = Some(
-                    field
-                        .bytes()
-                        .await
-                        .map_err(|_| ApiError::BadRequest)?
-                        .to_vec(),
-                );
+                // Stream the field chunk-by-chunk into one buffer instead of
+                // `bytes().to_vec()` (which double-copies the whole upload).
+                // The route's DefaultBodyLimit gates the request body; this
+                // per-field counter is the belt-and-suspenders guard.
+                let mut buf: Vec<u8> = Vec::new();
+                while let Some(chunk) =
+                    field.chunk().await.map_err(|_| ApiError::BadRequest)?
+                {
+                    if buf.len() + chunk.len() > crate::MAX_UPLOAD_BYTES {
+                        return Err(ApiError::BadRequest);
+                    }
+                    buf.extend_from_slice(&chunk);
+                }
+                bytes = Some(buf);
             }
             _ => {}
         }

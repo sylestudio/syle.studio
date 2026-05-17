@@ -17,6 +17,7 @@ gloo-timers = { version = "0.3", features = ["futures"] }
 pulldown-cmark = { version = "0.12", default-features = false, features = ["html"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
 web-sys = { version = "0.3", features = [
   "FormData",
   "HtmlFormElement",
@@ -24,4 +25,8 @@ web-sys = { version = "0.3", features = [
   "FileList",
   "File",
   "RequestCredentials",
+  "XmlHttpRequest",
+  "XmlHttpRequestUpload",
+  "ProgressEvent",
+  "Event",
 ] }

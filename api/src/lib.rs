@@ -10,9 +10,14 @@ mod state;
 
 pub use state::AppState;
 
+use axum::extract::DefaultBodyLimit;
 use axum::routing::{get, patch, post};
 use axum::Router;
 use tower_http::services::ServeDir;
+
+/// Per-request cap for the photo upload route. Real shoots run 30–50MB;
+/// 64MiB leaves headroom over Axum's 2MB default, which the route overrides.
+pub(crate) const MAX_UPLOAD_BYTES: usize = 64 * 1024 * 1024;
 
 pub fn app(state: AppState) -> Router {
     // Serve ingested derivatives. In prod the CDN/Caddy front this; the admin
@@ -54,7 +59,10 @@ pub fn app(state: AppState) -> Router {
                 .patch(admin::update_post)
                 .delete(admin::delete_post),
         )
-        .route("/api/admin/photos", post(admin::upload_photo))
+        .route(
+            "/api/admin/photos",
+            post(admin::upload_photo).layer(DefaultBodyLimit::max(MAX_UPLOAD_BYTES)),
+        )
         .route("/api/admin/login", post(auth::login))
         .route("/api/admin/logout", post(auth::logout))
         .route("/api/admin/me", get(auth::me))
