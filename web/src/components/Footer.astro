@@ -1,0 +1,33 @@
+---
+const year = "MMXXVI";
+---
+
+<footer class="site-footer dark">
+  <div class="foot-row lbl">
+    <span>syle.studio&reg;</span>
+    <span>Proyectos &middot; aventuras &middot; experimentos</span>
+    <span>cdmx / {year}</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid rgba(244, 241, 234, 0.1);
+    padding: 2rem 1.5rem;
+  }
+  .foot-row {
+    max-width: 1700px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    color: rgba(244, 241, 234, 0.35);
+  }
+  @media (min-width: 768px) {
+    .site-footer {
+      padding: 2rem 3rem;
+    }
+  }
+</style>
