@@ -1,8 +1,20 @@
 import { defineConfig } from "astro/config";
 
 // Static output: pages are built from the API at build time and served
-// behind the Cloudflare CDN.
+// behind the Cloudflare CDN. In production, /media is fronted by Cloudflare
+// and routed to the API; in dev, Vite proxies it to the local API process so
+// `<img src="/media/...">` resolves without absolute URLs in stored paths.
 export default defineConfig({
   output: "static",
   site: "https://syle.studio",
+  vite: {
+    server: {
+      proxy: {
+        "/media": {
+          target: "http://127.0.0.1:8080",
+          changeOrigin: true,
+        },
+      },
+    },
+  },
 });

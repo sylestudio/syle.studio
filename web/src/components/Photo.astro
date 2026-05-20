@@ -4,22 +4,27 @@ import { buildSources, thumbDataUrl } from "../lib/images";
 
 interface Props {
   photo: Photo;
+  /** `sizes` hint for the browser. Override when the cell isn't ~50vw. */
+  sizes?: string;
+  /** First above-the-fold image: skip lazy and let the browser fetch eagerly. */
+  eager?: boolean;
 }
-const { photo } = Astro.props;
+const { photo, sizes = "(min-width: 48rem) 50vw, 100vw", eager = false } = Astro.props;
 const s = buildSources(photo.variants);
 const placeholder = thumbDataUrl(photo.thumbhash);
 ---
 
 <picture>
-  {s.avif && <source srcset={s.avif} sizes="(min-width: 48rem) 50vw, 100vw" type="image/avif" />}
-  {s.jpeg && <source srcset={s.jpeg} sizes="(min-width: 48rem) 50vw, 100vw" type="image/jpeg" />}
+  {s.avif && <source srcset={s.avif} sizes={sizes} type="image/avif" />}
+  {s.jpeg && <source srcset={s.jpeg} sizes={sizes} type="image/jpeg" />}
   <img
     src={s.fallback}
     alt={photo.alt}
     width={photo.width}
     height={photo.height}
-    loading="lazy"
-    decoding="async"
+    loading={eager ? "eager" : "lazy"}
+    decoding={eager ? "sync" : "async"}
+    fetchpriority={eager ? "high" : undefined}
     style={placeholder
       ? `background-image:url(${placeholder});background-size:cover`
       : undefined}

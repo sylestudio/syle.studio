@@ -11,21 +11,339 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const detail = await getGallery(slug!);
 if (!detail) return Astro.redirect("/404");
+
+// Navigation: where this project sits in the published list, and its
+// adjacent siblings. Resilient if the list endpoint is empty.
+const all = await listGalleries();
+const ordered = [...all].sort((a, b) => a.position - b.position);
+const idx = ordered.findIndex((g) => g.slug === slug);
+const seq = idx >= 0 ? idx + 1 : detail.gallery.position + 1;
+const prev = idx > 0 ? ordered[idx - 1] : null;
+const next = idx >= 0 && idx < ordered.length - 1 ? ordered[idx + 1] : null;
+
+const [cover, ...rest] = detail.photos;
+const totalPhotos = detail.photos.length;
+const pad = (n: number, w = 3) => String(n).padStart(w, "0");
+
+// Preview copy: API has no description/date fields yet, so lorem fills the
+// narrative slots and the layout — not the words — is judged.
+const lede =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
+  "tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam.";
+const closing = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 ---
 
-<Base title={detail.gallery.title}>
-  <h2 style="font-size:1.5rem;font-weight:600;margin-bottom:1.5rem">
-    {detail.gallery.title}
-  </h2>
-  <div
-    style="columns:2;column-gap:1rem"
-  >
-    {
-      detail.photos.map((p) => (
-        <div style="break-inside:avoid;margin-bottom:1rem;border-radius:0.5rem;overflow:hidden">
-          <Photo photo={p} />
+<Base title={detail.gallery.title} bare>
+  <!-- HERO · light -->
+  <header class="hero">
+    <div class="hero-in">
+      <a href="/#proyectos" class="back lbl muted" data-reveal>
+        <span class="back-i" aria-hidden="true">←</span>
+        <span>Proyectos</span>
+      </a>
+
+      <div class="meta lbl muted" data-reveal>
+        <span>Proyecto · {pad(seq, 2)}</span>
+        <span>MMXXVI</span>
+        <span>{pad(totalPhotos, 2)} piezas</span>
+      </div>
+
+      <h1 class="disp hero-h" data-reveal>{detail.gallery.title}</h1>
+
+      <div class="hero-foot">
+        <p class="hero-lede" data-reveal>{lede}</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- COVER · full-bleed first photo -->
+  {cover && (
+    <section class="bleed">
+      <figure data-reveal>
+        <div class="cover">
+          <Photo photo={cover} sizes="100vw" eager />
         </div>
-      ))
-    }
-  </div>
+        <figcaption class="lbl muted cap">
+          <span>{cover.alt || "Sin título"}</span>
+          <span>SYL · {pad(seq)}.{pad(1, 2)}</span>
+        </figcaption>
+      </figure>
+    </section>
+  )}
+
+  <!-- BODY · asymmetric grid -->
+  {rest.length > 0 && (
+    <section class="section">
+      <div class="sec-head">
+        <h2 class="disp sec-title" data-reveal>Piezas</h2>
+        <span class="lbl muted">{pad(rest.length, 2)} — selección</span>
+      </div>
+
+      <div class="grid">
+        {rest.map((p, i) => (
+          <figure class="cell" data-reveal>
+            <div class="cell-media">
+              <Photo
+                photo={p}
+                sizes="(min-width: 64rem) 50vw, (min-width: 40rem) 80vw, 100vw"
+              />
+            </div>
+            <figcaption class="lbl muted cap">
+              <span>{p.alt || "Sin título"}</span>
+              <span>SYL · {pad(seq)}.{pad(i + 2, 2)}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- CIERRE · dark bookend + prev/next navigator -->
+  <section class="section dark close">
+    <div class="close-head">
+      <span class="lbl dim" data-reveal>Notas del proyecto</span>
+      <span class="lbl dim">{pad(seq)} / {pad(ordered.length || 1)}</span>
+    </div>
+    <p class="close-p" data-reveal>{closing}</p>
+
+    <nav class="nav-pair" aria-label="Otros proyectos">
+      {prev ? (
+        <a href={`/galleries/${prev.slug}`} class="nav-card prev" data-reveal>
+          <span class="lbl dim"><span class="arr">←</span> Anterior</span>
+          <span class="disp nav-t"><span class="ln">{prev.title}</span></span>
+        </a>
+      ) : (
+        <span class="nav-card empty" data-reveal>
+          <span class="lbl dim">Inicio del archivo</span>
+        </span>
+      )}
+      {next ? (
+        <a href={`/galleries/${next.slug}`} class="nav-card next" data-reveal>
+          <span class="lbl dim">Siguiente <span class="arr">→</span></span>
+          <span class="disp nav-t"><span class="ln">{next.title}</span></span>
+        </a>
+      ) : (
+        <a href="/#proyectos" class="nav-card empty" data-reveal>
+          <span class="lbl dim">Volver al índice <span class="arr">↗</span></span>
+        </a>
+      )}
+    </nav>
+
+    <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal>
+      Iniciar proyecto
+      <span class="cta-i" aria-hidden="true">↗</span>
+    </a>
+  </section>
 </Base>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.42); }
+  .dim { color: rgba(244, 241, 234, 0.4); }
+
+  /* HERO ------------------------------------------------------------ */
+  .hero {
+    min-height: 92dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 7rem 1.5rem 2.5rem;
+  }
+  .hero-in {
+    max-width: 1700px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0.7;
+    transition: opacity 0.4s var(--e);
+  }
+  .back:hover { opacity: 1; }
+  .back-i {
+    display: inline-block;
+    transition: transform 0.5s var(--e);
+  }
+  .back:hover .back-i { transform: translateX(-4px); }
+
+  .meta {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 1rem;
+  }
+
+  .hero-h {
+    font-size: clamp(2.75rem, 11vw, 9rem);
+    margin-top: auto;
+    line-height: 0.88;
+    padding-top: 3rem;
+  }
+  .hero-foot {
+    margin-top: 2.5rem;
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .hero-lede {
+    max-width: 34rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: rgba(22, 20, 15, 0.65);
+  }
+
+  /* COVER ----------------------------------------------------------- */
+  .bleed { padding: 0 1.5rem 7rem; }
+  .bleed figure { max-width: 1700px; margin: 0 auto; }
+  .cover {
+    overflow: hidden;
+    height: 70vh;
+  }
+  .cover :global(picture),
+  .cover :global(img) { width: 100%; height: 100%; }
+  .cover :global(img) { object-fit: cover; }
+  .cap {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+  }
+
+  /* BODY GRID ------------------------------------------------------- */
+  .section { padding: 7rem 1.5rem; }
+  .section > * { max-width: 1700px; margin-left: auto; margin-right: auto; }
+  .sec-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .dark .sec-head { border-color: rgba(244, 241, 234, 0.15); }
+  .sec-title { font-size: clamp(2.25rem, 6vw, 4.5rem); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem 2rem;
+  }
+  /* aspect-ratio + overflow:hidden live on the inner media wrapper so the
+     caption can sit below it instead of being clipped by the figure box. */
+  .cell-media { overflow: hidden; }
+  .cell-media :global(picture),
+  .cell-media :global(img) { display: block; width: 100%; height: 100%; }
+  .cell-media :global(img) {
+    object-fit: cover;
+    transition: transform 1.1s var(--e);
+  }
+  .cell:hover .cell-media :global(img) { transform: scale(1.03); }
+  .cell .cap { margin-top: 0.85rem; }
+
+  /* CIERRE · dark --------------------------------------------------- */
+  .close { padding-top: 9rem; padding-bottom: 9rem; }
+  .close-head {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(244, 241, 234, 0.15);
+    padding-top: 1.5rem;
+  }
+  .close-p {
+    margin: 3rem 0 6rem;
+    max-width: 36rem;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    color: rgba(244, 241, 234, 0.85);
+  }
+
+  .nav-pair {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: rgba(244, 241, 234, 0.15);
+    margin-bottom: 6rem;
+  }
+  .nav-card {
+    background: var(--dark);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 9rem;
+    justify-content: space-between;
+  }
+  .nav-card.next { align-items: flex-end; text-align: right; }
+  .nav-card.empty { color: rgba(244, 241, 234, 0.55); }
+  .nav-t {
+    font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+    line-height: 0.95;
+  }
+  .nav-card:hover .arr { display: inline-block; }
+  .nav-card .arr {
+    display: inline-block;
+    transition: transform 0.5s var(--e);
+  }
+  .nav-card.prev:hover .arr { transform: translateX(-4px); }
+  .nav-card.next:hover .arr { transform: translateX(4px); }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.25rem;
+    background: var(--ox);
+    color: #fff;
+    border-radius: 999px;
+    padding: 1rem 1rem 1rem 2rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    transition: transform 0.5s var(--e);
+  }
+  .cta:active { transform: scale(0.98); }
+  .cta-i {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.5s var(--e);
+  }
+  .cta:hover .cta-i { transform: translate(3px, -2px); }
+
+  /* Desktop --------------------------------------------------------- */
+  @media (min-width: 768px) {
+    .hero { padding: 9rem 3rem 3rem; }
+    .bleed { padding: 0 3rem 10rem; }
+    .cover { height: 88vh; }
+    .section { padding: 11rem 3rem; }
+
+    .grid {
+      grid-template-columns: repeat(12, 1fr);
+      gap: 7rem 2.5rem;
+    }
+    /* 4-photo rhythm: wide / tall-left / tall-right-offset / banner.
+       aspect-ratio rides the inner media so figcaption stays visible. */
+    .cell { grid-column: span 12; }
+    .cell:nth-child(4n + 1) { grid-column: 1 / span 8; }
+    .cell:nth-child(4n + 1) .cell-media { aspect-ratio: 4 / 3; }
+    .cell:nth-child(4n + 2) { grid-column: 1 / span 5; align-self: end; }
+    .cell:nth-child(4n + 2) .cell-media { aspect-ratio: 4 / 5; }
+    .cell:nth-child(4n + 3) { grid-column: 7 / span 6; }
+    .cell:nth-child(4n + 3) .cell-media { aspect-ratio: 4 / 5; }
+    .cell:nth-child(4n)     { grid-column: 3 / span 8; align-self: start; }
+    .cell:nth-child(4n) .cell-media { aspect-ratio: 16 / 10; }
+
+    .nav-pair { grid-template-columns: 1fr 1fr; }
+    .nav-card { padding: 3rem 2.5rem; min-height: 14rem; }
+  }
+</style>
