@@ -94,7 +94,15 @@ pub async fn upload_photo(
 
     let gallery_id = gallery_id.ok_or(ApiError::BadRequest)?;
     let src = bytes.ok_or(ApiError::BadRequest)?;
-    let out = ingest(&src, TARGET_WIDTHS).map_err(|_| ApiError::BadRequest)?;
+    // Decode + resize + AVIF/JPEG encode is CPU-bound and easily multi-second
+    // even in release. Hand it to the blocking pool so the tokio worker stays
+    // free for other connections and the per-request handler doesn't stall.
+    let src = std::sync::Arc::new(src);
+    let src_for_ingest = src.clone();
+    let out = tokio::task::spawn_blocking(move || ingest(&src_for_ingest, TARGET_WIDTHS))
+        .await
+        .map_err(|_| ApiError::Internal)?
+        .map_err(|_| ApiError::BadRequest)?;
 
     let (count,): (i64,) =
         sqlx::query_as("SELECT count(*) FROM photos WHERE gallery_id = $1")
@@ -104,7 +112,7 @@ pub async fn upload_photo(
     let position = count as i32;
 
     let mut hasher = DefaultHasher::new();
-    src.hash(&mut hasher);
+    src.as_slice().hash(&mut hasher);
     let key = format!("{:016x}", hasher.finish());
 
     let pid = Uuid::new_v4();
