@@ -28,10 +28,18 @@ sqlx = { version = "0.8", default-features = false, features = [
   "runtime-tokio",
   "postgres",
   "uuid",
+  "json",
 ] }
 argon2 = "0.5"
 rand = "0.8"
 uuid = { version = "1", features = ["serde", "v4"] }
+# webauthn-rs and webauthn-authenticator-rs MUST stay pinned to the SAME exact
+# version: each transitively pins webauthn-rs-proto exactly, so any drift breaks
+# Cargo resolution. Bump both in lockstep. `danger-allow-state-serialisation` is
+# required for PasskeyRegistration/PasskeyAuthentication to be serde-(de)serializable
+# (ceremony state is parked in JSONB between start/finish).
+webauthn-rs = { version = "=0.5.5", features = ["danger-allow-state-serialisation"] }
+url = "2"
 
 [dev-dependencies]
 tokio.workspace = true
@@ -41,3 +49,6 @@ http-body-util = "0.1"
 serial_test = "3"
 image = { version = "0.25", default-features = false, features = ["png"] }
 tempfile = "3"
+# Browserless WebAuthn round-trip for tests. Pinned in lockstep with webauthn-rs
+# (see note above). `softpasskey` provides the SoftPasskey authenticator backend.
+webauthn-authenticator-rs = { version = "=0.5.5", features = ["softpasskey"] }

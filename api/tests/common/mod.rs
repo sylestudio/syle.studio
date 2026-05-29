@@ -6,7 +6,7 @@ use axum::http::{header, Request};
 use http_body_util::BodyExt;
 use image::{ImageFormat as ImgFmt, RgbImage};
 use std::io::Cursor;
-use syle_api::{app, auth::hash_password, AppState};
+use syle_api::{app, auth::build_webauthn, auth::hash_password, AppState};
 use tower::ServiceExt;
 use uuid::Uuid;
 
@@ -20,13 +20,15 @@ pub async fn setup() -> Option<(axum::Router, sqlx::PgPool, tempfile::TempDir)> 
     let pool = syle_core::db::connect(&url).await.unwrap();
     syle_core::db::migrate(&pool).await.unwrap();
     sqlx::query(
-        "TRUNCATE galleries, photos, photo_variants, blog_posts, users, sessions CASCADE",
+        "TRUNCATE galleries, photos, photo_variants, blog_posts, users, sessions, \
+         webauthn_credentials, webauthn_flows, recovery_codes CASCADE",
     )
     .execute(&pool)
     .await
     .unwrap();
     let media = tempfile::tempdir().unwrap();
-    let state = AppState::new(pool.clone(), media.path().to_path_buf());
+    let webauthn = build_webauthn("localhost", "http://localhost:8080").unwrap();
+    let state = AppState::new(pool.clone(), media.path().to_path_buf(), webauthn);
     Some((app(state), pool, media))
 }
 

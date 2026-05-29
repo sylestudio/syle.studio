@@ -71,5 +71,34 @@ pub fn app(state: AppState) -> Router {
         .route("/api/admin/login", post(auth::login))
         .route("/api/admin/logout", post(auth::logout))
         .route("/api/admin/me", get(auth::me))
+        .route(
+            "/api/admin/webauthn/login/start",
+            post(auth::login_start),
+        )
+        .route(
+            "/api/admin/webauthn/login/finish",
+            post(auth::login_finish),
+        )
+        .route(
+            "/api/admin/webauthn/register/start",
+            post(auth::register_start),
+        )
+        .route(
+            "/api/admin/webauthn/register/finish",
+            post(auth::register_finish),
+        )
+        .route(
+            "/api/admin/webauthn/credentials",
+            get(auth::list_credentials),
+        )
+        .route(
+            "/api/admin/webauthn/credentials/{id}",
+            patch(auth::rename_credential).delete(auth::delete_credential),
+        )
+        .route("/api/admin/recovery/redeem", post(auth::recovery_redeem))
+        .route(
+            "/api/admin/recovery/generate",
+            post(auth::recovery_generate),
+        )
         .with_state(state)
 }

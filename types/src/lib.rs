@@ -12,7 +12,10 @@ mod history;
 mod photo;
 mod slug;
 
-pub use auth::{LoginRequest, SessionToken, User};
+pub use auth::{
+    CredentialInfo, FlowChallenge, LoginRequest, RecoveryCodes, RecoveryRedeem, RenameCredential,
+    SessionToken, User, WebauthnFinish, WebauthnStart,
+};
 pub use block::{Block, Mark, Span};
 pub use history::History;
 pub use blog::{BlogPost, NewPost, PostStatus, UpdatePost, UploadedImage};

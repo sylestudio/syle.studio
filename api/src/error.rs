@@ -31,3 +31,9 @@ impl From<sqlx::Error> for ApiError {
         }
     }
 }
+
+impl From<serde_json::Error> for ApiError {
+    fn from(_: serde_json::Error) -> Self {
+        ApiError::Internal
+    }
+}

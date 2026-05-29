@@ -5,8 +5,10 @@ use gloo_net::http::Request;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use syle_types::{
-    endpoints as ep, BlogPost, Gallery, GalleryDetail, LoginRequest, NewGallery, NewPost,
-    Photo, Reorder, UpdateGallery, UpdatePhoto, UpdatePost, UploadedImage, User,
+    endpoints as ep, BlogPost, CredentialInfo, FlowChallenge, Gallery, GalleryDetail,
+    LoginRequest, NewGallery, NewPost, Photo, RecoveryCodes, RecoveryRedeem, RenameCredential,
+    Reorder, UpdateGallery, UpdatePhoto, UpdatePost, UploadedImage, User, WebauthnFinish,
+    WebauthnStart,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -82,6 +84,21 @@ async fn send_empty(req: gloo_net::http::RequestBuilder) -> Result<(), ApiError>
         .map_err(|_| ApiError::Network)?;
     if resp.status() == 200 {
         Ok(())
+    } else {
+        Err(classify(resp.status()))
+    }
+}
+
+/// POST with no request body, returning a JSON response. Used by the ceremony
+/// `*/start` and recovery-code generation routes (authenticated via cookie).
+async fn post_empty<T: DeserializeOwned>(url: &str) -> Result<T, ApiError> {
+    let resp = Request::post(url)
+        .credentials(RequestCredentials::Include)
+        .send()
+        .await
+        .map_err(|_| ApiError::Network)?;
+    if resp.status() == 200 {
+        resp.json().await.map_err(|_| ApiError::Network)
     } else {
         Err(classify(resp.status()))
     }
@@ -262,4 +279,45 @@ pub async fn upload_photo(
         .map_err(|_| ApiError::Network)?
         .ok_or(ApiError::Network)?;
     serde_json::from_str(&text).map_err(|_| ApiError::Network)
+}
+
+// --- WebAuthn passkeys + recovery codes -------------------------------------
+
+pub async fn webauthn_register_start() -> Result<FlowChallenge, ApiError> {
+    post_empty(ep::WEBAUTHN_REGISTER_START).await
+}
+
+pub async fn webauthn_register_finish(f: &WebauthnFinish) -> Result<CredentialInfo, ApiError> {
+    post_json(ep::WEBAUTHN_REGISTER_FINISH, f).await
+}
+
+pub async fn webauthn_login_start(s: &WebauthnStart) -> Result<FlowChallenge, ApiError> {
+    post_json(ep::WEBAUTHN_LOGIN_START, s).await
+}
+
+pub async fn webauthn_login_finish(f: &WebauthnFinish) -> Result<User, ApiError> {
+    post_json(ep::WEBAUTHN_LOGIN_FINISH, f).await
+}
+
+pub async fn webauthn_credentials() -> Result<Vec<CredentialInfo>, ApiError> {
+    get_json(ep::WEBAUTHN_CREDENTIALS).await
+}
+
+pub async fn webauthn_delete_credential(id: &str) -> Result<(), ApiError> {
+    send_empty(Request::delete(&ep::webauthn_credential(id))).await
+}
+
+pub async fn webauthn_rename_credential(
+    id: &str,
+    body: &RenameCredential,
+) -> Result<CredentialInfo, ApiError> {
+    patch_json(&ep::webauthn_credential(id), body).await
+}
+
+pub async fn recovery_generate() -> Result<RecoveryCodes, ApiError> {
+    post_empty(ep::RECOVERY_GENERATE).await
+}
+
+pub async fn recovery_redeem(r: &RecoveryRedeem) -> Result<User, ApiError> {
+    post_json(ep::RECOVERY_REDEEM, r).await
 }

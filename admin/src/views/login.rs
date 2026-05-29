@@ -1,5 +1,6 @@
 use crate::api;
 use crate::ui::{Button, Card, ErrorText, Field, INPUT};
+use crate::webauthn::{self, PasskeyError};
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
 use syle_types::LoginRequest;
@@ -13,6 +14,7 @@ pub fn Login() -> impl IntoView {
     // Must be obtained in the component body (Router context lives on the
     // reactive owner here, not inside the async task below).
     let navigate = use_navigate();
+    let nav_passkey = navigate.clone();
 
     let submit = move |ev: leptos::ev::SubmitEvent| {
         ev.prevent_default();
@@ -32,6 +34,32 @@ pub fn Login() -> impl IntoView {
                 Err(_) => error.set(Some("Credenciales inválidas".into())),
             }
             pending.set(false);
+        });
+    };
+
+    // Email-first passkey login: type the email, then tap the authenticator.
+    let passkey = move |_| {
+        if pending.get() {
+            return;
+        }
+        let em = email.get();
+        if em.is_empty() {
+            error.set(Some("Escribe tu correo para usar tu passkey".into()));
+            return;
+        }
+        pending.set(true);
+        error.set(None);
+        let navigate = nav_passkey.clone();
+        wasm_bindgen_futures::spawn_local(async move {
+            match webauthn::login(em).await {
+                Ok(_) => navigate("/", Default::default()),
+                // User dismissed the prompt — let them try again, no error.
+                Err(PasskeyError::Cancelled) => pending.set(false),
+                Err(PasskeyError::Api(_)) => {
+                    error.set(Some("No se pudo iniciar con tu passkey".into()));
+                    pending.set(false);
+                }
+            }
         });
     };
 
@@ -72,6 +100,29 @@ pub fn Login() -> impl IntoView {
                             {move || if pending.get() { "Entrando…" } else { "Entrar" }}
                         </Button>
                     </form>
+                    <div class="mt-6 flex items-center gap-3">
+                        <span class="h-px flex-1 bg-white/10"></span>
+                        <span class="text-xs/5 text-zinc-500">"o"</span>
+                        <span class="h-px flex-1 bg-white/10"></span>
+                    </div>
+                    <button
+                        type="button"
+                        class="mt-6 inline-flex w-full items-center justify-center rounded-lg \
+                            border border-white/15 px-3.5 py-2.5 text-sm/6 font-semibold text-white \
+                            hover:bg-white/5 transition duration-200 ease-fluid active:scale-[0.98] \
+                            disabled:opacity-50 disabled:pointer-events-none \
+                            motion-reduce:transition-none motion-reduce:active:scale-100"
+                        on:click=passkey
+                        prop:disabled=move || pending.get()
+                    >
+                        "Entrar con passkey"
+                    </button>
+                    <a
+                        href="/recovery"
+                        class="mt-4 block text-center text-sm/6 text-zinc-400 hover:text-white transition-colors"
+                    >
+                        "¿Perdiste el acceso? Usa un código de recuperación"
+                    </a>
                 </Card>
             </div>
         </div>

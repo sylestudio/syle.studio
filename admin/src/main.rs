@@ -6,6 +6,7 @@ mod app;
 mod editor;
 mod ui;
 mod views;
+mod webauthn;
 
 use app::App;
 

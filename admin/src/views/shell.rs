@@ -125,6 +125,12 @@ pub fn StudioShell() -> impl IntoView {
                             <NavItem href="/" label="Galerías" matches="/galleries" />
                             <NavItem href="/" label="Blog" matches="/posts" />
                         </div>
+                        <h3 class="mt-6 mb-1 px-2 text-xs/6 font-medium text-zinc-500">
+                            "Cuenta"
+                        </h3>
+                        <div class="flex flex-col gap-0.5">
+                            <NavItem href="/security" label="Seguridad" matches="/security" />
+                        </div>
                     </div>
                     <div class="flex flex-col gap-2 border-t border-white/5 p-4">
                         <span class="truncate px-2 text-xs/5 text-zinc-500">

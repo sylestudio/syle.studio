@@ -27,7 +27,9 @@ Provisioned out of band (the runner user is unprivileged):
   here without sudo); `/opt/syle/media` owned `syle:syle` (the API writes here).
 - A local Postgres role + database `syle`; the API runs `sqlx` migrations on
   startup, so an empty DB is provisioned on first boot.
-- `/etc/syle/api.env` (`DATABASE_URL`, `MEDIA_DIR`), `chmod 600`, root-owned.
+- `/etc/syle/api.env` (`DATABASE_URL`, `MEDIA_DIR`, `RP_ID`, `RP_ORIGIN`),
+  `chmod 600`, root-owned. `RP_ID`/`RP_ORIGIN` are **required** — set them
+  before shipping the passkey-enabled binary (the API fails fast without them).
 - `syle-api.service` (this dir) → `/etc/systemd/system/`, `daemon-reload`,
   `enable`.
 - A scoped `sudoers` rule letting `github-runner` run **only**
@@ -62,6 +64,20 @@ Configuration Rule.
 `main` (and `workflow_dispatch`): it builds the API (release), the CRM (trunk
 → wasm), and the public site (Astro, against the live API), drops the
 artifacts into `/opt/syle`, restarts the API, and reloads nginx.
+
+## Passkeys cutover
+
+Passkey (WebAuthn) login is **additive** over the existing password auth:
+
+1. Set `RP_ID`/`RP_ORIGIN` in `/etc/syle/api.env` **before** the deploy that
+   ships the passkey binary, or the API won't boot.
+2. The schema migration is non-blocking — `password_hash` becomes nullable and
+   three tables are added; existing password login keeps working untouched.
+3. After deploy, the operator signs in with their password, opens
+   **Cuenta → Seguridad**, enrolls a passkey, and generates recovery codes
+   (shown once — store them safely).
+4. Break-glass if all factors are lost: re-seed the operator over SSH with
+   `DATABASE_URL=… cargo run -p syle-api --example seed-admin -- <email> <pw>`.
 
 ## Content
 
