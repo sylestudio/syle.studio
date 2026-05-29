@@ -18,6 +18,7 @@ pub enum Kind {
     Code,
     Divider,
     Callout,
+    Image,
 }
 
 impl Kind {
@@ -35,6 +36,7 @@ impl Kind {
             Kind::Code => "Código",
             Kind::Divider => "Divisor",
             Kind::Callout => "Llamado",
+            Kind::Image => "Imagen",
         }
     }
 
@@ -52,6 +54,7 @@ impl Kind {
             Kind::Code => "</>",
             Kind::Divider => "—",
             Kind::Callout => "💡",
+            Kind::Image => "🖼",
         }
     }
 
@@ -68,6 +71,7 @@ impl Kind {
             Kind::Quote,
             Kind::Code,
             Kind::Callout,
+            Kind::Image,
             Kind::Divider,
         ]
     }
@@ -153,6 +157,12 @@ pub fn make(kind: Kind, id: String, spans: Vec<Span>) -> Block {
             code: spans.iter().map(|s| s.text.as_str()).collect(),
         },
         Kind::Divider => Block::Divider { id },
+        Kind::Image => Block::Image {
+            id,
+            src: String::new(),
+            alt: String::new(),
+            caption: Vec::new(),
+        },
     }
 }
 
@@ -171,7 +181,7 @@ pub fn kind_of(b: &Block) -> Kind {
         Block::Code { .. } => Kind::Code,
         Block::Divider { .. } => Kind::Divider,
         Block::Callout { .. } => Kind::Callout,
-        Block::Image { .. } => Kind::Paragraph,
+        Block::Image { .. } => Kind::Image,
     }
 }
 

@@ -1,13 +1,11 @@
-// LOC: one component that renders every block variant + its shared
-// contenteditable handlers (input/shortcut/slash, Enter split, Backspace
-// merge); splitting the per-variant view from the handlers would scatter one
-// tightly-coupled unit across files. Kept lean.
 //! A single editable block row. Dispatches on the block variant; text blocks
-//! share one contenteditable whose model syncs FROM the DOM (caret-safe).
+//! share one contenteditable whose model syncs FROM the DOM (caret-safe). The
+//! drag handle and delete affordance are wrapped around the inner view so the
+//! caret-stable subtree stays untouched.
 
 use super::content::{self, Kind};
-use super::dom;
 use super::slash::SlashMenu;
+use super::{dom, views};
 use leptos::html;
 use leptos::prelude::*;
 use syle_render::render_inline;
@@ -17,6 +15,7 @@ use web_sys::Element;
 
 type Blocks = RwSignal<Vec<Block>>;
 type Slash = RwSignal<Option<String>>;
+type Dragging = RwSignal<Option<String>>;
 
 fn set_block_spans(blocks: Blocks, id: &str, spans: Vec<Span>) {
     blocks.update(|v| {
@@ -41,17 +40,18 @@ fn reseed_focus(blocks: Blocks, id: String, at_start: bool) {
     });
 }
 
-/// Convert block `id` to `kind`, clearing its content. Dividers get a trailing
-/// paragraph to land the caret. Closes the slash menu.
+/// Convert block `id` to `kind`, clearing its content. Non-text blocks
+/// (divider/image) get a trailing paragraph to land the caret. Closes the slash
+/// menu.
 fn apply_convert(blocks: Blocks, slash: Slash, id: String, kind: Kind) {
     let para_id = dom::new_id();
-    let is_divider = matches!(kind, Kind::Divider);
+    let needs_trailer = matches!(kind, Kind::Divider | Kind::Image);
     let para_for_update = para_id.clone();
     blocks.update(|v| {
         if let Some(i) = v.iter().position(|b| b.id() == id) {
             let bid = v[i].id().to_string();
             v[i] = content::make(kind, bid, Vec::new());
-            if is_divider {
+            if needs_trailer {
                 v.insert(
                     i + 1,
                     Block::Paragraph {
@@ -63,7 +63,28 @@ fn apply_convert(blocks: Blocks, slash: Slash, id: String, kind: Kind) {
         }
     });
     slash.set(None);
-    reseed_focus(blocks, if is_divider { para_id } else { id }, true);
+    reseed_focus(blocks, if needs_trailer { para_id } else { id }, true);
+}
+
+/// Move the currently-dragged block to just before `target_id` (drop target).
+fn reorder(blocks: Blocks, dragging: Dragging, target_id: &str) {
+    let Some(src) = dragging.get_untracked() else {
+        return;
+    };
+    dragging.set(None);
+    if src == target_id {
+        return;
+    }
+    blocks.update(|v| {
+        let Some(si) = v.iter().position(|b| b.id() == src) else {
+            return;
+        };
+        let b = v.remove(si);
+        match v.iter().position(|b| b.id() == target_id) {
+            Some(ti) => v.insert(ti, b),
+            None => v.insert(si.min(v.len()), b),
+        }
+    });
 }
 
 fn handle_input(blocks: Blocks, slash: Slash, id: &str, el: &Element) {
@@ -167,18 +188,50 @@ fn remove_block(blocks: Blocks, id: &str) {
 }
 
 #[component]
-pub fn BlockRow(block: Block, blocks: Blocks, slash: Slash) -> impl IntoView {
+pub fn BlockRow(block: Block, blocks: Blocks, slash: Slash, dragging: Dragging) -> impl IntoView {
     let id = block.id().to_string();
 
-    match &block {
+    // The verified contenteditable subtree is built unchanged; drag/delete
+    // chrome is wrapped around it additively so the caret path is untouched.
+    let inner = match &block {
         Block::Code { language, code, .. } => {
-            code_view(blocks, id, language.clone(), code.clone()).into_any()
+            views::code_view(blocks, id.clone(), language.clone(), code.clone()).into_any()
         }
-        Block::Divider { .. } => divider_view(blocks, id).into_any(),
+        Block::Divider { .. } => views::divider_view().into_any(),
         Block::Image { src, alt, .. } => {
-            image_view(blocks, id, src.clone(), alt.clone()).into_any()
+            views::image_view(blocks, id.clone(), src.clone(), alt.clone()).into_any()
         }
-        _ => text_view(block, blocks, slash, id).into_any(),
+        _ => text_view(block, blocks, slash, id.clone()).into_any(),
+    };
+
+    let (drag_id, drop_id, del_id) = (id.clone(), id.clone(), id);
+    view! {
+        <div
+            class="group relative flex items-start gap-1"
+            on:dragover=move |e: leptos::ev::DragEvent| e.prevent_default()
+            on:drop=move |e: leptos::ev::DragEvent| {
+                e.prevent_default();
+                reorder(blocks, dragging, &drop_id);
+            }
+        >
+            <span
+                class="mt-1.5 shrink-0 cursor-grab select-none px-0.5 text-zinc-600 opacity-0 \
+                    transition-opacity hover:text-zinc-400 group-hover:opacity-100"
+                draggable="true"
+                title="Arrastra para reordenar"
+                on:dragstart=move |e: leptos::ev::DragEvent| {
+                    if let Some(dt) = e.data_transfer() {
+                        let _ = dt.set_data("text/plain", &drag_id);
+                    }
+                    dragging.set(Some(drag_id.clone()));
+                }
+                on:dragend=move |_| dragging.set(None)
+            >
+                "⠿"
+            </span>
+            <div class="min-w-0 flex-1">{inner}</div>
+            {delete_btn(blocks, del_id)}
+        </div>
     }
 }
 
@@ -328,81 +381,5 @@ fn delete_btn(blocks: Blocks, id: String) -> impl IntoView {
         >
             "✕"
         </button>
-    }
-}
-
-fn code_view(blocks: Blocks, id: String, language: String, code: String) -> impl IntoView {
-    let (id_lang, id_code, id_del) = (id.clone(), id.clone(), id.clone());
-    view! {
-        <div class="group relative rounded-lg border border-white/10 bg-black/30 p-2">
-            <input
-                class="mb-1 w-40 bg-transparent font-mono text-xs text-zinc-400 outline-none \
-                    placeholder:text-zinc-600"
-                placeholder="lenguaje"
-                prop:value=language
-                on:input=move |e| {
-                    let val = event_target_value(&e);
-                    blocks.update(|v| {
-                        if let Some(Block::Code { language, .. }) =
-                            v.iter_mut().find(|b| b.id() == id_lang)
-                        {
-                            *language = val.clone();
-                        }
-                    });
-                }
-            />
-            <textarea
-                class="block w-full resize-y bg-transparent font-mono text-sm text-zinc-200 \
-                    outline-none"
-                rows="3"
-                prop:value=code
-                on:input=move |e| {
-                    let val = event_target_value(&e);
-                    blocks.update(|v| {
-                        if let Some(Block::Code { code, .. }) =
-                            v.iter_mut().find(|b| b.id() == id_code)
-                        {
-                            *code = val.clone();
-                        }
-                    });
-                }
-            ></textarea>
-            {delete_btn(blocks, id_del)}
-        </div>
-    }
-}
-
-fn divider_view(blocks: Blocks, id: String) -> impl IntoView {
-    view! {
-        <div class="group relative py-2">
-            <hr class="border-white/15" />
-            {delete_btn(blocks, id)}
-        </div>
-    }
-}
-
-fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl IntoView {
-    let id_alt = id.clone();
-    view! {
-        <div class="group relative rounded-lg border border-white/10 p-2">
-            <img src=src alt=alt.clone() class="mx-auto max-h-80 rounded" />
-            <input
-                class="mt-1 w-full bg-transparent text-center text-xs text-zinc-400 outline-none \
-                    placeholder:text-zinc-600"
-                placeholder="texto alternativo"
-                prop:value=alt
-                on:input=move |e| {
-                    let val = event_target_value(&e);
-                    blocks.update(|v| {
-                        if let Some(Block::Image { alt, .. }) =
-                            v.iter_mut().find(|b| b.id() == id_alt)
-                        {
-                            *alt = val.clone();
-                        }
-                    });
-                }
-            />
-            {delete_btn(blocks, id)}
-        </div>
     }
 }

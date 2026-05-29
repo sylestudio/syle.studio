@@ -9,6 +9,7 @@ mod content;
 mod dom;
 mod slash;
 mod toolbar;
+mod views;
 
 use block_row::BlockRow;
 use leptos::prelude::*;
@@ -20,6 +21,7 @@ pub use content::empty_paragraph;
 #[component]
 pub fn BlockEditor(blocks: RwSignal<Vec<Block>>) -> impl IntoView {
     let slash = RwSignal::new(None::<String>);
+    let dragging = RwSignal::new(None::<String>);
 
     // Force tag-based formatting once, so the serializer sees <b>/<i> marks.
     Effect::new(move |_| dom::use_tag_formatting());
@@ -45,7 +47,7 @@ pub fn BlockEditor(blocks: RwSignal<Vec<Block>>) -> impl IntoView {
                     key=|b| content::signature(b)
                     let:block
                 >
-                    <BlockRow block=block blocks=blocks slash=slash />
+                    <BlockRow block=block blocks=blocks slash=slash dragging=dragging />
                 </For>
             </div>
             <button
