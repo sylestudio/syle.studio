@@ -44,9 +44,17 @@ sudo certbot --nginx -d syle.studio -d www.syle.studio
 sudo certbot --nginx -d admin.syle.studio
 ```
 
-certbot rewrites the vhosts to listen on 443 and adds the 80→443 redirect.
 After issuance, flip the public records (`syle.studio`, `www`) to **proxied**
 in Cloudflare for the CDN; leave `admin` DNS-only.
+
+This Cloudflare zone's SSL/TLS mode is **Flexible**, so Cloudflare fetches the
+origin over HTTP `:80`. The public vhost therefore serves the site on **both
+`:80` and `:443` with no http→https redirect** (a `:80` redirect makes the CDN
+loop). `admin` is DNS-only/direct and keeps certbot's `:80→:443` redirect.
+Upgrading the zone to **Full (strict)** is recommended (CF↔origin would then be
+encrypted) — but it is zone-wide, so first confirm the other proxied origins in
+the zone present a valid cert on `:443`, or scope it per-host with a
+Configuration Rule.
 
 ## Continuous deploy
 
