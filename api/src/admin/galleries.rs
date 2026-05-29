@@ -1,6 +1,7 @@
 use super::{parse_format, remove_media_file};
 use crate::auth::AuthUser;
 use crate::error::ApiError;
+use crate::gallery_row::{into_gallery, GalleryRow, GALLERY_COLS};
 use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
@@ -10,21 +11,14 @@ use syle_types::{
 };
 use uuid::Uuid;
 
-type GalleryRow = (Uuid, String, String, i32, bool);
-
-fn into_gallery((id, slug, title, position, published): GalleryRow) -> Gallery {
-    Gallery { id, slug, title, position, published }
-}
-
 /// All galleries including unpublished (CRM list).
 pub async fn list_galleries(
     _user: AuthUser,
     State(state): State<AppState>,
 ) -> Result<Json<Vec<Gallery>>, ApiError> {
-    let rows: Vec<GalleryRow> = sqlx::query_as(
-        "SELECT id, slug, title, position, published FROM galleries \
-         ORDER BY position, slug",
-    )
+    let rows: Vec<GalleryRow> = sqlx::query_as(&format!(
+        "SELECT {GALLERY_COLS} FROM galleries ORDER BY position, slug"
+    ))
     .fetch_all(&state.pool)
     .await?;
     Ok(Json(rows.into_iter().map(into_gallery).collect()))
@@ -58,6 +52,10 @@ pub async fn create_gallery(
         title: req.title,
         position: req.position,
         published: req.published,
+        description: String::new(),
+        notes: String::new(),
+        category: String::new(),
+        year: None,
     }))
 }
 
@@ -67,9 +65,9 @@ pub async fn get_gallery_detail(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<GalleryDetail>, ApiError> {
-    let row: Option<GalleryRow> = sqlx::query_as(
-        "SELECT id, slug, title, position, published FROM galleries WHERE id = $1",
-    )
+    let row: Option<GalleryRow> = sqlx::query_as(&format!(
+        "SELECT {GALLERY_COLS} FROM galleries WHERE id = $1"
+    ))
     .bind(id)
     .fetch_optional(&state.pool)
     .await?;
@@ -124,20 +122,28 @@ pub async fn update_gallery(
             return Err(ApiError::BadRequest);
         }
     }
-    let row: Option<GalleryRow> = sqlx::query_as(
+    let row: Option<GalleryRow> = sqlx::query_as(&format!(
         "UPDATE galleries SET \
            title = COALESCE($2, title), \
            slug = COALESCE($3, slug), \
            published = COALESCE($4, published), \
-           position = COALESCE($5, position) \
+           position = COALESCE($5, position), \
+           description = COALESCE($6, description), \
+           notes = COALESCE($7, notes), \
+           category = COALESCE($8, category), \
+           year = COALESCE($9, year) \
          WHERE id = $1 \
-         RETURNING id, slug, title, position, published",
-    )
+         RETURNING {GALLERY_COLS}"
+    ))
     .bind(id)
     .bind(req.title)
     .bind(req.slug)
     .bind(req.published)
     .bind(req.position)
+    .bind(req.description)
+    .bind(req.notes)
+    .bind(req.category)
+    .bind(req.year)
     .fetch_optional(&state.pool)
     .await
     .map_err(unique_to_bad_request)?;

@@ -5,6 +5,7 @@
 mod admin;
 pub mod auth;
 mod error;
+mod gallery_row;
 mod public;
 mod state;
 

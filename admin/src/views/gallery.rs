@@ -16,6 +16,10 @@ pub fn GalleryView() -> impl IntoView {
     let detail = RwSignal::new(None::<GalleryDetail>);
     let title = RwSignal::new(String::new());
     let slug = RwSignal::new(String::new());
+    let description = RwSignal::new(String::new());
+    let notes = RwSignal::new(String::new());
+    let category = RwSignal::new(String::new());
+    let year = RwSignal::new(String::new());
     let loaded = RwSignal::new(false);
     let saving = RwSignal::new(false);
     let confirm_photo = RwSignal::new(None::<String>);
@@ -36,6 +40,10 @@ pub fn GalleryView() -> impl IntoView {
                     Ok(d) => {
                         title.set(d.gallery.title.clone());
                         slug.set(d.gallery.slug.clone());
+                        description.set(d.gallery.description.clone());
+                        notes.set(d.gallery.notes.clone());
+                        category.set(d.gallery.category.clone());
+                        year.set(d.gallery.year.map(|y| y.to_string()).unwrap_or_default());
                         detail.set(Some(d));
                         loaded.set(true);
                     }
@@ -69,6 +77,11 @@ pub fn GalleryView() -> impl IntoView {
                 slug: Some(s),
                 published: publish,
                 position: None,
+                description: Some(description.get()),
+                notes: Some(notes.get()),
+                category: Some(category.get()),
+                // Empty/invalid leaves the year unchanged (COALESCE merge).
+                year: year.get().trim().parse::<i32>().ok(),
             };
             if saving.get() {
                 return;
@@ -224,6 +237,36 @@ pub fn GalleryView() -> impl IntoView {
             {move || (!loaded.get()).then(|| view! {
                 <p class="text-sm/6 text-zinc-500">"Cargando…"</p>
             })}
+
+            <Card>
+                <div class="space-y-4">
+                    <h2 class="text-sm/6 font-semibold text-white">
+                        "Detalles del proyecto"
+                    </h2>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <Field label="Categoría / disciplina">
+                            <input class=INPUT prop:value=category
+                                placeholder="Dirección · Prenda · Película"
+                                on:input=move |e| category.set(event_target_value(&e)) />
+                        </Field>
+                        <Field label="Año">
+                            <input class=INPUT type="number" inputmode="numeric"
+                                prop:value=year placeholder="2026"
+                                on:input=move |e| year.set(event_target_value(&e)) />
+                        </Field>
+                    </div>
+                    <Field label="Lede — intro del hero">
+                        <textarea class=format!("{INPUT} min-h-24 leading-relaxed")
+                            prop:value=description
+                            on:input=move |e| description.set(event_target_value(&e)) />
+                    </Field>
+                    <Field label="Notas del proyecto — cierre">
+                        <textarea class=format!("{INPUT} min-h-20 leading-relaxed")
+                            prop:value=notes
+                            on:input=move |e| notes.set(event_target_value(&e)) />
+                    </Field>
+                </div>
+            </Card>
 
             <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {

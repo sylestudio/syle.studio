@@ -47,8 +47,9 @@ async fn gallery_detail_returns_photos_with_variants() {
     let Some((app, pool, _media)) = setup().await else { return };
     let gid = Uuid::new_v4();
     sqlx::query(
-        "INSERT INTO galleries (id, slug, title, position, published) \
-         VALUES ($1,'wd','Wedding',0,TRUE)",
+        "INSERT INTO galleries \
+         (id, slug, title, position, published, description, notes, category, year) \
+         VALUES ($1,'wd','Wedding',0,TRUE,'el lede','las notas','Película',2026)",
     )
     .bind(gid)
     .execute(&pool)
@@ -89,6 +90,10 @@ async fn gallery_detail_returns_photos_with_variants() {
     assert_eq!(resp.status(), StatusCode::OK);
     let detail: GalleryDetail = body_json(resp).await;
     assert_eq!(detail.gallery.slug, "wd");
+    assert_eq!(detail.gallery.description, "el lede");
+    assert_eq!(detail.gallery.notes, "las notas");
+    assert_eq!(detail.gallery.category, "Película");
+    assert_eq!(detail.gallery.year, Some(2026));
     assert_eq!(detail.photos.len(), 1);
     assert_eq!(detail.photos[0].thumbhash, "abcd");
     assert_eq!(detail.photos[0].variants.len(), 2);

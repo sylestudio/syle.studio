@@ -27,6 +27,10 @@ export interface Gallery {
   title: string;
   position: number;
   published: boolean;
+  description: string;
+  notes: string;
+  category: string;
+  year: number | null;
 }
 
 export interface GalleryDetail {

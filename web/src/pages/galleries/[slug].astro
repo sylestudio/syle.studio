@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import Photo from "../../components/Photo.astro";
 import { listGalleries, getGallery } from "../../lib/api";
+import { toRoman } from "../../lib/roman";
 
 export async function getStaticPaths() {
   const galleries = await listGalleries();
@@ -25,12 +26,17 @@ const [cover, ...rest] = detail.photos;
 const totalPhotos = detail.photos.length;
 const pad = (n: number, w = 3) => String(n).padStart(w, "0");
 
-// Preview copy: API has no description/date fields yet, so lorem fills the
-// narrative slots and the layout — not the words — is judged.
+// Real CRM fields drive the narrative; while the catalog is still being filled
+// (preview phase) empty fields fall back to lorem so the layout reads complete.
+const { description, notes, category, year } = detail.gallery;
 const lede =
+  description?.trim() ||
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
-  "tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam.";
-const closing = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+    "tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam.";
+const closing =
+  notes?.trim() || "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+const yearLabel = year ? toRoman(year) : "MMXXVI";
+const categoryLabel = category?.trim();
 ---
 
 <Base title={detail.gallery.title} bare>
@@ -44,7 +50,8 @@ const closing = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
       <div class="meta lbl muted" data-reveal>
         <span>Proyecto · {pad(seq, 2)}</span>
-        <span>MMXXVI</span>
+        {categoryLabel && <span>{categoryLabel}</span>}
+        <span>{yearLabel}</span>
         <span>{pad(totalPhotos, 2)} piezas</span>
       </div>
 

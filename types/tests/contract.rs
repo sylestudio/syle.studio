@@ -19,6 +19,10 @@ fn gallery_serializes_snake_case() {
         title: "Wedding".into(),
         position: 0,
         published: true,
+        description: "el lede".into(),
+        notes: "las notas".into(),
+        category: "Película".into(),
+        year: Some(2026),
     };
     assert_eq!(
         serde_json::to_value(&g).unwrap(),
@@ -27,7 +31,11 @@ fn gallery_serializes_snake_case() {
             "slug": "wedding",
             "title": "Wedding",
             "position": 0,
-            "published": true
+            "published": true,
+            "description": "el lede",
+            "notes": "las notas",
+            "category": "Película",
+            "year": 2026
         })
     );
 }

@@ -68,6 +68,61 @@ async fn patch_gallery_publishes() {
 
 #[tokio::test]
 #[serial_test::serial]
+async fn patch_gallery_sets_editorial_fields_and_partial_patch_preserves_year() {
+    let Some((app, pool, _m)) = setup().await else { return };
+    let gid = make_gallery(&pool, "g", false).await;
+    let cookie = login_cookie(&app, &pool).await;
+
+    let resp = app
+        .clone()
+        .oneshot(
+            Request::patch(format!("/api/admin/galleries/{gid}"))
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(
+                    r#"{"description":"el lede","notes":"las notas",
+                        "category":"Dirección · Prenda","year":2026}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let g: Gallery = body_json(resp).await;
+    assert_eq!(g.description, "el lede");
+    assert_eq!(g.notes, "las notas");
+    assert_eq!(g.category, "Dirección · Prenda");
+    assert_eq!(g.year, Some(2026));
+
+    let (desc, year): (String, Option<i32>) =
+        sqlx::query_as("SELECT description, year FROM galleries WHERE id=$1")
+            .bind(gid)
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(desc, "el lede");
+    assert_eq!(year, Some(2026));
+
+    // A partial patch that omits `year` must not wipe it (COALESCE merge).
+    let r2 = app
+        .oneshot(
+            Request::patch(format!("/api/admin/galleries/{gid}"))
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(r#"{"title":"Otro título"}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(r2.status(), StatusCode::OK);
+    let g2: Gallery = body_json(r2).await;
+    assert_eq!(g2.title, "Otro título");
+    assert_eq!(g2.year, Some(2026));
+    assert_eq!(g2.description, "el lede");
+}
+
+#[tokio::test]
+#[serial_test::serial]
 async fn patch_photo_updates_alt_and_reorder_sets_positions() {
     let Some((app, pool, _m)) = setup().await else { return };
     let gid = make_gallery(&pool, "g", true).await;

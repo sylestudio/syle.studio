@@ -2,6 +2,7 @@
 //! site at build and behind the CDN.
 
 use crate::error::ApiError;
+use crate::gallery_row::{into_gallery, GalleryRow, GALLERY_COLS};
 use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
@@ -42,23 +43,14 @@ fn into_post((id, slug, title, body_md, status, published_at): PostRow) -> BlogP
 pub async fn list_galleries(
     State(state): State<AppState>,
 ) -> Result<Json<Vec<Gallery>>, ApiError> {
-    let rows: Vec<(Uuid, String, String, i32, bool)> = sqlx::query_as(
-        "SELECT id, slug, title, position, published FROM galleries \
-         WHERE published = TRUE ORDER BY position, slug",
-    )
+    let rows: Vec<GalleryRow> = sqlx::query_as(&format!(
+        "SELECT {GALLERY_COLS} FROM galleries \
+         WHERE published = TRUE ORDER BY position, slug"
+    ))
     .fetch_all(&state.pool)
     .await?;
 
-    let galleries = rows
-        .into_iter()
-        .map(|(id, slug, title, position, published)| Gallery {
-            id,
-            slug,
-            title,
-            position,
-            published,
-        })
-        .collect();
+    let galleries = rows.into_iter().map(into_gallery).collect();
     Ok(Json(galleries))
 }
 
@@ -67,16 +59,15 @@ pub async fn get_gallery(
     State(state): State<AppState>,
     Path(slug): Path<String>,
 ) -> Result<Json<GalleryDetail>, ApiError> {
-    let (id, slug, title, position, published): (Uuid, String, String, i32, bool) =
-        sqlx::query_as(
-            "SELECT id, slug, title, position, published FROM galleries \
-             WHERE slug = $1 AND published = TRUE",
-        )
-        .bind(&slug)
-        .fetch_optional(&state.pool)
-        .await?
-        .ok_or(ApiError::NotFound)?;
-    let gallery = Gallery { id, slug, title, position, published };
+    let row: GalleryRow = sqlx::query_as(&format!(
+        "SELECT {GALLERY_COLS} FROM galleries WHERE slug = $1 AND published = TRUE"
+    ))
+    .bind(&slug)
+    .fetch_optional(&state.pool)
+    .await?
+    .ok_or(ApiError::NotFound)?;
+    let gallery = into_gallery(row);
+    let id = gallery.id;
 
     let photo_rows: Vec<(Uuid, Uuid, String, String, i32, i32, i32)> = sqlx::query_as(
         "SELECT id, gallery_id, alt, thumbhash, width, height, position \
