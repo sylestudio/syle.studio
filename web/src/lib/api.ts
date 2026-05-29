@@ -42,7 +42,10 @@ export interface BlogPost {
   id: string;
   slug: string;
   title: string;
-  body_md: string;
+  /** Structured block document (source of record). */
+  blocks: unknown[];
+  /** Server-rendered HTML from `blocks`; identical to the CRM preview. */
+  body_html: string;
   status: "draft" | "published";
   published_at: number | null;
 }

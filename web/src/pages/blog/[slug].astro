@@ -1,7 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
 import { listPosts, getPost } from "../../lib/api";
-import { marked } from "marked";
 
 export async function getStaticPaths() {
   const posts = await listPosts();
@@ -12,14 +11,132 @@ const { slug } = Astro.params;
 const post = await getPost(slug!);
 if (!post) return Astro.redirect("/404");
 
-const html = marked.parse(post.body_md);
+const fecha = post.published_at
+  ? new Date(post.published_at * 1000).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : "";
 ---
 
 <Base title={post.title}>
-  <article>
-    <h2 style="font-size:1.75rem;font-weight:600;margin-bottom:1.5rem">
-      {post.title}
-    </h2>
-    <div set:html={html} />
+  <article class="post">
+    {fecha && <p class="lbl post-date">{fecha}</p>}
+    <h1 class="disp post-title">{post.title}</h1>
+    <!-- Server-rendered from the block document — identical to the CRM preview. -->
+    <div class="post-content" set:html={post.body_html} />
   </article>
 </Base>
+
+<style>
+  .post {
+    max-width: 44rem;
+    margin: 0 auto;
+  }
+  .post-date {
+    color: var(--ox);
+    margin-bottom: 1rem;
+  }
+  .post-title {
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    margin-bottom: 2.5rem;
+  }
+
+  /* Block content — styled to match the structure authored in the CRM. */
+  .post-content {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .post-content :global(h1),
+  .post-content :global(h2),
+  .post-content :global(h3) {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 2.25rem 0 0.9rem;
+  }
+  .post-content :global(h1) { font-size: 1.9rem; }
+  .post-content :global(h2) { font-size: 1.5rem; }
+  .post-content :global(h3) { font-size: 1.2rem; }
+  .post-content :global(p) { margin: 1rem 0; }
+  .post-content :global(a) {
+    color: var(--ox);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  .post-content :global(strong) { font-weight: 700; }
+  .post-content :global(em) { font-style: italic; }
+  .post-content :global(s) { text-decoration: line-through; opacity: 0.7; }
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin: 1rem 0;
+    padding-left: 1.4rem;
+  }
+  .post-content :global(li) { margin: 0.35rem 0; }
+  .post-content :global(ul.todo-list) {
+    list-style: none;
+    padding-left: 0.2rem;
+  }
+  .post-content :global(ul.todo-list input) {
+    margin-right: 0.5rem;
+    accent-color: var(--ox);
+  }
+  .post-content :global(blockquote) {
+    border-left: 3px solid var(--ox);
+    padding-left: 1.1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #4b463c;
+  }
+  .post-content :global(code) {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 0.9em;
+    background: rgba(22, 20, 15, 0.07);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  .post-content :global(pre) {
+    background: var(--dark);
+    color: var(--paper);
+    padding: 1.1rem 1.25rem;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+  .post-content :global(pre code) {
+    background: none;
+    padding: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .post-content :global(hr) {
+    border: none;
+    border-top: 1px solid rgba(22, 20, 15, 0.18);
+    margin: 2.5rem 0;
+  }
+  .post-content :global(figure) { margin: 2rem 0; }
+  .post-content :global(figure img) { border-radius: 10px; }
+  .post-content :global(figcaption) {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: #6b665b;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+  .post-content :global(aside.callout) {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(155, 44, 44, 0.07);
+    border: 1px solid rgba(155, 44, 44, 0.2);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin: 1.5rem 0;
+  }
+  .post-content :global(aside.callout .callout-emoji) {
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+</style>
