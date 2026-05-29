@@ -6,7 +6,19 @@
 //! the CRM edits and the renderer (`syle-render`) turns into HTML — so the
 //! public site and the CRM preview render from the exact same data.
 
+use crate::ImageVariant;
 use serde::{Deserialize, Serialize};
+
+/// `skip_serializing_if` predicate: keep zero `indent` off the wire.
+fn is_zero(n: &u8) -> bool {
+    *n == 0
+}
+
+/// `skip_serializing_if` predicate for unset image dimensions (e.g. a pasted
+/// external URL whose size we don't know).
+fn is_zero_u32(n: &u32) -> bool {
+    *n == 0
+}
 
 /// Inline formatting applied to a run of text.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -64,11 +76,17 @@ pub enum Block {
     },
     BulletItem {
         id: String,
+        /// Nesting depth (0 = top level); the renderer turns runs of items into
+        /// nested `<ul>`/`<ol>` by this. Omitted from the wire when 0.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        indent: u8,
         #[serde(default)]
         content: Vec<Span>,
     },
     NumberedItem {
         id: String,
+        #[serde(default, skip_serializing_if = "is_zero")]
+        indent: u8,
         #[serde(default)]
         content: Vec<Span>,
     },
@@ -76,6 +94,8 @@ pub enum Block {
         id: String,
         #[serde(default)]
         checked: bool,
+        #[serde(default, skip_serializing_if = "is_zero")]
+        indent: u8,
         #[serde(default)]
         content: Vec<Span>,
     },
@@ -96,6 +116,17 @@ pub enum Block {
         alt: String,
         #[serde(default)]
         caption: Vec<Span>,
+        /// Responsive renditions from the ingest pipeline. Empty for a pasted
+        /// external URL (and old documents) → the renderer emits a plain `<img>`.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        variants: Vec<ImageVariant>,
+        /// Blur-up placeholder (`data:image/png;base64,…`); empty when unknown.
+        #[serde(default, skip_serializing_if = "String::is_empty")]
+        placeholder: String,
+        #[serde(default, skip_serializing_if = "is_zero_u32")]
+        width: u32,
+        #[serde(default, skip_serializing_if = "is_zero_u32")]
+        height: u32,
     },
     Callout {
         id: String,

@@ -64,6 +64,10 @@ pub fn app(state: AppState) -> Router {
             "/api/admin/photos",
             post(admin::upload_photo).layer(DefaultBodyLimit::max(MAX_UPLOAD_BYTES)),
         )
+        .route(
+            "/api/admin/blog-assets",
+            post(admin::upload_blog_asset).layer(DefaultBodyLimit::max(MAX_UPLOAD_BYTES)),
+        )
         .route("/api/admin/login", post(auth::login))
         .route("/api/admin/logout", post(auth::logout))
         .route("/api/admin/me", get(auth::me))

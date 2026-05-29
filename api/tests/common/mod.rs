@@ -107,6 +107,18 @@ pub fn multipart(gallery_id: Uuid, alt: &str, png: &[u8]) -> (String, Vec<u8>) {
     (format!("multipart/form-data; boundary={b}"), body)
 }
 
+/// Multipart body with only a `file` field (inline blog-image upload).
+pub fn multipart_file(png: &[u8]) -> (String, Vec<u8>) {
+    let b = "BOUND";
+    let mut body = Vec::new();
+    body.extend_from_slice(
+        format!("--{b}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"p.png\"\r\nContent-Type: image/png\r\n\r\n").as_bytes(),
+    );
+    body.extend_from_slice(png);
+    body.extend_from_slice(format!("\r\n--{b}--\r\n").as_bytes());
+    (format!("multipart/form-data; boundary={b}"), body)
+}
+
 pub async fn make_gallery(pool: &sqlx::PgPool, slug: &str, published: bool) -> Uuid {
     let id = Uuid::new_v4();
     sqlx::query(

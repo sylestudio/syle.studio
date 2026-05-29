@@ -7,71 +7,28 @@
 
 use syle_types::{Block, Mark, Span};
 
+mod highlight;
+mod image;
+mod list;
+
 /// Render a post document to an HTML fragment.
 pub fn render_blocks(blocks: &[Block]) -> String {
     let mut out = String::new();
     let mut i = 0;
     while i < blocks.len() {
-        // Consecutive list items of the same kind collapse into one list.
-        if let Some(tag) = list_tag(&blocks[i]) {
-            let kind = std::mem::discriminant(&blocks[i]);
-            out.push_str(tag.open);
-            while i < blocks.len() && std::mem::discriminant(&blocks[i]) == kind {
-                push_list_item(&mut out, &blocks[i]);
+        // A run of consecutive list items becomes one (possibly nested) list.
+        if list::is_list_item(&blocks[i]) {
+            let start = i;
+            while i < blocks.len() && list::is_list_item(&blocks[i]) {
                 i += 1;
             }
-            out.push_str(tag.close);
+            list::render_list_run(&mut out, &blocks[start..i]);
             continue;
         }
         render_block(&mut out, &blocks[i]);
         i += 1;
     }
     out
-}
-
-struct ListTag {
-    open: &'static str,
-    close: &'static str,
-}
-
-fn list_tag(b: &Block) -> Option<ListTag> {
-    match b {
-        Block::BulletItem { .. } => Some(ListTag {
-            open: "<ul>",
-            close: "</ul>",
-        }),
-        Block::NumberedItem { .. } => Some(ListTag {
-            open: "<ol>",
-            close: "</ol>",
-        }),
-        Block::Todo { .. } => Some(ListTag {
-            open: "<ul class=\"todo-list\">",
-            close: "</ul>",
-        }),
-        _ => None,
-    }
-}
-
-fn push_list_item(out: &mut String, b: &Block) {
-    match b {
-        Block::BulletItem { content, .. } | Block::NumberedItem { content, .. } => {
-            out.push_str("<li>");
-            out.push_str(&render_inline(content));
-            out.push_str("</li>");
-        }
-        Block::Todo {
-            checked, content, ..
-        } => {
-            out.push_str("<li class=\"todo\"><input type=\"checkbox\"");
-            if *checked {
-                out.push_str(" checked");
-            }
-            out.push_str(" disabled> ");
-            out.push_str(&render_inline(content));
-            out.push_str("</li>");
-        }
-        _ => {}
-    }
 }
 
 fn render_block(out: &mut String, b: &Block) {
@@ -98,27 +55,20 @@ fn render_block(out: &mut String, b: &Block) {
                 out.push_str(&format!(" class=\"language-{}\"", escape_attr(language)));
             }
             out.push('>');
-            out.push_str(&escape_text(code));
+            out.push_str(&highlight::highlight(language, code));
             out.push_str("</code></pre>");
         }
         Block::Divider { .. } => out.push_str("<hr>"),
         Block::Image {
-            src, alt, caption, ..
-        } => {
-            if let Some(safe) = sanitize_url(src) {
-                out.push_str("<figure><img src=\"");
-                out.push_str(&escape_attr(&safe));
-                out.push_str("\" alt=\"");
-                out.push_str(&escape_attr(alt));
-                out.push_str("\">");
-                if !caption.is_empty() {
-                    out.push_str("<figcaption>");
-                    out.push_str(&render_inline(caption));
-                    out.push_str("</figcaption>");
-                }
-                out.push_str("</figure>");
-            }
-        }
+            src,
+            alt,
+            caption,
+            variants,
+            placeholder,
+            width,
+            height,
+            ..
+        } => image::render_image(out, src, alt, caption, variants, placeholder, *width, *height),
         Block::Callout { emoji, content, .. } => {
             out.push_str("<aside class=\"callout\"><span class=\"callout-emoji\">");
             out.push_str(&escape_text(emoji));
@@ -126,13 +76,11 @@ fn render_block(out: &mut String, b: &Block) {
             out.push_str(&render_inline(content));
             out.push_str("</div></aside>");
         }
-        // List items are handled by the grouping pass; a stray one renders bare.
-        Block::BulletItem { content, .. } | Block::NumberedItem { content, .. } => {
-            out.push_str("<ul><li>");
-            out.push_str(&render_inline(content));
-            out.push_str("</li></ul>");
+        // List items are normally consumed as a run by `render_blocks`; a stray
+        // one (e.g. a single item) still renders as a one-item list.
+        Block::BulletItem { .. } | Block::NumberedItem { .. } | Block::Todo { .. } => {
+            list::render_list_run(out, std::slice::from_ref(b));
         }
-        Block::Todo { .. } => push_list_item(out, b),
     }
 }
 
@@ -149,7 +97,7 @@ pub fn render_inline(spans: &[Span]) -> String {
 /// Wrap escaped text in its marks with a fixed nesting: link outermost, then
 /// bold, italic, strike, code innermost. Stable regardless of stored order.
 fn wrap_marks(inner: String, marks: &[Mark]) -> String {
-    let has = |pred: &dyn Fn(&Mark) -> bool| marks.iter().any(|m| pred(m));
+    let has = |pred: &dyn Fn(&Mark) -> bool| marks.iter().any(pred);
     let mut s = inner;
     if has(&|m| matches!(m, Mark::Code)) {
         s = format!("<code>{s}</code>");
@@ -207,7 +155,7 @@ fn is_dangerous_scheme(lower: &str) -> bool {
 }
 
 /// Allow only safe URL shapes; reject `javascript:`, `data:`, etc.
-fn sanitize_url(url: &str) -> Option<String> {
+pub(crate) fn sanitize_url(url: &str) -> Option<String> {
     let trimmed = url.trim();
     if trimmed.is_empty() {
         return None;
@@ -221,7 +169,7 @@ fn sanitize_url(url: &str) -> Option<String> {
     ok.then(|| trimmed.to_string())
 }
 
-fn escape_text(s: &str) -> String {
+pub(crate) fn escape_text(s: &str) -> String {
     let mut out = String::with_capacity(s.len());
     for c in s.chars() {
         match c {
@@ -235,7 +183,7 @@ fn escape_text(s: &str) -> String {
     out
 }
 
-fn escape_attr(s: &str) -> String {
+pub(crate) fn escape_attr(s: &str) -> String {
     // Same set plus single quote; attributes here are always double-quoted.
     let mut out = escape_text(s);
     if out.contains('\'') {

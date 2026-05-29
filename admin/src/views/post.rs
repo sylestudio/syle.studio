@@ -19,6 +19,8 @@ const PROSE: &str = "min-h-[60vh] overflow-y-auto rounded-xl border border-white
     [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-zinc-200 \
     [&_pre]:my-3 [&_pre]:rounded-lg [&_pre]:bg-black/40 [&_pre]:p-3 [&_pre]:text-xs \
     [&_pre_code]:bg-transparent [&_pre_code]:p-0 \
+    [&_.hl-kw]:text-[#c792ea] [&_.hl-str]:text-[#c3e88d] [&_.hl-num]:text-[#f78c6c] \
+    [&_.hl-com]:text-[#8b8678] [&_.hl-com]:italic \
     [&_blockquote]:border-l-2 [&_blockquote]:border-white/20 [&_blockquote]:pl-3 [&_blockquote]:text-zinc-400 \
     [&_hr]:my-4 [&_hr]:border-white/15 [&_img]:rounded-lg \
     [&_.todo-list]:list-none [&_.todo-list]:pl-1 \

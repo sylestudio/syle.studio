@@ -8,6 +8,7 @@ pub const ME: &str = "/api/admin/me";
 pub const ADMIN_GALLERIES: &str = "/api/admin/galleries";
 pub const ADMIN_POSTS: &str = "/api/admin/posts";
 pub const ADMIN_PHOTOS: &str = "/api/admin/photos";
+pub const ADMIN_BLOG_ASSETS: &str = "/api/admin/blog-assets";
 
 pub const PUBLIC_GALLERIES: &str = "/api/public/galleries";
 pub const PUBLIC_POSTS: &str = "/api/public/posts";

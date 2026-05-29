@@ -6,7 +6,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use syle_types::{
     endpoints as ep, BlogPost, Gallery, GalleryDetail, LoginRequest, NewGallery, NewPost,
-    Photo, Reorder, UpdateGallery, UpdatePhoto, UpdatePost, User,
+    Photo, Reorder, UpdateGallery, UpdatePhoto, UpdatePost, UploadedImage, User,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -176,6 +176,24 @@ pub async fn update_post(
 
 pub async fn delete_post(id: &str) -> Result<(), ApiError> {
     send_empty(Request::delete(&ep::admin_post(id))).await
+}
+
+/// Upload an inline post image (multipart `file`); returns the public `/media`
+/// path to set as the image block's `src`. Plain fetch — these are small and
+/// quick, so no upload-progress plumbing (unlike `upload_photo`).
+pub async fn upload_blog_asset(form: FormData) -> Result<UploadedImage, ApiError> {
+    let resp = Request::post(ep::ADMIN_BLOG_ASSETS)
+        .credentials(RequestCredentials::Include)
+        .body(form)
+        .map_err(|_| ApiError::Network)?
+        .send()
+        .await
+        .map_err(|_| ApiError::Network)?;
+    if resp.status() == 200 {
+        resp.json().await.map_err(|_| ApiError::Network)
+    } else {
+        Err(classify(resp.status()))
+    }
 }
 
 /// Multipart upload over raw `XMLHttpRequest` so `upload.onprogress` can drive

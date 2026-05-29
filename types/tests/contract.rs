@@ -147,6 +147,7 @@ fn block_variants_roundtrip_by_tag() {
         },
         Block::BulletItem {
             id: "li".into(),
+            indent: 0,
             content: vec![Span {
                 text: "one".into(),
                 marks: vec![Mark::Italic],
@@ -155,6 +156,7 @@ fn block_variants_roundtrip_by_tag() {
         Block::Todo {
             id: "t".into(),
             checked: true,
+            indent: 0,
             content: vec![],
         },
         Block::Code {
@@ -168,6 +170,10 @@ fn block_variants_roundtrip_by_tag() {
             src: "/media/x.avif".into(),
             alt: "alt".into(),
             caption: vec![],
+            variants: vec![],
+            placeholder: String::new(),
+            width: 0,
+            height: 0,
         },
     ];
     let wire = serde_json::to_value(&doc).unwrap();
@@ -179,8 +185,44 @@ fn block_variants_roundtrip_by_tag() {
     assert_eq!(wire[3]["type"], "code");
     assert_eq!(wire[4]["type"], "divider");
     assert_eq!(wire[5]["type"], "image");
+    // An image with no upload payload stays on the wire as just src/alt — the
+    // responsive fields are skipped, so old documents are byte-compatible.
+    assert!(wire[5].get("variants").is_none());
+    assert!(wire[5].get("placeholder").is_none());
+    assert!(wire[5].get("width").is_none());
     let back: Vec<Block> = serde_json::from_value(wire).unwrap();
     assert_eq!(back, doc);
+}
+
+#[test]
+fn image_block_round_trips_responsive_payload() {
+    use syle_types::{ImageFormat, ImageVariant};
+    let img = Block::Image {
+        id: "i".into(),
+        src: "/media/jpeg/k_1440.jpeg".into(),
+        alt: "foto".into(),
+        caption: vec![Span::plain("pie")],
+        variants: vec![
+            ImageVariant {
+                format: ImageFormat::Avif,
+                width: 480,
+                path: "/media/avif/k_480.avif".into(),
+            },
+            ImageVariant {
+                format: ImageFormat::Jpeg,
+                width: 1440,
+                path: "/media/jpeg/k_1440.jpeg".into(),
+            },
+        ],
+        placeholder: "data:image/png;base64,AAAA".into(),
+        width: 1440,
+        height: 960,
+    };
+    let wire = serde_json::to_value(&img).unwrap();
+    assert_eq!(wire["variants"][0]["format"], "avif");
+    assert_eq!(wire["width"], 1440);
+    let back: Block = serde_json::from_value(wire).unwrap();
+    assert_eq!(back, img);
 }
 
 #[test]

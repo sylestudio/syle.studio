@@ -1,8 +1,12 @@
 //! Inner views for non-text blocks (code, divider, image). The drag handle and
 //! delete affordance live in the `BlockRow` wrapper; these render only content.
 
+use crate::api;
 use leptos::prelude::*;
 use syle_types::Block;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::spawn_local;
+use web_sys::{FormData, HtmlInputElement};
 
 type Blocks = RwSignal<Vec<Block>>;
 
@@ -51,6 +55,7 @@ pub fn divider_view() -> impl IntoView {
 }
 
 pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl IntoView {
+    let id_up = id.clone();
     let (id_src, id_alt) = (id.clone(), id);
     let has_src = !src.is_empty();
     let shown = src.clone();
@@ -59,6 +64,51 @@ pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl 
             {has_src.then(|| view! {
                 <img src=shown alt=alt.clone() class="mx-auto max-h-80 rounded" />
             })}
+            // Upload a file (ingested server-side) or paste a URL — either sets src.
+            <label class="mt-1 block cursor-pointer text-xs text-zinc-400 hover:text-white">
+                "Subir imagen…"
+                <input
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    on:change=move |e| {
+                        let Some(input) =
+                            e.target().and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                        else {
+                            return;
+                        };
+                        let Some(file) = input.files().and_then(|f| f.get(0)) else {
+                            return;
+                        };
+                        let Ok(form) = FormData::new() else { return };
+                        if form.append_with_blob("file", &file).is_err() {
+                            return;
+                        }
+                        let id = id_up.clone();
+                        spawn_local(async move {
+                            if let Ok(img) = api::upload_blog_asset(form).await {
+                                blocks.update(|v| {
+                                    if let Some(Block::Image {
+                                        src,
+                                        variants,
+                                        placeholder,
+                                        width,
+                                        height,
+                                        ..
+                                    }) = v.iter_mut().find(|b| b.id() == id)
+                                    {
+                                        *src = img.src;
+                                        *variants = img.variants;
+                                        *placeholder = img.placeholder;
+                                        *width = img.width;
+                                        *height = img.height;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                />
+            </label>
             // src commits on blur/Enter so the preview <img> doesn't re-mount per keystroke.
             <input
                 class="mt-1 w-full bg-transparent text-xs text-zinc-400 outline-none \
@@ -68,10 +118,23 @@ pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl 
                 on:change=move |e| {
                     let val = event_target_value(&e);
                     blocks.update(|v| {
-                        if let Some(Block::Image { src, .. }) =
-                            v.iter_mut().find(|b| b.id() == id_src)
+                        if let Some(Block::Image {
+                            src,
+                            variants,
+                            placeholder,
+                            width,
+                            height,
+                            ..
+                        }) = v.iter_mut().find(|b| b.id() == id_src)
                         {
+                            // A hand-typed URL has no renditions of its own;
+                            // clear any from a prior upload so it renders as a
+                            // plain <img>, not a stale <picture>.
                             *src = val.clone();
+                            variants.clear();
+                            placeholder.clear();
+                            *width = 0;
+                            *height = 0;
                         }
                     });
                 }

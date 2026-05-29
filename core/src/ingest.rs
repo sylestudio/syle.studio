@@ -43,6 +43,11 @@ pub fn ingest(input: &[u8], target_widths: &[u32]) -> anyhow::Result<Ingested> {
         .collect();
     widths.sort_unstable();
     widths.dedup();
+    // If every requested width would upscale the source, fall back to the
+    // source's native width so callers always get at least one derivative.
+    if widths.is_empty() {
+        widths.push(w);
+    }
 
     let mut derivatives = Vec::with_capacity(widths.len() * 2);
     for tw in widths {
@@ -101,6 +106,34 @@ fn encode_jpeg(rgba: &[u8], w: u32, h: u32) -> anyhow::Result<Vec<u8>> {
         jpeg_encoder::ColorType::Rgb,
     )?;
     Ok(buf)
+}
+
+/// Decode a stored ThumbHash hex string into a tiny PNG `data:` URL — the
+/// blur-up placeholder painted before the full image loads. Galleries compute
+/// this in Astro (`thumbHashToDataURL`); blog images render through the shared
+/// pure renderer, so it's precomputed here (where the image deps live) and
+/// embedded as a plain string, keeping `syle-render` dependency-free.
+pub fn thumbhash_data_url(hash_hex: &str) -> anyhow::Result<String> {
+    use base64::Engine;
+    let bytes = hex_to_bytes(hash_hex).ok_or_else(|| anyhow::anyhow!("invalid thumbhash hex"))?;
+    let (w, h, rgba) = thumbhash::thumb_hash_to_rgba(&bytes)
+        .map_err(|_| anyhow::anyhow!("thumbhash decode failed"))?;
+    let img = image::RgbaImage::from_raw(w as u32, h as u32, rgba)
+        .ok_or_else(|| anyhow::anyhow!("thumbhash rgba size mismatch"))?;
+    let mut png = Vec::new();
+    img.write_to(&mut std::io::Cursor::new(&mut png), image::ImageFormat::Png)?;
+    let b64 = base64::engine::general_purpose::STANDARD.encode(&png);
+    Ok(format!("data:image/png;base64,{b64}"))
+}
+
+/// Parse an even-length lowercase/uppercase hex string into bytes.
+fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
+    if !hex.len().is_multiple_of(2) {
+        return None;
+    }
+    (0..hex.len() / 2)
+        .map(|i| u8::from_str_radix(&hex[i * 2..i * 2 + 2], 16).ok())
+        .collect()
 }
 
 fn thumbhash_hex(rgba: &[u8], w: u32, h: u32) -> anyhow::Result<String> {

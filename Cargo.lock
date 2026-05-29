@@ -3131,6 +3131,7 @@ name = "syle-core"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "base64",
  "dotenvy",
  "fast_image_resize",
  "image",

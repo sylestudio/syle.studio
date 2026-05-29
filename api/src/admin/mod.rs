@@ -1,10 +1,12 @@
 //! Authenticated CRM write + curation endpoints. Every handler takes
 //! `AuthUser`, so the session guard is enforced by the type system.
 
+mod assets;
 mod galleries;
 mod photos;
 mod posts;
 
+pub use assets::*;
 pub use galleries::*;
 pub use photos::*;
 pub use posts::*;

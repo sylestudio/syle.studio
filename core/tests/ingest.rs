@@ -2,7 +2,7 @@
 
 use image::{ImageFormat as ImgFmt, RgbImage};
 use std::io::Cursor;
-use syle_core::ingest::ingest;
+use syle_core::ingest::{ingest, thumbhash_data_url};
 use syle_types::ImageFormat;
 
 fn synthetic_png(w: u32, h: u32) -> Vec<u8> {
@@ -43,4 +43,28 @@ fn ingest_produces_capped_derivatives_and_thumbhash() {
         .map(|d| d.width)
         .collect();
     assert_eq!(avif_widths, vec![480, 960]);
+}
+
+#[test]
+fn thumbhash_data_url_decodes_to_a_png_data_uri() {
+    let src = synthetic_png(1200, 800);
+    let out = ingest(&src, &[480]).expect("ingest");
+
+    let url = thumbhash_data_url(&out.thumbhash).expect("placeholder");
+    assert!(url.starts_with("data:image/png;base64,"));
+    // Non-trivial payload (a real encoded PNG, not an empty string).
+    assert!(url.len() > "data:image/png;base64,".len() + 40);
+
+    // Malformed hex is rejected rather than panicking.
+    assert!(thumbhash_data_url("nothex").is_err());
+}
+
+#[test]
+fn ingest_falls_back_to_source_width_when_all_targets_upscale() {
+    let src = synthetic_png(300, 200);
+    // Every requested width exceeds the 300px source; rather than emit nothing,
+    // the pipeline produces the native size (still no upscaling).
+    let out = ingest(&src, &[800, 1600]).expect("ingest");
+    assert!(!out.derivatives.is_empty());
+    assert!(out.derivatives.iter().all(|d| d.width == 300));
 }

@@ -110,6 +110,11 @@ const fecha = post.published_at
     font-size: 0.875rem;
     line-height: 1.6;
   }
+  /* Syntax tokens — emitted by syle-render, identical to the CRM preview. */
+  .post-content :global(.hl-kw) { color: #c792ea; }
+  .post-content :global(.hl-str) { color: #c3e88d; }
+  .post-content :global(.hl-num) { color: #f78c6c; }
+  .post-content :global(.hl-com) { color: #8b8678; font-style: italic; }
   .post-content :global(hr) {
     border: none;
     border-top: 1px solid rgba(22, 20, 15, 0.18);

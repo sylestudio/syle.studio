@@ -120,6 +120,37 @@ pub fn is_empty_text(b: &Block) -> bool {
     }
 }
 
+/// True for list-item blocks (the kinds that carry an `indent`).
+pub fn is_list(b: &Block) -> bool {
+    matches!(
+        b,
+        Block::BulletItem { .. } | Block::NumberedItem { .. } | Block::Todo { .. }
+    )
+}
+
+/// Nesting indent of a list item (0 for any other block).
+pub fn indent_of(b: &Block) -> u8 {
+    match b {
+        Block::BulletItem { indent, .. }
+        | Block::NumberedItem { indent, .. }
+        | Block::Todo { indent, .. } => *indent,
+        _ => 0,
+    }
+}
+
+/// Set a list item's indent (no-op for non-list blocks).
+pub fn set_indent(b: &mut Block, indent: u8) {
+    match b {
+        Block::BulletItem { indent: n, .. }
+        | Block::NumberedItem { indent: n, .. }
+        | Block::Todo { indent: n, .. } => *n = indent,
+        _ => {}
+    }
+}
+
+/// Deepest nesting level the editor will create.
+pub const MAX_INDENT: u8 = 6;
+
 /// Inline content of a text block (empty for non-text blocks).
 pub fn spans_of(b: &Block) -> Vec<Span> {
     match b {
@@ -167,11 +198,20 @@ pub fn make(kind: Kind, id: String, spans: Vec<Span>) -> Block {
             level: 3,
             content: spans,
         },
-        Kind::Bullet => Block::BulletItem { id, content: spans },
-        Kind::Numbered => Block::NumberedItem { id, content: spans },
+        Kind::Bullet => Block::BulletItem {
+            id,
+            indent: 0,
+            content: spans,
+        },
+        Kind::Numbered => Block::NumberedItem {
+            id,
+            indent: 0,
+            content: spans,
+        },
         Kind::Todo => Block::Todo {
             id,
             checked: false,
+            indent: 0,
             content: spans,
         },
         Kind::Quote => Block::Quote { id, content: spans },
@@ -191,6 +231,10 @@ pub fn make(kind: Kind, id: String, spans: Vec<Span>) -> Block {
             src: String::new(),
             alt: String::new(),
             caption: Vec::new(),
+            variants: Vec::new(),
+            placeholder: String::new(),
+            width: 0,
+            height: 0,
         },
     }
 }

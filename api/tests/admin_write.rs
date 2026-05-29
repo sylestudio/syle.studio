@@ -5,7 +5,7 @@ use common::*;
 
 use axum::body::Body;
 use axum::http::{header, Request, StatusCode};
-use syle_types::{BlogPost, Gallery, Photo, PostStatus};
+use syle_types::{BlogPost, Gallery, ImageFormat, Photo, PostStatus, UploadedImage};
 use tower::ServiceExt;
 use uuid::Uuid;
 
@@ -287,4 +287,83 @@ async fn uploaded_derivative_is_served_under_media() {
         .await
         .unwrap();
     assert_eq!(served.status(), StatusCode::OK);
+}
+
+#[tokio::test]
+#[serial_test::serial]
+async fn admin_blog_asset_upload_ingests_and_is_served_without_a_gallery() {
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
+    let cookie = login_cookie(&app, &pool).await;
+
+    // Wide enough that several responsive widths survive (480/960/1440).
+    let (ct, body) = multipart_file(&synthetic_png(1600, 1067));
+    let resp = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/blog-assets")
+                .header(header::CONTENT_TYPE, ct)
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(body))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let asset: UploadedImage = body_json(resp).await;
+
+    // Same optimization as galleries: responsive AVIF+JPEG renditions across
+    // several widths, a blur-up placeholder, and source dimensions.
+    assert_eq!((asset.width, asset.height), (1600, 1067));
+    assert!(asset.src.starts_with("/media/jpeg/"));
+    assert!(asset
+        .variants
+        .iter()
+        .any(|v| v.format == ImageFormat::Avif));
+    let widths: std::collections::BTreeSet<u32> =
+        asset.variants.iter().map(|v| v.width).collect();
+    assert!(widths.len() >= 2, "expected multiple responsive widths");
+    assert!(asset.placeholder.starts_with("data:image/png;base64,"));
+
+    // Both an AVIF rendition and the JPEG fallback are actually served.
+    let avif = asset
+        .variants
+        .iter()
+        .find(|v| v.format == ImageFormat::Avif)
+        .unwrap();
+    for path in [&asset.src, &avif.path] {
+        let served = app
+            .clone()
+            .oneshot(Request::get(path).body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(served.status(), StatusCode::OK);
+    }
+
+    // A blog image must not create gallery/photo rows.
+    let (photos,): (i64,) = sqlx::query_as("SELECT count(*) FROM photos")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(photos, 0);
+}
+
+#[tokio::test]
+#[serial_test::serial]
+async fn admin_blog_asset_upload_requires_auth() {
+    let Some((app, _pool, _media)) = setup().await else {
+        return;
+    };
+    let (ct, body) = multipart_file(&synthetic_png(64, 64));
+    let resp = app
+        .oneshot(
+            Request::post("/api/admin/blog-assets")
+                .header(header::CONTENT_TYPE, ct)
+                .body(Body::from(body))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
