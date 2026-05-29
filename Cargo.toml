@@ -1,9 +1,9 @@
 [workspace]
 resolver = "2"
-members = ["api", "core", "types", "admin"]
+members = ["api", "core", "types", "render", "admin"]
 # admin is a wasm32 (Leptos CSR) crate built via `trunk`; keep it out of the
 # default host `cargo check`/`build` so native tooling stays fast and green.
-default-members = ["api", "core", "types"]
+default-members = ["api", "core", "types", "render"]
 
 [workspace.package]
 edition = "2021"
@@ -18,6 +18,7 @@ anyhow = "1"
 thiserror = "2"
 syle-types = { path = "types" }
 syle-core = { path = "core" }
+syle-render = { path = "render" }
 
 [profile.release]
 opt-level = 3
