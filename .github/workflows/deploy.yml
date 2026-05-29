@@ -1,0 +1,82 @@
+name: deploy
+
+# Build and deploy the three artifacts to vps2 from a self-hosted runner that
+# lives on the box itself. The runner user (github-runner) is unprivileged; the
+# one-time infra (DB, dirs, systemd unit, nginx, certbot) is provisioned out of
+# band. Here we only build, drop artifacts into github-runner-owned dirs under
+# /opt/syle, and use a narrow sudoers rule to restart the API and reload nginx.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; never cancel a deploy mid-flight.
+concurrency:
+  group: deploy-vps2
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, vps2]
+    env:
+      CARGO_TERM_COLOR: always
+      API_BASE: http://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain (rust + wasm + trunk + pnpm, idempotent, no sudo)
+        run: |
+          set -euo pipefail
+          if [ ! -x "$HOME/.cargo/bin/rustc" ]; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+              | sh -s -- -y --default-toolchain stable --profile minimal
+          fi
+          . "$HOME/.cargo/env"
+          rustup target add wasm32-unknown-unknown
+          command -v trunk >/dev/null 2>&1 || cargo install trunk --locked
+          export npm_config_prefix="$HOME/.npm-global"
+          mkdir -p "$npm_config_prefix/bin"
+          command -v pnpm >/dev/null 2>&1 || "$HOME/.npm-global/bin/pnpm" --version >/dev/null 2>&1 \
+            || npm install -g pnpm >/dev/null 2>&1
+          echo "$HOME/.cargo/bin"     >> "$GITHUB_PATH"
+          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+
+      - name: Build API (release)
+        run: cargo build --release -p syle-api
+
+      - name: Build CRM (Leptos -> wasm, trunk release)
+        run: |
+          set -euo pipefail
+          pnpm --dir admin install --frozen-lockfile
+          trunk build --release --config admin/Trunk.toml
+
+      - name: Deploy API + CRM, restart API
+        run: |
+          set -euo pipefail
+          install -m 0755 target/release/syle-api /opt/syle/bin/syle-api.new
+          mv -f /opt/syle/bin/syle-api.new /opt/syle/bin/syle-api
+          rsync -a --delete admin/dist/ /opt/syle/admin/
+          sudo /usr/bin/systemctl restart syle-api
+          # Wait for the API to answer a public endpoint before building the site.
+          ok=
+          for _ in $(seq 1 40); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/public/galleries || true)
+            if [ "$code" = "200" ]; then ok=1; break; fi
+            sleep 0.5
+          done
+          [ -n "$ok" ] || { echo "API did not become healthy"; sudo /usr/bin/systemctl is-active syle-api || true; exit 1; }
+          echo "API healthy."
+
+      - name: Build public site (Astro, against the live API)
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web build
+
+      - name: Deploy public site, reload nginx
+        run: |
+          set -euo pipefail
+          rsync -a --delete web/dist/ /opt/syle/web/
+          sudo /usr/bin/systemctl reload nginx
+          echo "Deploy complete."

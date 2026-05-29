@@ -12,7 +12,7 @@ EnvironmentFile=/etc/syle/api.env
 ExecStart=/opt/syle/bin/syle-api
 Restart=on-failure
 RestartSec=2
-# Hardening: the API only needs its media dir and a loopback socket.
+# Hardening: the API binds loopback and only needs its media dir writable.
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
