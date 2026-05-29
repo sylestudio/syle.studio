@@ -196,3 +196,16 @@ fn callout_renders_emoji_and_body() {
 fn empty_document_is_empty_string() {
     assert_eq!(render_blocks(&[]), "");
 }
+
+#[test]
+fn inline_renderer_has_no_block_wrapper() {
+    use syle_render::render_inline;
+    let html = render_inline(&[
+        Span::plain("a "),
+        Span {
+            text: "b".into(),
+            marks: vec![Mark::Bold],
+        },
+    ]);
+    assert_eq!(html, "a <strong>b</strong>");
+}

@@ -136,7 +136,9 @@ fn render_block(out: &mut String, b: &Block) {
     }
 }
 
-fn render_inline(spans: &[Span]) -> String {
+/// Render inline content (no block wrapper). Used to seed editable blocks in
+/// the CRM so the editing surface matches the canonical output exactly.
+pub fn render_inline(spans: &[Span]) -> String {
     let mut s = String::new();
     for span in spans {
         s.push_str(&wrap_marks(escape_text(&span.text), &span.marks));
