@@ -91,6 +91,21 @@ pub fn is_text(b: &Block) -> bool {
     )
 }
 
+/// True when `b` is a text block whose inline content is empty (no spans, or
+/// only empty-text spans). Drives the focused-block placeholder hint.
+pub fn is_empty_text(b: &Block) -> bool {
+    match b {
+        Block::Paragraph { content, .. }
+        | Block::Heading { content, .. }
+        | Block::Quote { content, .. }
+        | Block::BulletItem { content, .. }
+        | Block::NumberedItem { content, .. }
+        | Block::Todo { content, .. }
+        | Block::Callout { content, .. } => content.iter().all(|s| s.text.is_empty()),
+        _ => false,
+    }
+}
+
 /// Inline content of a text block (empty for non-text blocks).
 pub fn spans_of(b: &Block) -> Vec<Span> {
     match b {

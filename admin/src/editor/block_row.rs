@@ -292,14 +292,30 @@ fn text_view(block: Block, blocks: Blocks, slash: Slash, id: String) -> impl Int
     };
 
     let id_attr = id.clone();
+    let ph_id = id.clone();
     let editable = view! {
         <div
             contenteditable="true"
             node_ref=node
             data-block=id_attr
+            data-ph=chrome::placeholder_text(kind)
             on:input=on_input
             on:keydown=on_keydown
-            class=chrome::editable_class(kind)
+            // Reactive only on the class attr (never innerHTML) → caret-safe.
+            class=move || {
+                let base = chrome::editable_class(kind);
+                let empty = blocks.with(|v| {
+                    v.iter()
+                        .find(|b| b.id() == ph_id)
+                        .map(content::is_empty_text)
+                        .unwrap_or(false)
+                });
+                if empty {
+                    format!("{base} is-empty")
+                } else {
+                    base.to_string()
+                }
+            }
         ></div>
     };
 

@@ -74,6 +74,17 @@ input:-webkit-autofill:active {
 .reveal-item:nth-child(8)  { animation-delay: 0.30s; }
 .reveal-item:nth-child(n+9){ animation-delay: 0.34s; }
 
+/* Block editor: ghost placeholder on a focused, empty block. Driven by the
+   model (`.is-empty` is toggled in Rust from the block's content), not the CSS
+   `:empty` pseudo — so it survives the stray <br> a contenteditable leaves after
+   a delete-all. Shown only while focused so resting empty blocks stay clean. */
+[data-ph].is-empty:focus::before {
+  content: attr(data-ph);
+  color: rgb(255 255 255 / 0.26);
+  pointer-events: none;
+  position: absolute;
+}
+
 /* Loading shimmer for media placeholders (covers) — replaces dead "cargando". */
 @keyframes shimmer { 100% { transform: translateX(100%); } }
 .skeleton { position: relative; overflow: hidden; background: rgb(255 255 255 / 0.04); }
