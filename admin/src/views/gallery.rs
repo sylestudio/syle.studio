@@ -172,11 +172,18 @@ pub fn GalleryView() -> impl IntoView {
                     let _ = fd.append_with_blob("file", file.unchecked_ref());
                     uploading.set(format!("Subiendo {}/{n} — 0%", k + 1));
                     let progress = move |frac: f64| {
-                        uploading.set(format!(
-                            "Subiendo {}/{n} — {:.0}%",
-                            k + 1,
-                            frac * 100.0
-                        ));
+                        // Bytes done (frac == 1.0) → the server is now decoding +
+                        // encoding derivatives; show that phase instead of a bar
+                        // frozen at 100%.
+                        if frac >= 1.0 {
+                            uploading.set(format!("Procesando {}/{n}… (codificando)", k + 1));
+                        } else {
+                            uploading.set(format!(
+                                "Subiendo {}/{n} — {:.0}%",
+                                k + 1,
+                                frac * 100.0
+                            ));
+                        }
                     };
                     if api::upload_photo(fd, progress).await.is_ok() {
                         ok += 1;

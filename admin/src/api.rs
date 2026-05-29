@@ -185,7 +185,7 @@ pub async fn delete_post(id: &str) -> Result<(), ApiError> {
 /// actions) — the idiomatic xhr-in-wasm tradeoff vs. an Rc/RefCell dance.
 pub async fn upload_photo(
     form: FormData,
-    on_progress: impl Fn(f64) + 'static,
+    on_progress: impl Fn(f64) + Clone + 'static,
 ) -> Result<Photo, ApiError> {
     use wasm_bindgen::closure::Closure;
     use wasm_bindgen::{JsCast, JsValue};
@@ -197,13 +197,22 @@ pub async fn upload_photo(
     xhr.set_with_credentials(true);
 
     if let Ok(up) = xhr.upload() {
+        let prog = on_progress.clone();
         let cb = Closure::<dyn FnMut(ProgressEvent)>::new(move |e: ProgressEvent| {
             if e.length_computable() && e.total() > 0.0 {
-                on_progress((e.loaded() / e.total()).clamp(0.0, 1.0));
+                prog((e.loaded() / e.total()).clamp(0.0, 1.0));
             }
         });
         up.set_onprogress(Some(cb.as_ref().unchecked_ref()));
         cb.forget();
+
+        // Bytes fully sent: the server now ingests synchronously (decode +
+        // encode derivatives). Emit a definitive 1.0 so the UI can flip to a
+        // "processing" state rather than sit at <100% until the response.
+        let done = on_progress.clone();
+        let on_sent = Closure::<dyn FnMut()>::new(move || done(1.0));
+        up.set_onload(Some(on_sent.as_ref().unchecked_ref()));
+        on_sent.forget();
     }
 
     let done = xhr.clone();
