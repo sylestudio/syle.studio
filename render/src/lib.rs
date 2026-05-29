@@ -171,6 +171,41 @@ fn wrap_marks(inner: String, marks: &[Mark]) -> String {
     s
 }
 
+/// Normalize a link target typed by an author into a storable href, or `None`
+/// when it can't be made safe. Acceptable shapes (`http(s)://`, `mailto:`,
+/// `/path`, `#anchor`) pass through the render gate unchanged; a scheme-less
+/// host like `example.com` gains an `https://` prefix (otherwise the gate would
+/// later drop it silently, leaving the text un-linked); explicit dangerous or
+/// unknown schemes (`javascript:`, `data:`, `ftp://`, …) are rejected.
+pub fn coerce_href(raw: &str) -> Option<String> {
+    let trimmed = raw.trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    let lower = trimmed.to_ascii_lowercase();
+    if lower.starts_with("http://")
+        || lower.starts_with("https://")
+        || lower.starts_with("mailto:")
+        || trimmed.starts_with('/')
+        || trimmed.starts_with('#')
+    {
+        return sanitize_url(trimmed);
+    }
+    // Any other explicit scheme (a `scheme://` authority or a dangerous prefix)
+    // is rejected rather than coerced.
+    if lower.contains("://") || is_dangerous_scheme(&lower) {
+        return None;
+    }
+    // Scheme-less, non-relative → assume https.
+    sanitize_url(&format!("https://{trimmed}"))
+}
+
+fn is_dangerous_scheme(lower: &str) -> bool {
+    ["javascript:", "data:", "vbscript:", "file:"]
+        .iter()
+        .any(|p| lower.starts_with(p))
+}
+
 /// Allow only safe URL shapes; reject `javascript:`, `data:`, etc.
 fn sanitize_url(url: &str) -> Option<String> {
     let trimmed = url.trim();

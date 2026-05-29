@@ -209,3 +209,37 @@ fn inline_renderer_has_no_block_wrapper() {
     ]);
     assert_eq!(html, "a <strong>b</strong>");
 }
+
+#[test]
+fn coerce_href_adds_https_to_bare_domain() {
+    use syle_render::coerce_href;
+    // A bare domain would otherwise be dropped silently by the render gate.
+    assert_eq!(coerce_href("example.com"), Some("https://example.com".into()));
+    assert_eq!(
+        coerce_href("sub.example.com/path?q=1"),
+        Some("https://sub.example.com/path?q=1".into())
+    );
+}
+
+#[test]
+fn coerce_href_preserves_acceptable_shapes() {
+    use syle_render::coerce_href;
+    assert_eq!(coerce_href("https://x.io"), Some("https://x.io".into()));
+    assert_eq!(coerce_href("http://x.io"), Some("http://x.io".into()));
+    assert_eq!(coerce_href("/blog/hola"), Some("/blog/hola".into()));
+    assert_eq!(coerce_href("#seccion"), Some("#seccion".into()));
+    assert_eq!(coerce_href("mailto:a@b.com"), Some("mailto:a@b.com".into()));
+    // Surrounding whitespace is trimmed.
+    assert_eq!(coerce_href("  example.com  "), Some("https://example.com".into()));
+}
+
+#[test]
+fn coerce_href_rejects_dangerous_or_empty() {
+    use syle_render::coerce_href;
+    assert_eq!(coerce_href("javascript:alert(1)"), None);
+    assert_eq!(coerce_href("JavaScript:alert(1)"), None);
+    assert_eq!(coerce_href("data:text/html,x"), None);
+    assert_eq!(coerce_href("ftp://h/f"), None);
+    assert_eq!(coerce_href(""), None);
+    assert_eq!(coerce_href("   "), None);
+}
