@@ -7,26 +7,18 @@ import { listGalleries, getGallery } from "../lib/api";
 // Each published gallery is a "Proyecto". The list endpoint carries no cover,
 // so we pull each detail for its first photo. Resilient: if the API is down
 // at build time everything falls back to empty and the static sections still
-// render. (Category is intentionally not shown — the API has no such field.)
+// render. Title + category come straight from the list payload.
 const galleries = await listGalleries();
 const projects = await Promise.all(
   galleries.map(async (g) => ({
     slug: g.slug,
     title: g.title,
+    category: g.category,
     cover: (await getGallery(g.slug))?.photos?.[0] ?? null,
   })),
 );
 
 const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
-
-// Preview build: project titles come from the API but are shown as lorem so
-// the layout is judged, not the copy. Slugs/links stay real.
-const loremTitles = [
-  "Lorem ipsum",
-  "Dolor sit amet",
-  "Consectetur elit",
-  "Sed do eiusmod",
-];
 ---
 
 <Base title="Estudio creativo" bare>
@@ -66,16 +58,17 @@ const loremTitles = [
     </div>
 
     {projects.length === 0 ? (
-      <p class="lbl muted empty">Lorem ipsum dolor sit.</p>
+      <p class="lbl muted empty">Aún no hay proyectos publicados.</p>
     ) : (
       <div class="grid">
-        {projects.map((p, i) => (
+        {projects.map((p) => (
           <a href={`/galleries/${p.slug}`} class="card" data-reveal>
             <div class="card-img">
               {p.cover ? <Photo photo={p.cover} /> : <div class="ph" />}
             </div>
+            {p.category && <span class="lbl muted card-cat">{p.category}</span>}
             <h3 class="disp card-title">
-              <span class="ln">{loremTitles[i % loremTitles.length]}</span>
+              <span class="ln">{p.title}</span>
             </h3>
           </a>
         ))}
@@ -239,6 +232,8 @@ const loremTitles = [
     margin-top: 1.25rem;
     font-size: clamp(1.75rem, 4vw, 3rem);
   }
+  .card-cat { display: block; margin-top: 1.25rem; }
+  .card-cat + .card-title { margin-top: 0.4rem; }
 
   /* dark contrast moment */
   .proc { display: grid; gap: 3rem; }
