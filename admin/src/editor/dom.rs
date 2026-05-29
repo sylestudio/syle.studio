@@ -3,6 +3,7 @@
 //! a leaf utility. Offsets are counted in UTF-16 units to match the DOM/Range
 //! API; for the Latin/Spanish text this editor handles that equals characters.
 
+use std::cell::RefCell;
 use syle_types::{Mark, Span};
 use wasm_bindgen::JsCast;
 use web_sys::{Document, Element, HtmlElement, Node, Window};
@@ -277,6 +278,52 @@ pub fn exec(command: &str) {
         JsValue::FALSE,
         JsValue::from_str(""),
     ]);
+}
+
+thread_local! {
+    /// Selection captured when the link button is pressed, so the `<a>` can wrap
+    /// it after focus has moved away to the URL input.
+    static SAVED_RANGE: RefCell<Option<web_sys::Range>> = const { RefCell::new(None) };
+}
+
+/// Capture the live selection for a later `create_link`. Returns true when the
+/// selection is a non-empty range (i.e. there is text to link).
+pub fn save_selection() -> bool {
+    let range = (|| {
+        let sel = win()?.get_selection().ok()??;
+        (sel.range_count() > 0).then(|| sel.get_range_at(0).ok())?
+    })();
+    let has_text = range.as_ref().map(|r| !r.collapsed()).unwrap_or(false);
+    SAVED_RANGE.with(|c| *c.borrow_mut() = range);
+    has_text
+}
+
+/// Wrap the saved selection in `<a href=…>`. No-op (returns false) if there is
+/// no saved range, it is collapsed, or it crosses element boundaries
+/// (`surroundContents` only wraps a single inline context — same limit as
+/// `wrap_inline_code`). The href is assumed already normalized by the caller.
+pub fn create_link(href: &str) -> bool {
+    SAVED_RANGE.with(|c| {
+        let Some(range) = c.borrow().clone() else {
+            return false;
+        };
+        if range.collapsed() {
+            return false;
+        }
+        (|| {
+            let a = doc()?.create_element("a").ok()?;
+            a.set_attribute("href", href).ok()?;
+            range.surround_contents(a.unchecked_ref::<Node>()).ok()?;
+            Some(())
+        })()
+        .is_some()
+    })
+}
+
+/// Serialize block `id`'s current DOM into spans. Used after a formatting
+/// command when the contenteditable may no longer be the active element.
+pub fn serialize_block(id: &str) -> Option<Vec<Span>> {
+    query_block(id).map(|el| serialize_inline(&el))
 }
 
 /// Wrap the current (non-collapsed) selection in an inline `<code>` element.
