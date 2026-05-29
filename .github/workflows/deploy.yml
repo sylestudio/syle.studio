@@ -48,7 +48,11 @@ jobs:
       - name: Build CRM (Leptos -> wasm, trunk release)
         run: |
           set -euo pipefail
-          pnpm --dir admin install --frozen-lockfile
+          # --ignore-scripts: pnpm v10 hard-fails under CI when a dep has an
+          # unapproved build script (@parcel/watcher here). Those native deps
+          # ship prebuilt platform binaries via optional deps, so skipping the
+          # scripts is harmless — same module state as local dev.
+          pnpm --dir admin install --frozen-lockfile --ignore-scripts
           trunk build --release --config admin/Trunk.toml
 
       - name: Deploy API + CRM, restart API
@@ -71,7 +75,7 @@ jobs:
       - name: Build public site (Astro, against the live API)
         run: |
           set -euo pipefail
-          pnpm --dir web install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile --ignore-scripts
           pnpm --dir web build
 
       - name: Deploy public site, reload nginx
