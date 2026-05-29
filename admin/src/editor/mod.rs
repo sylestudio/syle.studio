@@ -5,6 +5,7 @@
 //! reorder) are plain `Vec<Block>` operations.
 
 mod block_row;
+mod chrome;
 mod content;
 mod dom;
 mod slash;
