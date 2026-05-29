@@ -77,6 +77,20 @@ impl Kind {
     }
 }
 
+/// Slash-menu kinds matching `query` (the text typed after `/`), by label or
+/// glyph substring. Empty query → the full menu, in order.
+pub fn filter_kinds(query: &str) -> Vec<Kind> {
+    let q = query.trim().to_lowercase();
+    if q.is_empty() {
+        return Kind::menu().to_vec();
+    }
+    Kind::menu()
+        .iter()
+        .copied()
+        .filter(|k| k.label().to_lowercase().contains(&q) || k.glyph().to_lowercase().contains(&q))
+        .collect()
+}
+
 /// True for blocks edited through a contenteditable surface.
 pub fn is_text(b: &Block) -> bool {
     matches!(

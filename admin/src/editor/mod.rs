@@ -22,6 +22,7 @@ pub use content::empty_paragraph;
 #[component]
 pub fn BlockEditor(blocks: RwSignal<Vec<Block>>) -> impl IntoView {
     let slash = RwSignal::new(None::<String>);
+    let slash_query = RwSignal::new(String::new());
     let dragging = RwSignal::new(None::<String>);
 
     // Force tag-based formatting once, so the serializer sees <b>/<i> marks.
@@ -48,7 +49,13 @@ pub fn BlockEditor(blocks: RwSignal<Vec<Block>>) -> impl IntoView {
                     key=|b| content::signature(b)
                     let:block
                 >
-                    <BlockRow block=block blocks=blocks slash=slash dragging=dragging />
+                    <BlockRow
+                        block=block
+                        blocks=blocks
+                        slash=slash
+                        slash_query=slash_query
+                        dragging=dragging
+                    />
                 </For>
             </div>
             <button

@@ -15,6 +15,7 @@ use web_sys::Element;
 
 type Blocks = RwSignal<Vec<Block>>;
 type Slash = RwSignal<Option<String>>;
+type SlashQuery = RwSignal<String>;
 type Dragging = RwSignal<Option<String>>;
 
 fn set_block_spans(blocks: Blocks, id: &str, spans: Vec<Span>) {
@@ -87,7 +88,7 @@ fn reorder(blocks: Blocks, dragging: Dragging, target_id: &str) {
     });
 }
 
-fn handle_input(blocks: Blocks, slash: Slash, id: &str, el: &Element) {
+fn handle_input(blocks: Blocks, slash: Slash, query: SlashQuery, id: &str, el: &Element) {
     // contenteditable renders a trailing space as a non-breaking space; fold it
     // back so Markdown triggers like "## " and "- " match.
     let text = el.text_content().unwrap_or_default().replace('\u{00A0}', " ");
@@ -95,9 +96,14 @@ fn handle_input(blocks: Blocks, slash: Slash, id: &str, el: &Element) {
         apply_convert(blocks, slash, id.to_string(), kind);
         return;
     }
-    if text == "/" {
-        slash.set(Some(id.to_string()));
-    } else if slash.get_untracked().as_deref() == Some(id) && !text.starts_with('/') {
+    if text.starts_with('/') {
+        // Open once on the first `/`; later keystrokes only refine the query so
+        // the menu refilters in place instead of re-mounting (and losing state).
+        if slash.get_untracked().as_deref() != Some(id) {
+            slash.set(Some(id.to_string()));
+        }
+        query.set(text[1..].to_string());
+    } else if slash.get_untracked().as_deref() == Some(id) {
         slash.set(None);
     }
     set_block_spans(blocks, id, dom::serialize_inline(el));
@@ -188,7 +194,13 @@ fn remove_block(blocks: Blocks, id: &str) {
 }
 
 #[component]
-pub fn BlockRow(block: Block, blocks: Blocks, slash: Slash, dragging: Dragging) -> impl IntoView {
+pub fn BlockRow(
+    block: Block,
+    blocks: Blocks,
+    slash: Slash,
+    slash_query: SlashQuery,
+    dragging: Dragging,
+) -> impl IntoView {
     let id = block.id().to_string();
 
     // The verified contenteditable subtree is built unchanged; drag/delete
@@ -201,7 +213,7 @@ pub fn BlockRow(block: Block, blocks: Blocks, slash: Slash, dragging: Dragging) 
         Block::Image { src, alt, .. } => {
             views::image_view(blocks, id.clone(), src.clone(), alt.clone()).into_any()
         }
-        _ => text_view(block, blocks, slash, id.clone()).into_any(),
+        _ => text_view(block, blocks, slash, slash_query, id.clone()).into_any(),
     };
 
     let (drag_id, drop_id, del_id) = (id.clone(), id.clone(), id);
@@ -235,7 +247,13 @@ pub fn BlockRow(block: Block, blocks: Blocks, slash: Slash, dragging: Dragging) 
     }
 }
 
-fn text_view(block: Block, blocks: Blocks, slash: Slash, id: String) -> impl IntoView {
+fn text_view(
+    block: Block,
+    blocks: Blocks,
+    slash: Slash,
+    slash_query: SlashQuery,
+    id: String,
+) -> impl IntoView {
     let kind = content::kind_of(&block);
     let seed = render_inline(&content::spans_of(&block));
     let node = NodeRef::<html::Div>::new();
@@ -251,7 +269,7 @@ fn text_view(block: Block, blocks: Blocks, slash: Slash, id: String) -> impl Int
         let id = id.clone();
         move |_| {
             if let Some(div) = node.get() {
-                handle_input(blocks, slash, &id, div.unchecked_ref::<Element>());
+                handle_input(blocks, slash, slash_query, &id, div.unchecked_ref::<Element>());
             }
         }
     };
@@ -260,7 +278,22 @@ fn text_view(block: Block, blocks: Blocks, slash: Slash, id: String) -> impl Int
         move |ev: leptos::ev::KeyboardEvent| {
             let Some(div) = node.get() else { return };
             let el = div.unchecked_ref::<Element>();
+            let slash_here = slash.get_untracked().as_deref() == Some(id.as_str());
             match ev.key().as_str() {
+                // While the slash menu is open, Enter picks the top match and
+                // Esc closes it — otherwise Enter would split the block.
+                "Enter" if slash_here => {
+                    ev.prevent_default();
+                    match content::filter_kinds(&slash_query.get_untracked()).first().copied() {
+                        Some(k) => apply_convert(blocks, slash, id.clone(), k),
+                        None => slash.set(None),
+                    }
+                }
+                "Escape" if slash_here => {
+                    ev.prevent_default();
+                    slash.set(None);
+                    dom::focus_block(&id, false);
+                }
                 "Enter" if !ev.shift_key() => {
                     ev.prevent_default();
                     handle_enter(blocks, slash, &id, kind, el);
@@ -330,6 +363,7 @@ fn text_view(block: Block, blocks: Blocks, slash: Slash, id: String) -> impl Int
                 let bid2 = id.clone();
                 view! {
                     <SlashMenu
+                        query=slash_query
                         on_pick=Callback::new(move |k| apply_convert(blocks, slash, bid.clone(), k))
                         on_close=Callback::new(move |_| {
                             slash.set(None);
