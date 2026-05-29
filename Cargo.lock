@@ -3093,6 +3093,7 @@ dependencies = [
  "pulldown-cmark",
  "serde",
  "serde_json",
+ "syle-render",
  "syle-types",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -3116,6 +3117,7 @@ dependencies = [
  "serial_test",
  "sqlx",
  "syle-core",
+ "syle-render",
  "syle-types",
  "tempfile",
  "tokio",
@@ -3141,6 +3143,13 @@ dependencies = [
  "thumbhash",
  "tokio",
  "uuid",
+]
+
+[[package]]
+name = "syle-render"
+version = "0.1.0"
+dependencies = [
+ "syle-types",
 ]
 
 [[package]]

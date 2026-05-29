@@ -7,7 +7,7 @@ use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
 use syle_types::{
-    BlogPost, Gallery, GalleryDetail, ImageFormat, ImageVariant, Photo, PostStatus,
+    Block, BlogPost, Gallery, GalleryDetail, ImageFormat, ImageVariant, Photo, PostStatus,
 };
 use uuid::Uuid;
 
@@ -28,12 +28,18 @@ fn parse_status(s: &str) -> PostStatus {
 
 type PostRow = (Uuid, String, String, String, String, Option<i64>);
 
-fn into_post((id, slug, title, body_md, status, published_at): PostRow) -> BlogPost {
+/// Columns selected for a post, in `PostRow` order (body is JSON in `body_blocks`).
+const POST_COLS: &str = "id, slug, title, body_blocks, status, published_at";
+
+fn into_post((id, slug, title, body_blocks, status, published_at): PostRow) -> BlogPost {
+    let blocks: Vec<Block> = serde_json::from_str(&body_blocks).unwrap_or_default();
+    let body_html = syle_render::render_blocks(&blocks);
     BlogPost {
         id,
         slug,
         title,
-        body_md,
+        blocks,
+        body_html,
         status: parse_status(&status),
         published_at,
     }
@@ -113,10 +119,10 @@ pub async fn get_gallery(
 pub async fn list_posts(
     State(state): State<AppState>,
 ) -> Result<Json<Vec<BlogPost>>, ApiError> {
-    let rows: Vec<PostRow> = sqlx::query_as(
-        "SELECT id, slug, title, body_md, status, published_at FROM blog_posts \
-         WHERE status = 'published' ORDER BY published_at DESC NULLS LAST",
-    )
+    let rows: Vec<PostRow> = sqlx::query_as(&format!(
+        "SELECT {POST_COLS} FROM blog_posts \
+         WHERE status = 'published' ORDER BY published_at DESC NULLS LAST"
+    ))
     .fetch_all(&state.pool)
     .await?;
     Ok(Json(rows.into_iter().map(into_post).collect()))
@@ -127,10 +133,9 @@ pub async fn get_post(
     State(state): State<AppState>,
     Path(slug): Path<String>,
 ) -> Result<Json<BlogPost>, ApiError> {
-    let row: PostRow = sqlx::query_as(
-        "SELECT id, slug, title, body_md, status, published_at FROM blog_posts \
-         WHERE slug = $1 AND status = 'published'",
-    )
+    let row: PostRow = sqlx::query_as(&format!(
+        "SELECT {POST_COLS} FROM blog_posts WHERE slug = $1 AND status = 'published'"
+    ))
     .bind(&slug)
     .fetch_optional(&state.pool)
     .await?

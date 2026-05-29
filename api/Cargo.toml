@@ -16,6 +16,7 @@ path = "src/lib.rs"
 [dependencies]
 syle-types.workspace = true
 syle-core.workspace = true
+syle-render.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tokio.workspace = true

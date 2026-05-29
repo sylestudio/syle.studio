@@ -4,10 +4,14 @@ use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
 use std::time::{SystemTime, UNIX_EPOCH};
-use syle_types::{is_valid_slug, BlogPost, NewPost, PostStatus, UpdatePost};
+use syle_types::{is_valid_slug, Block, BlogPost, NewPost, PostStatus, UpdatePost};
 use uuid::Uuid;
 
+/// Row shape: the body is stored as JSON text in `body_blocks`.
 type PostRow = (Uuid, String, String, String, String, Option<i64>);
+
+/// Columns selected for a post, in `PostRow` order.
+const POST_COLS: &str = "id, slug, title, body_blocks, status, published_at";
 
 fn now() -> i64 {
     SystemTime::now()
@@ -24,12 +28,19 @@ fn status_of(s: &str) -> PostStatus {
     }
 }
 
-fn into_post((id, slug, title, body_md, status, published_at): PostRow) -> BlogPost {
+fn blocks_json(blocks: &[Block]) -> String {
+    serde_json::to_string(blocks).unwrap_or_else(|_| "[]".into())
+}
+
+fn into_post((id, slug, title, body_blocks, status, published_at): PostRow) -> BlogPost {
+    let blocks: Vec<Block> = serde_json::from_str(&body_blocks).unwrap_or_default();
+    let body_html = syle_render::render_blocks(&blocks);
     BlogPost {
         id,
         slug,
         title,
-        body_md,
+        blocks,
+        body_html,
         status: status_of(&status),
         published_at,
     }
@@ -40,10 +51,10 @@ pub async fn list_posts(
     _user: AuthUser,
     State(state): State<AppState>,
 ) -> Result<Json<Vec<BlogPost>>, ApiError> {
-    let rows: Vec<PostRow> = sqlx::query_as(
-        "SELECT id, slug, title, body_md, status, published_at FROM blog_posts \
-         ORDER BY COALESCE(published_at, 0) DESC, slug",
-    )
+    let rows: Vec<PostRow> = sqlx::query_as(&format!(
+        "SELECT {POST_COLS} FROM blog_posts \
+         ORDER BY COALESCE(published_at, 0) DESC, slug"
+    ))
     .fetch_all(&state.pool)
     .await?;
     Ok(Json(rows.into_iter().map(into_post).collect()))
@@ -62,15 +73,16 @@ pub async fn create_post(
         PostStatus::Draft => ("draft", None),
     };
     let id = Uuid::new_v4();
+    let body_blocks = blocks_json(&req.blocks);
     sqlx::query(
         "INSERT INTO blog_posts \
-         (id, slug, title, body_md, status, published_at) \
+         (id, slug, title, body_blocks, status, published_at) \
          VALUES ($1,$2,$3,$4,$5,$6)",
     )
     .bind(id)
     .bind(&req.slug)
     .bind(&req.title)
-    .bind(&req.body_md)
+    .bind(&body_blocks)
     .bind(status_str)
     .bind(published_at)
     .execute(&state.pool)
@@ -80,11 +92,13 @@ pub async fn create_post(
         other => other.into(),
     })?;
 
+    let body_html = syle_render::render_blocks(&req.blocks);
     Ok(Json(BlogPost {
         id,
         slug: req.slug,
         title: req.title,
-        body_md: req.body_md,
+        blocks: req.blocks,
+        body_html,
         status: req.status,
         published_at,
     }))
@@ -95,10 +109,9 @@ pub async fn get_post(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<BlogPost>, ApiError> {
-    let row: Option<PostRow> = sqlx::query_as(
-        "SELECT id, slug, title, body_md, status, published_at \
-         FROM blog_posts WHERE id = $1",
-    )
+    let row: Option<PostRow> = sqlx::query_as(&format!(
+        "SELECT {POST_COLS} FROM blog_posts WHERE id = $1"
+    ))
     .bind(id)
     .fetch_optional(&state.pool)
     .await?;
@@ -116,10 +129,9 @@ pub async fn update_post(
             return Err(ApiError::BadRequest);
         }
     }
-    let current: Option<PostRow> = sqlx::query_as(
-        "SELECT id, slug, title, body_md, status, published_at \
-         FROM blog_posts WHERE id = $1",
-    )
+    let current: Option<PostRow> = sqlx::query_as(&format!(
+        "SELECT {POST_COLS} FROM blog_posts WHERE id = $1"
+    ))
     .bind(id)
     .fetch_optional(&state.pool)
     .await?;
@@ -134,21 +146,22 @@ pub async fn update_post(
         ),
         PostStatus::Draft => ("draft", current.published_at),
     };
+    let body_blocks: Option<String> = req.blocks.as_deref().map(blocks_json);
 
-    let row: PostRow = sqlx::query_as(
+    let row: PostRow = sqlx::query_as(&format!(
         "UPDATE blog_posts SET \
            slug = COALESCE($2, slug), \
            title = COALESCE($3, title), \
-           body_md = COALESCE($4, body_md), \
+           body_blocks = COALESCE($4, body_blocks), \
            status = $5, \
            published_at = $6 \
          WHERE id = $1 \
-         RETURNING id, slug, title, body_md, status, published_at",
-    )
+         RETURNING {POST_COLS}"
+    ))
     .bind(id)
     .bind(req.slug)
     .bind(req.title)
-    .bind(req.body_md)
+    .bind(body_blocks)
     .bind(status_str)
     .bind(published_at)
     .fetch_one(&state.pool)

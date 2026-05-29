@@ -104,16 +104,17 @@ async fn gallery_detail_returns_photos_with_variants() {
 async fn public_posts_filter_and_detail() {
     let Some((app, pool, _media)) = setup().await else { return };
     sqlx::query(
-        "INSERT INTO blog_posts (id, slug, title, body_md, status, published_at) \
-         VALUES ($1,'p1','One','# one','published',100)",
+        "INSERT INTO blog_posts (id, slug, title, body_blocks, status, published_at) \
+         VALUES ($1,'p1','One',$2,'published',100)",
     )
     .bind(Uuid::new_v4())
+    .bind(r#"[{"type":"heading","id":"h","level":2,"content":[{"text":"One"}]}]"#)
     .execute(&pool)
     .await
     .unwrap();
     sqlx::query(
-        "INSERT INTO blog_posts (id, slug, title, body_md, status, published_at) \
-         VALUES ($1,'p2','Two','# two','draft',NULL)",
+        "INSERT INTO blog_posts (id, slug, title, body_blocks, status, published_at) \
+         VALUES ($1,'p2','Two','[]','draft',NULL)",
     )
     .bind(Uuid::new_v4())
     .execute(&pool)
@@ -140,6 +141,10 @@ async fn public_posts_filter_and_detail() {
         .await
         .unwrap();
     assert_eq!(one.status(), StatusCode::OK);
+    let detail: BlogPost = body_json(one).await;
+    // The public site injects server-rendered HTML from the block document.
+    assert_eq!(detail.body_html, "<h2>One</h2>");
+    assert_eq!(detail.blocks.len(), 1);
 
     let draft = app
         .oneshot(

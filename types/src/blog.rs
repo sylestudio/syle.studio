@@ -1,3 +1,4 @@
+use crate::Block;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -14,7 +15,9 @@ pub enum PostStatus {
 pub struct NewPost {
     pub slug: String,
     pub title: String,
-    pub body_md: String,
+    /// Structured block document (source of record).
+    #[serde(default)]
+    pub blocks: Vec<Block>,
     #[serde(default = "draft")]
     pub status: PostStatus,
 }
@@ -31,7 +34,7 @@ pub struct UpdatePost {
     #[serde(default)]
     pub title: Option<String>,
     #[serde(default)]
-    pub body_md: Option<String>,
+    pub blocks: Option<Vec<Block>>,
     #[serde(default)]
     pub status: Option<PostStatus>,
 }
@@ -42,8 +45,13 @@ pub struct BlogPost {
     pub id: Uuid,
     pub slug: String,
     pub title: String,
-    /// Markdown/MDX source of record.
-    pub body_md: String,
+    /// Structured block document — the source of record the CRM edits.
+    pub blocks: Vec<Block>,
+    /// Server-rendered HTML (from `blocks` via `syle-render`). The public site
+    /// injects this so it renders identically to the CRM preview; it is derived
+    /// output and ignored on write.
+    #[serde(default)]
+    pub body_html: String,
     pub status: PostStatus,
     /// Unix seconds; `None` until first published.
     pub published_at: Option<i64>,

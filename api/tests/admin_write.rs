@@ -75,7 +75,7 @@ async fn admin_create_post_requires_auth_and_persists() {
                 .header(header::CONTENT_TYPE, "application/json")
                 .header(header::COOKIE, &cookie)
                 .body(Body::from(
-                    r##"{"slug":"hello","title":"Hello","body_md":"# hi","status":"published"}"##,
+                    r##"{"slug":"hello","title":"Hello","status":"published","blocks":[{"type":"heading","id":"h","level":1,"content":[{"text":"Hi"}]},{"type":"paragraph","id":"p","content":[{"text":"body"}]}]}"##,
                 ))
                 .unwrap(),
         )
@@ -86,6 +86,9 @@ async fn admin_create_post_requires_auth_and_persists() {
     assert_eq!(post.slug, "hello");
     assert_eq!(post.status, PostStatus::Published);
     assert!(post.published_at.is_some());
+    assert_eq!(post.blocks.len(), 2);
+    // Create echoes back the same server-rendered HTML the public site will use.
+    assert_eq!(post.body_html, "<h1>Hi</h1><p>body</p>");
 
     let count: (i64,) = sqlx::query_as("SELECT count(*) FROM blog_posts WHERE slug='hello'")
         .fetch_one(&pool)

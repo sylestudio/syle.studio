@@ -3,8 +3,8 @@
 
 use serde_json::json;
 use syle_types::{
-    Block, BlogPost, Gallery, ImageFormat, ImageVariant, LoginRequest, Mark, Photo, PostStatus,
-    SessionToken, Span,
+    Block, BlogPost, Gallery, ImageFormat, ImageVariant, LoginRequest, Mark, NewPost, Photo,
+    PostStatus, SessionToken, Span,
 };
 use uuid::Uuid;
 
@@ -73,13 +73,34 @@ fn post_status_is_lowercase_and_roundtrips() {
         id: fixed(3),
         slug: "hello".into(),
         title: "Hello".into(),
-        body_md: "# hi".into(),
+        blocks: vec![Block::Paragraph {
+            id: "p".into(),
+            content: vec![Span::plain("hi")],
+        }],
+        body_html: "<p>hi</p>".into(),
         status: PostStatus::Draft,
         published_at: None,
     };
-    let back: BlogPost = serde_json::from_value(serde_json::to_value(&post).unwrap()).unwrap();
+    let v = serde_json::to_value(&post).unwrap();
+    assert_eq!(v["blocks"][0]["type"], "paragraph");
+    assert_eq!(v["body_html"], "<p>hi</p>");
+    let back: BlogPost = serde_json::from_value(v).unwrap();
     assert_eq!(back.status, PostStatus::Draft);
     assert_eq!(back.published_at, None);
+    assert_eq!(back.blocks.len(), 1);
+}
+
+#[test]
+fn new_post_takes_blocks_and_ignores_unknown_legacy_fields() {
+    let np: NewPost = serde_json::from_value(json!({
+        "slug": "s",
+        "title": "T",
+        "body_md": "legacy ignored",
+        "blocks": [{ "type": "divider", "id": "d" }]
+    }))
+    .unwrap();
+    assert_eq!(np.blocks.len(), 1);
+    assert_eq!(np.blocks[0].id(), "d");
 }
 
 #[test]
