@@ -3,7 +3,8 @@
 
 use serde_json::json;
 use syle_types::{
-    BlogPost, Gallery, ImageFormat, ImageVariant, LoginRequest, Photo, PostStatus, SessionToken,
+    Block, BlogPost, Gallery, ImageFormat, ImageVariant, LoginRequest, Mark, Photo, PostStatus,
+    SessionToken, Span,
 };
 use uuid::Uuid;
 
@@ -79,6 +80,92 @@ fn post_status_is_lowercase_and_roundtrips() {
     let back: BlogPost = serde_json::from_value(serde_json::to_value(&post).unwrap()).unwrap();
     assert_eq!(back.status, PostStatus::Draft);
     assert_eq!(back.published_at, None);
+}
+
+#[test]
+fn block_paragraph_with_marks_serializes_tagged() {
+    let p = Block::Paragraph {
+        id: "b1".into(),
+        content: vec![
+            Span {
+                text: "plain ".into(),
+                marks: vec![],
+            },
+            Span {
+                text: "bold link".into(),
+                marks: vec![Mark::Bold, Mark::Link { href: "/x".into() }],
+            },
+        ],
+    };
+    assert_eq!(
+        serde_json::to_value(&p).unwrap(),
+        json!({
+            "type": "paragraph",
+            "id": "b1",
+            "content": [
+                { "text": "plain " },
+                { "text": "bold link", "marks": [
+                    { "type": "bold" },
+                    { "type": "link", "href": "/x" }
+                ] }
+            ]
+        })
+    );
+}
+
+#[test]
+fn block_variants_roundtrip_by_tag() {
+    let doc = vec![
+        Block::Heading {
+            id: "h".into(),
+            level: 2,
+            content: vec![Span {
+                text: "Title".into(),
+                marks: vec![],
+            }],
+        },
+        Block::BulletItem {
+            id: "li".into(),
+            content: vec![Span {
+                text: "one".into(),
+                marks: vec![Mark::Italic],
+            }],
+        },
+        Block::Todo {
+            id: "t".into(),
+            checked: true,
+            content: vec![],
+        },
+        Block::Code {
+            id: "c".into(),
+            language: "rust".into(),
+            code: "fn main() {}".into(),
+        },
+        Block::Divider { id: "d".into() },
+        Block::Image {
+            id: "img".into(),
+            src: "/media/x.avif".into(),
+            alt: "alt".into(),
+            caption: vec![],
+        },
+    ];
+    let wire = serde_json::to_value(&doc).unwrap();
+    assert_eq!(wire[0]["type"], "heading");
+    assert_eq!(wire[0]["level"], 2);
+    assert_eq!(wire[1]["type"], "bullet_item");
+    assert_eq!(wire[2]["type"], "todo");
+    assert_eq!(wire[2]["checked"], true);
+    assert_eq!(wire[3]["type"], "code");
+    assert_eq!(wire[4]["type"], "divider");
+    assert_eq!(wire[5]["type"], "image");
+    let back: Vec<Block> = serde_json::from_value(wire).unwrap();
+    assert_eq!(back, doc);
+}
+
+#[test]
+fn block_id_accessor_covers_every_variant() {
+    let b = Block::Divider { id: "z9".into() };
+    assert_eq!(b.id(), "z9");
 }
 
 #[test]

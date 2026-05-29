@@ -4,6 +4,7 @@
 //! `wasm32`); it carries no I/O, no DB, no business logic.
 
 mod auth;
+mod block;
 mod blog;
 pub mod endpoints;
 mod gallery;
@@ -11,6 +12,7 @@ mod photo;
 mod slug;
 
 pub use auth::{LoginRequest, SessionToken, User};
+pub use block::{Block, Mark, Span};
 pub use blog::{BlogPost, NewPost, PostStatus, UpdatePost};
 pub use gallery::{Gallery, GalleryDetail, NewGallery, UpdateGallery};
 pub use photo::{ImageFormat, ImageVariant, Photo, Reorder, UpdatePhoto};
