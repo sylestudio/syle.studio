@@ -1,28 +1,29 @@
 use crate::api::{self, ApiError};
+use crate::editor::BlockEditor;
 use crate::ui::{use_toaster, Badge, Button, Card, Field, Modal, INPUT};
 use leptos::prelude::*;
 use leptos_router::hooks::{use_navigate, use_params_map};
-use syle_types::{is_valid_slug, PostStatus, UpdatePost};
+use syle_render::render_blocks;
+use syle_types::{is_valid_slug, Block, PostStatus, UpdatePost};
 use wasm_bindgen_futures::spawn_local;
 
-fn md_to_html(src: &str) -> String {
-    let parser = pulldown_cmark::Parser::new(src);
-    let mut out = String::new();
-    pulldown_cmark::html::push_html(&mut out, parser);
-    out
-}
-
-/// Readable prose styling for the dark live preview (no typography plugin).
+/// Readable prose styling for the dark live preview (mirrors the public site
+/// structurally; both render the same block HTML via `syle-render`).
 const PROSE: &str = "min-h-[60vh] overflow-y-auto rounded-xl border border-white/10 \
     bg-white/5 p-5 text-sm/6 text-zinc-300 \
     [&_h1]:mt-0 [&_h1]:mb-2 [&_h1]:text-xl [&_h1]:font-semibold [&_h1]:text-white \
     [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-white \
     [&_h3]:mt-3 [&_h3]:font-semibold [&_h3]:text-white \
-    [&_p]:my-2 [&_a]:text-blue-400 [&_a]:underline \
+    [&_p]:my-2 [&_strong]:text-white [&_em]:italic [&_a]:text-blue-400 [&_a]:underline \
     [&_ul]:my-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-2 [&_ol]:list-decimal [&_ol]:pl-5 \
     [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-zinc-200 \
+    [&_pre]:my-3 [&_pre]:rounded-lg [&_pre]:bg-black/40 [&_pre]:p-3 [&_pre]:text-xs \
+    [&_pre_code]:bg-transparent [&_pre_code]:p-0 \
     [&_blockquote]:border-l-2 [&_blockquote]:border-white/20 [&_blockquote]:pl-3 [&_blockquote]:text-zinc-400 \
-    [&_img]:rounded-lg";
+    [&_hr]:my-4 [&_hr]:border-white/15 [&_img]:rounded-lg \
+    [&_.todo-list]:list-none [&_.todo-list]:pl-1 \
+    [&_.callout]:flex [&_.callout]:gap-2 [&_.callout]:rounded-lg [&_.callout]:border \
+    [&_.callout]:border-amber-400/20 [&_.callout]:bg-amber-400/5 [&_.callout]:p-3";
 
 #[component]
 pub fn PostEditor() -> impl IntoView {
@@ -32,7 +33,7 @@ pub fn PostEditor() -> impl IntoView {
 
     let title = RwSignal::new(String::new());
     let slug = RwSignal::new(String::new());
-    let body = RwSignal::new(String::new());
+    let blocks = RwSignal::new(Vec::<Block>::new());
     let published = RwSignal::new(false);
     let loaded = RwSignal::new(false);
     let saving = RwSignal::new(false);
@@ -51,13 +52,15 @@ pub fn PostEditor() -> impl IntoView {
                     Ok(p) => {
                         title.set(p.title);
                         slug.set(p.slug);
-                        body.set(p.body_md);
+                        blocks.set(if p.blocks.is_empty() {
+                            vec![crate::editor::empty_paragraph()]
+                        } else {
+                            p.blocks
+                        });
                         published.set(p.status == PostStatus::Published);
                         loaded.set(true);
                     }
-                    Err(ApiError::Unauthorized) => {
-                        navigate("/login", Default::default())
-                    }
+                    Err(ApiError::Unauthorized) => navigate("/login", Default::default()),
                     Err(_) => loaded.set(true),
                 }
             });
@@ -80,7 +83,7 @@ pub fn PostEditor() -> impl IntoView {
             let req = UpdatePost {
                 slug: Some(s),
                 title: Some(title.get()),
-                body_md: Some(body.get()),
+                blocks: Some(blocks.get()),
                 status: Some(if published.get() {
                     PostStatus::Published
                 } else {
@@ -121,7 +124,7 @@ pub fn PostEditor() -> impl IntoView {
         }
     };
 
-    let preview = move || md_to_html(&body.get());
+    let preview = move || render_blocks(&blocks.get());
     let slug_ok = Signal::derive(move || is_valid_slug(slug.get().trim()));
     let save_btn = save.clone();
     let toggle_pub = {
@@ -171,11 +174,8 @@ pub fn PostEditor() -> impl IntoView {
 
             <div class="grid gap-6 lg:grid-cols-2">
                 <div class="space-y-1.5">
-                    <p class="text-sm/6 font-medium text-zinc-300">"Markdown"</p>
-                    <textarea
-                        class=format!("{INPUT} min-h-[60vh] font-mono leading-relaxed")
-                        prop:value=body
-                        on:input=move |e| body.set(event_target_value(&e)) />
+                    <p class="text-sm/6 font-medium text-zinc-300">"Editor"</p>
+                    <BlockEditor blocks=blocks />
                 </div>
                 <div class="space-y-1.5">
                     <p class="text-sm/6 font-medium text-zinc-300">"Vista previa"</p>

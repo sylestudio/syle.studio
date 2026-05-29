@@ -7,6 +7,7 @@ authors.workspace = true
 
 [dependencies]
 syle-types.workspace = true
+syle-render.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 leptos = { version = "0.7", features = ["csr"] }
@@ -29,4 +30,23 @@ web-sys = { version = "0.3", features = [
   "XmlHttpRequestUpload",
   "ProgressEvent",
   "Event",
+  "Window",
+  "Document",
+  "Crypto",
+  "Node",
+  "NodeList",
+  "Element",
+  "HtmlElement",
+  "Text",
+  "CharacterData",
+  "DocumentFragment",
+  "Selection",
+  "Range",
+  "KeyboardEvent",
+  "InputEvent",
+  "ClipboardEvent",
+  "DataTransfer",
+  "DragEvent",
+  "DomTokenList",
+  "CssStyleDeclaration",
 ] }

@@ -176,7 +176,7 @@ pub fn Dashboard() -> impl IntoView {
         let n = NewPost {
             slug: p_slug.get().trim().into(),
             title: p_title.get().trim().into(),
-            body_md: String::new(),
+            blocks: Vec::new(),
             status: PostStatus::Draft,
         };
         spawn_local(async move {
