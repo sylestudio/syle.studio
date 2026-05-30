@@ -1,13 +1,14 @@
 //! Passkey credential management: list and revoke. Revoking is guarded so the
 //! operator can't lock themselves out by removing their last auth factor.
 
+use super::audit::{record, AccessEvent, ClientMeta};
 use super::AuthUser;
 use crate::error::ApiError;
 use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::Json;
-use syle_types::{CredentialInfo, RenameCredential};
+use syle_types::{AccessAction, AccessOutcome, CredentialInfo, RenameCredential};
 use uuid::Uuid;
 
 pub async fn rename_credential(
@@ -59,6 +60,7 @@ pub async fn list_credentials(
 
 pub async fn delete_credential(
     State(state): State<AppState>,
+    meta: ClientMeta,
     AuthUser(user): AuthUser,
     Path(id): Path<Uuid>,
 ) -> Result<StatusCode, ApiError> {
@@ -103,5 +105,18 @@ pub async fn delete_credential(
         .bind(user.id)
         .execute(&state.pool)
         .await?;
+
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id: Some(user.id),
+            email: Some(user.email),
+            action: AccessAction::PasskeyRevoke,
+            method: None,
+            outcome: AccessOutcome::Success,
+        },
+        &meta,
+    )
+    .await;
     Ok(StatusCode::OK)
 }

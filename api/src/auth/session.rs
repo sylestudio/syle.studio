@@ -1,6 +1,7 @@
 //! Opaque DB-backed sessions. The `sid` cookie is HttpOnly, Secure,
 //! SameSite=Strict, scoped to `/api/admin`, 7-day TTL.
 
+use super::audit::{record, AccessEvent, ClientMeta};
 use super::password::verify_password;
 use crate::error::ApiError;
 use crate::state::AppState;
@@ -11,7 +12,7 @@ use axum::Json;
 use axum_extra::extract::cookie::{Cookie, CookieJar, SameSite};
 use rand::RngCore;
 use std::time::{SystemTime, UNIX_EPOCH};
-use syle_types::{LoginRequest, User};
+use syle_types::{AccessAction, AccessMethod, AccessOutcome, LoginRequest, User};
 use uuid::Uuid;
 
 const SESSION_COOKIE: &str = "sid";
@@ -91,6 +92,7 @@ impl FromRequestParts<AppState> for AuthUser {
 
 pub async fn login(
     State(state): State<AppState>,
+    meta: ClientMeta,
     jar: CookieJar,
     Json(req): Json<LoginRequest>,
 ) -> Result<(CookieJar, Json<User>), ApiError> {
@@ -101,25 +103,82 @@ pub async fn login(
             .bind(&req.email)
             .fetch_optional(&state.pool)
             .await?;
-    let (id, email, hash) = row.ok_or(ApiError::Unauthorized)?;
-    let hash = hash.ok_or(ApiError::Unauthorized)?;
-    if !verify_password(&hash, &req.password) {
-        return Err(ApiError::Unauthorized);
-    }
 
+    // Resolve the attempt; keep the user id (when the email is known) so even a
+    // wrong-password failure ties to that account in the audit row.
+    let ok = match &row {
+        Some((id, email, Some(hash))) if verify_password(hash, &req.password) => {
+            Some((*id, email.clone()))
+        }
+        _ => None,
+    };
+
+    let Some((id, email)) = ok else {
+        record(
+            &state.pool,
+            AccessEvent {
+                user_id: row.as_ref().map(|(id, ..)| *id),
+                email: Some(req.email),
+                action: AccessAction::Login,
+                method: Some(AccessMethod::Password),
+                outcome: AccessOutcome::Failure,
+            },
+            &meta,
+        )
+        .await;
+        return Err(ApiError::Unauthorized);
+    };
+
+    // Record success before minting the session: a session-insert failure must
+    // still leave the access trail.
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id: Some(id),
+            email: Some(email.clone()),
+            action: AccessAction::Login,
+            method: Some(AccessMethod::Password),
+            outcome: AccessOutcome::Success,
+        },
+        &meta,
+    )
+    .await;
     let cookie = issue_session(&state, id).await?;
     Ok((jar.add(cookie), Json(User { id, email })))
 }
 
 pub async fn logout(
     State(state): State<AppState>,
+    meta: ClientMeta,
     jar: CookieJar,
 ) -> Result<CookieJar, ApiError> {
     if let Some(c) = jar.get(SESSION_COOKIE) {
+        // Resolve the session owner for the audit row before revoking it.
+        let owner: Option<(Uuid, String)> = sqlx::query_as(
+            "SELECT u.id, u.email FROM sessions s JOIN users u ON u.id = s.user_id \
+             WHERE s.token = $1",
+        )
+        .bind(c.value())
+        .fetch_optional(&state.pool)
+        .await?;
         sqlx::query("DELETE FROM sessions WHERE token = $1")
             .bind(c.value())
             .execute(&state.pool)
             .await?;
+        if let Some((id, email)) = owner {
+            record(
+                &state.pool,
+                AccessEvent {
+                    user_id: Some(id),
+                    email: Some(email),
+                    action: AccessAction::Logout,
+                    method: None,
+                    outcome: AccessOutcome::Success,
+                },
+                &meta,
+            )
+            .await;
+        }
     }
     Ok(jar.remove(Cookie::from(SESSION_COOKIE)))
 }

@@ -130,6 +130,7 @@ pub fn StudioShell() -> impl IntoView {
                         </h3>
                         <div class="flex flex-col gap-0.5">
                             <NavItem href="/security" label="Seguridad" matches="/security" />
+                            <NavItem href="/access-log" label="Accesos" matches="/access-log" />
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 border-t border-white/5 p-4">

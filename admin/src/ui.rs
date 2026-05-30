@@ -101,12 +101,13 @@ pub fn ErrorText(#[prop(into)] msg: String) -> impl IntoView {
 const BADGE: &str = "inline-flex items-center gap-x-1.5 rounded-md px-2 py-0.5 \
     text-xs/5 font-medium";
 
-/// Small status pill. `tone`: "green" | "amber" | "zinc" (default).
+/// Small status pill. `tone`: "green" | "amber" | "red" | "zinc" (default).
 #[component]
 pub fn Badge(#[prop(optional, into)] tone: String, children: Children) -> impl IntoView {
     let colors = match tone.as_str() {
         "green" => "bg-green-500/15 text-green-400",
         "amber" => "bg-amber-400/15 text-amber-400",
+        "red" => "bg-red-500/15 text-red-400",
         _ => "bg-white/5 text-zinc-400",
     };
     view! { <span class=format!("{BADGE} {colors}")>{children()}</span> }

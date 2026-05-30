@@ -1,6 +1,7 @@
 //! Single-use recovery codes. The server stores only Argon2id hashes; the
 //! plaintext codes are shown to the operator exactly once, at generation.
 
+use super::audit::{record, AccessEvent, ClientMeta};
 use super::password::{hash_password, verify_password};
 use super::session::{issue_session, now};
 use crate::error::ApiError;
@@ -10,8 +11,30 @@ use axum::extract::State;
 use axum::Json;
 use axum_extra::extract::cookie::CookieJar;
 use rand::RngCore;
-use syle_types::{RecoveryCodes, RecoveryRedeem, User};
+use syle_types::{AccessAction, AccessMethod, AccessOutcome, RecoveryCodes, RecoveryRedeem, User};
 use uuid::Uuid;
+
+/// A recovery redeem is an access (`Login`) event; failures are the security
+/// signal. Shared by the several reject branches below.
+async fn record_redeem_failure(
+    state: &AppState,
+    user_id: Option<Uuid>,
+    email: &str,
+    meta: &ClientMeta,
+) {
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id,
+            email: Some(email.to_string()),
+            action: AccessAction::Login,
+            method: Some(AccessMethod::Recovery),
+            outcome: AccessOutcome::Failure,
+        },
+        meta,
+    )
+    .await;
+}
 
 /// Crockford base32 (no I/L/O/U). 256 is a multiple of 32, so `byte % 32` is
 /// unbiased.
@@ -38,6 +61,7 @@ fn canonical(code: &str) -> String {
 
 pub async fn recovery_generate(
     State(state): State<AppState>,
+    meta: ClientMeta,
     super::AuthUser(user): super::AuthUser,
 ) -> Result<Json<RecoveryCodes>, ApiError> {
     let codes: Vec<String> = (0..CODE_COUNT).map(|_| generate_code()).collect();
@@ -60,11 +84,24 @@ pub async fn recovery_generate(
         .execute(&state.pool)
         .await?;
     }
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id: Some(user.id),
+            email: Some(user.email),
+            action: AccessAction::RecoveryGenerate,
+            method: None,
+            outcome: AccessOutcome::Success,
+        },
+        &meta,
+    )
+    .await;
     Ok(Json(RecoveryCodes { codes }))
 }
 
 pub async fn recovery_redeem(
     State(state): State<AppState>,
+    meta: ClientMeta,
     jar: CookieJar,
     Json(req): Json<RecoveryRedeem>,
 ) -> Result<(CookieJar, Json<User>), ApiError> {
@@ -73,6 +110,7 @@ pub async fn recovery_redeem(
     // (per IP+email) belongs at the edge — see deploy notes.
     let canon = canonical(&req.code);
     if canon.len() != CODE_LEN || !canon.bytes().all(|b| ALPHABET.contains(&b)) {
+        record_redeem_failure(&state, None, &req.email, &meta).await;
         return Err(ApiError::Unauthorized);
     }
 
@@ -81,7 +119,10 @@ pub async fn recovery_redeem(
             .bind(&req.email)
             .fetch_optional(&state.pool)
             .await?;
-    let (user_id, email) = account.ok_or(ApiError::Unauthorized)?;
+    let Some((user_id, email)) = account else {
+        record_redeem_failure(&state, None, &req.email, &meta).await;
+        return Err(ApiError::Unauthorized);
+    };
 
     let rows: Vec<(Uuid, String)> = sqlx::query_as(
         "SELECT id, code_hash FROM recovery_codes WHERE user_id = $1 AND used_at IS NULL",
@@ -92,8 +133,11 @@ pub async fn recovery_redeem(
     let code_id = rows
         .iter()
         .find(|(_, hash)| verify_password(hash, &canon))
-        .map(|(id, _)| *id)
-        .ok_or(ApiError::Unauthorized)?;
+        .map(|(id, _)| *id);
+    let Some(code_id) = code_id else {
+        record_redeem_failure(&state, Some(user_id), &email, &meta).await;
+        return Err(ApiError::Unauthorized);
+    };
 
     // Single-use: the `used_at IS NULL` predicate also closes a double-redeem race.
     let res =
@@ -103,9 +147,22 @@ pub async fn recovery_redeem(
             .execute(&state.pool)
             .await?;
     if res.rows_affected() == 0 {
+        record_redeem_failure(&state, Some(user_id), &email, &meta).await;
         return Err(ApiError::Unauthorized);
     }
 
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id: Some(user_id),
+            email: Some(email.clone()),
+            action: AccessAction::Login,
+            method: Some(AccessMethod::Recovery),
+            outcome: AccessOutcome::Success,
+        },
+        &meta,
+    )
+    .await;
     let cookie = issue_session(&state, user_id).await?;
     Ok((jar.add(cookie), Json(User { id: user_id, email })))
 }

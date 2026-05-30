@@ -5,6 +5,7 @@
 //! Registered public keys live in `webauthn_credentials` as serde JSONB, with
 //! the credential id mirrored into a BYTEA column for fast lookup.
 
+use super::audit::{record, AccessEvent, ClientMeta};
 use super::session::{issue_session, new_token, now};
 use crate::error::ApiError;
 use crate::state::AppState;
@@ -12,9 +13,34 @@ use axum::extract::State;
 use axum::Json;
 use axum_extra::extract::cookie::CookieJar;
 use sqlx::PgPool;
-use syle_types::{CredentialInfo, FlowChallenge, User, WebauthnFinish, WebauthnStart};
+use syle_types::{
+    AccessAction, AccessMethod, AccessOutcome, CredentialInfo, FlowChallenge, User, WebauthnFinish,
+    WebauthnStart,
+};
 use uuid::Uuid;
 use webauthn_rs::prelude::*;
+
+/// A passkey `login/finish` is an access (`Login`) event; record both outcomes.
+async fn record_passkey_login(
+    state: &AppState,
+    user_id: Uuid,
+    email: &str,
+    outcome: AccessOutcome,
+    meta: &ClientMeta,
+) {
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id: Some(user_id),
+            email: Some(email.to_string()),
+            action: AccessAction::Login,
+            method: Some(AccessMethod::Passkey),
+            outcome,
+        },
+        meta,
+    )
+    .await;
+}
 
 /// Ceremony challenges expire fast: they are single-use and a passkey tap takes
 /// seconds, not minutes.
@@ -158,6 +184,7 @@ pub async fn register_start(
 
 pub async fn register_finish(
     State(state): State<AppState>,
+    meta: ClientMeta,
     super::AuthUser(user): super::AuthUser,
     Json(req): Json<WebauthnFinish>,
 ) -> Result<Json<CredentialInfo>, ApiError> {
@@ -187,6 +214,19 @@ pub async fn register_finish(
     .bind(created)
     .execute(&state.pool)
     .await?;
+
+    record(
+        &state.pool,
+        AccessEvent {
+            user_id: Some(user.id),
+            email: Some(user.email),
+            action: AccessAction::PasskeyEnroll,
+            method: None,
+            outcome: AccessOutcome::Success,
+        },
+        &meta,
+    )
+    .await;
 
     Ok(Json(CredentialInfo {
         id,
@@ -230,23 +270,37 @@ pub async fn login_start(
 
 pub async fn login_finish(
     State(state): State<AppState>,
+    meta: ClientMeta,
     jar: CookieJar,
     Json(req): Json<WebauthnFinish>,
 ) -> Result<(CookieJar, Json<User>), ApiError> {
     let (user_id, auth_state) =
         consume_flow::<PasskeyAuthentication>(&state.pool, &req.flow_id, "auth").await?;
-    let pkc: PublicKeyCredential =
-        serde_json::from_value(req.credential).map_err(|_| ApiError::BadRequest)?;
-    let result = state
-        .webauthn
-        .finish_passkey_authentication(&pkc, &auth_state)
-        .map_err(|_| ApiError::Unauthorized)?;
-    persist_auth(&state.pool, &result).await?;
-
     let email: String = sqlx::query_scalar("SELECT email FROM users WHERE id = $1")
         .bind(user_id)
         .fetch_one(&state.pool)
         .await?;
+
+    // A consumed flow that then fails verification (malformed credential or a
+    // bad signature) is a failed access attempt — recorded. Infra errors below
+    // still surface as 500 and aren't logged as auth failures.
+    let pkc: PublicKeyCredential = match serde_json::from_value(req.credential) {
+        Ok(p) => p,
+        Err(_) => {
+            record_passkey_login(&state, user_id, &email, AccessOutcome::Failure, &meta).await;
+            return Err(ApiError::BadRequest);
+        }
+    };
+    let result = match state.webauthn.finish_passkey_authentication(&pkc, &auth_state) {
+        Ok(r) => r,
+        Err(_) => {
+            record_passkey_login(&state, user_id, &email, AccessOutcome::Failure, &meta).await;
+            return Err(ApiError::Unauthorized);
+        }
+    };
+    persist_auth(&state.pool, &result).await?;
+
+    record_passkey_login(&state, user_id, &email, AccessOutcome::Success, &meta).await;
     let cookie = issue_session(&state, user_id).await?;
     Ok((jar.add(cookie), Json(User { id: user_id, email })))
 }

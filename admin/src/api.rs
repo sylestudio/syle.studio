@@ -5,10 +5,10 @@ use gloo_net::http::Request;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use syle_types::{
-    endpoints as ep, BlogPost, CredentialInfo, FlowChallenge, Gallery, GalleryDetail,
-    LoginRequest, NewGallery, NewPost, Photo, RecoveryCodes, RecoveryRedeem, RenameCredential,
-    Reorder, UpdateGallery, UpdatePhoto, UpdatePost, UploadedImage, User, WebauthnFinish,
-    WebauthnStart,
+    endpoints as ep, AccessLogEntry, BlogPost, CredentialInfo, FlowChallenge, Gallery,
+    GalleryDetail, LoginRequest, NewGallery, NewPost, Photo, RecoveryCodes, RecoveryRedeem,
+    RenameCredential, Reorder, UpdateGallery, UpdatePhoto, UpdatePost, UploadedImage, User,
+    WebauthnFinish, WebauthnStart,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -320,4 +320,9 @@ pub async fn recovery_generate() -> Result<RecoveryCodes, ApiError> {
 
 pub async fn recovery_redeem(r: &RecoveryRedeem) -> Result<User, ApiError> {
     post_json(ep::RECOVERY_REDEEM, r).await
+}
+
+/// Read-only access-log audit trail, most recent first.
+pub async fn access_log() -> Result<Vec<AccessLogEntry>, ApiError> {
+    get_json(ep::ADMIN_ACCESS_LOG).await
 }

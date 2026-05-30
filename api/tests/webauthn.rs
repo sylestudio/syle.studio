@@ -403,6 +403,81 @@ async fn credential_can_be_renamed() {
 
 #[tokio::test]
 #[serial_test::serial]
+async fn passkey_actions_are_audited() {
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
+    let cookie = login_cookie(&app, &pool).await;
+    let mut authenticator = WebauthnAuthenticator::new(SoftPasskey::new(true));
+
+    let info = register(&app, &cookie, &mut authenticator).await; // enroll
+    assert_eq!(login(&app, &mut authenticator).await.status(), StatusCode::OK); // passkey login
+    let resp = delete(
+        &app,
+        &format!("/api/admin/webauthn/credentials/{}", info.id),
+        &cookie,
+    )
+    .await;
+    assert_eq!(resp.status(), StatusCode::OK); // revoke
+
+    let enroll: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM access_log WHERE action = 'passkey_enroll' AND outcome = 'success'",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(enroll, 1, "enroll audited");
+    let logged_in: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM access_log \
+         WHERE action = 'login' AND method = 'passkey' AND outcome = 'success'",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(logged_in, 1, "passkey login audited");
+    let revoke: i64 =
+        sqlx::query_scalar("SELECT COUNT(*) FROM access_log WHERE action = 'passkey_revoke'")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+    assert_eq!(revoke, 1, "revoke audited");
+}
+
+#[tokio::test]
+#[serial_test::serial]
+async fn failed_passkey_login_is_audited() {
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
+    let cookie = login_cookie(&app, &pool).await;
+    let mut authenticator = WebauthnAuthenticator::new(SoftPasskey::new(true));
+    register(&app, &cookie, &mut authenticator).await;
+
+    // A valid flow, then a bogus credential at finish → failed access attempt.
+    let resp = post(
+        &app,
+        "/api/admin/webauthn/login/start",
+        None,
+        &json!({ "email": "op@syle.studio" }),
+    )
+    .await;
+    let challenge: FlowChallenge = body_json(resp).await;
+    let finish = json!({ "flow_id": challenge.flow_id, "credential": { "bogus": true } });
+    let resp = post(&app, "/api/admin/webauthn/login/finish", None, &finish).await;
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST, "bogus credential rejected");
+
+    let failed: i64 = sqlx::query_scalar(
+        "SELECT COUNT(*) FROM access_log \
+         WHERE action = 'login' AND method = 'passkey' AND outcome = 'failure'",
+    )
+    .fetch_one(&pool)
+    .await
+    .unwrap();
+    assert_eq!(failed, 1, "failed passkey login audited");
+}
+
+#[tokio::test]
+#[serial_test::serial]
 async fn expired_register_flow_is_rejected() {
     let Some((app, pool, _media)) = setup().await else {
         return;

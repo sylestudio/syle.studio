@@ -20,6 +20,9 @@ pub const WEBAUTHN_CREDENTIALS: &str = "/api/admin/webauthn/credentials";
 pub const RECOVERY_REDEEM: &str = "/api/admin/recovery/redeem";
 pub const RECOVERY_GENERATE: &str = "/api/admin/recovery/generate";
 
+/// Read-only audit trail of authentication events (authenticated).
+pub const ADMIN_ACCESS_LOG: &str = "/api/admin/access-log";
+
 pub const PUBLIC_GALLERIES: &str = "/api/public/galleries";
 pub const PUBLIC_POSTS: &str = "/api/public/posts";
 

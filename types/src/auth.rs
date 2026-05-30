@@ -78,3 +78,107 @@ pub struct CredentialInfo {
 pub struct RenameCredential {
     pub name: String,
 }
+
+/// What an access-log row records. `Login` carries an [`AccessMethod`]; the
+/// rest are method-less security events.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AccessAction {
+    Login,
+    Logout,
+    PasskeyEnroll,
+    PasskeyRevoke,
+    RecoveryGenerate,
+}
+
+/// How an access (`Login`) event authenticated.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AccessMethod {
+    Password,
+    Passkey,
+    Recovery,
+}
+
+/// Whether the event succeeded. Failures are the security signal worth surfacing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AccessOutcome {
+    Success,
+    Failure,
+}
+
+impl AccessAction {
+    /// Stable text stored in the DB `action` column (decoupled from serde).
+    pub fn as_db_str(self) -> &'static str {
+        match self {
+            AccessAction::Login => "login",
+            AccessAction::Logout => "logout",
+            AccessAction::PasskeyEnroll => "passkey_enroll",
+            AccessAction::PasskeyRevoke => "passkey_revoke",
+            AccessAction::RecoveryGenerate => "recovery_generate",
+        }
+    }
+
+    pub fn from_db_str(s: &str) -> Option<Self> {
+        Some(match s {
+            "login" => AccessAction::Login,
+            "logout" => AccessAction::Logout,
+            "passkey_enroll" => AccessAction::PasskeyEnroll,
+            "passkey_revoke" => AccessAction::PasskeyRevoke,
+            "recovery_generate" => AccessAction::RecoveryGenerate,
+            _ => return None,
+        })
+    }
+}
+
+impl AccessMethod {
+    pub fn as_db_str(self) -> &'static str {
+        match self {
+            AccessMethod::Password => "password",
+            AccessMethod::Passkey => "passkey",
+            AccessMethod::Recovery => "recovery",
+        }
+    }
+
+    pub fn from_db_str(s: &str) -> Option<Self> {
+        Some(match s {
+            "password" => AccessMethod::Password,
+            "passkey" => AccessMethod::Passkey,
+            "recovery" => AccessMethod::Recovery,
+            _ => return None,
+        })
+    }
+}
+
+impl AccessOutcome {
+    pub fn as_db_str(self) -> &'static str {
+        match self {
+            AccessOutcome::Success => "success",
+            AccessOutcome::Failure => "failure",
+        }
+    }
+
+    pub fn from_db_str(s: &str) -> Option<Self> {
+        Some(match s {
+            "success" => AccessOutcome::Success,
+            "failure" => AccessOutcome::Failure,
+            _ => return None,
+        })
+    }
+}
+
+/// One row of the access log as shown read-only in the CRM. Every optional
+/// string is best-effort and attacker-influenceable — render as escaped text.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AccessLogEntry {
+    pub id: Uuid,
+    /// Unix seconds.
+    pub at: i64,
+    pub email: Option<String>,
+    pub action: AccessAction,
+    pub method: Option<AccessMethod>,
+    pub outcome: AccessOutcome,
+    pub ip: Option<String>,
+    pub user_agent: Option<String>,
+}

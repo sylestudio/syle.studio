@@ -100,5 +100,6 @@ pub fn app(state: AppState) -> Router {
             "/api/admin/recovery/generate",
             post(auth::recovery_generate),
         )
+        .route("/api/admin/access-log", get(auth::list_access_log))
         .with_state(state)
 }

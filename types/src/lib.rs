@@ -13,8 +13,9 @@ mod photo;
 mod slug;
 
 pub use auth::{
-    CredentialInfo, FlowChallenge, LoginRequest, RecoveryCodes, RecoveryRedeem, RenameCredential,
-    SessionToken, User, WebauthnFinish, WebauthnStart,
+    AccessAction, AccessLogEntry, AccessMethod, AccessOutcome, CredentialInfo, FlowChallenge,
+    LoginRequest, RecoveryCodes, RecoveryRedeem, RenameCredential, SessionToken, User,
+    WebauthnFinish, WebauthnStart,
 };
 pub use block::{Block, Mark, Span};
 pub use history::History;

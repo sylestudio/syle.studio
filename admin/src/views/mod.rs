@@ -1,3 +1,4 @@
+pub mod access_log;
 pub mod command_palette;
 pub mod dashboard;
 pub mod gallery;
@@ -8,6 +9,7 @@ pub mod recovery;
 pub mod security;
 pub mod shell;
 
+pub use access_log::AccessLog;
 pub use command_palette::CommandPalette;
 pub use dashboard::Dashboard;
 pub use gallery::GalleryView;
