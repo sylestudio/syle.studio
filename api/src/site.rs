@@ -5,8 +5,10 @@
 //! `POST /rebuild` fires a `repository_dispatch` that runs `site.yml` on the
 //! self-hosted runner (≈15s); `GET /status` maps the latest run for the CRM.
 //!
-//! The GitHub token lives server-side only (env, never in responses/logs).
-//! Errors are deliberately terse (status code only) so nothing leaks.
+//! The GitHub token lives server-side only (env, never in responses or logs).
+//! HTTP responses stay deliberately terse (status code only); on failure we log
+//! GitHub's status + a capped body snippet to journald so a mute 500 stays
+//! debuggable from `journalctl -u syle-api` without ever touching the token.
 
 use crate::auth::AuthUser;
 use crate::error::ApiError;
@@ -20,6 +22,10 @@ const GH_API: &str = "https://api.github.com";
 const WORKFLOW: &str = "site.yml";
 /// `repository_dispatch` event type `site.yml` listens for.
 const EVENT_TYPE: &str = "rebuild-site";
+/// How much of a GitHub error body we echo into journald — enough to see
+/// GitHub's `message` (e.g. "Resource not accessible by personal access token")
+/// without flooding the log on a large/HTML response.
+const LOG_BODY_CAP: usize = 300;
 
 /// Server-side rebuild config. Holds the token; intentionally NOT `Debug` so it
 /// can never be logged. `None` (missing env) leaves the feature dormant.
@@ -41,6 +47,16 @@ impl GithubConfig {
         let client = reqwest::Client::builder().user_agent("syle-api").build().ok()?;
         Some(Self { client, token, repo })
     }
+}
+
+/// Build a journald line for a failed GitHub call. Pure + tested. The token is
+/// never in scope here (it rides only the `Authorization` header), so it cannot
+/// leak; we still cap the body so an oversized response can't flood the log.
+fn diag(context: &str, status: u16, body: &str) -> String {
+    let body = body.trim();
+    let snippet: String = body.chars().take(LOG_BODY_CAP).collect();
+    let ellipsis = if body.chars().count() > LOG_BODY_CAP { "…" } else { "" };
+    format!("site rebuild: {context} → GitHub HTTP {status}: {snippet}{ellipsis}")
 }
 
 /// Map a GitHub Actions run's `(status, conclusion)` to our state. Pure — the
@@ -69,11 +85,17 @@ async fn latest_run(cfg: &GithubConfig) -> Result<SiteBuildStatus, ()> {
         .header("X-GitHub-Api-Version", "2022-11-28")
         .send()
         .await
-        .map_err(|_| ())?;
-    if !resp.status().is_success() {
+        .map_err(|e| eprintln!("site rebuild: status request failed: {e}"))?;
+    let status = resp.status();
+    if !status.is_success() {
+        let body = resp.text().await.unwrap_or_default();
+        eprintln!("{}", diag("status", status.as_u16(), &body));
         return Err(());
     }
-    let body: serde_json::Value = resp.json().await.map_err(|_| ())?;
+    let body: serde_json::Value = resp
+        .json()
+        .await
+        .map_err(|e| eprintln!("site rebuild: status decode failed: {e}"))?;
     let Some(run) = body.get("workflow_runs").and_then(|r| r.get(0)) else {
         // Configured but the workflow has never run yet.
         return Ok(SiteBuildStatus::bare(SiteBuildState::Idle));
@@ -99,10 +121,14 @@ async fn dispatch(cfg: &GithubConfig) -> Result<(), ()> {
         .json(&serde_json::json!({ "event_type": EVENT_TYPE }))
         .send()
         .await
-        .map_err(|_| ())?;
-    if resp.status().is_success() {
+        .map_err(|e| eprintln!("site rebuild: dispatch request failed: {e}"))?;
+    let status = resp.status();
+    if status.is_success() {
+        eprintln!("site rebuild: dispatched repository_dispatch ({EVENT_TYPE})");
         Ok(())
     } else {
+        let body = resp.text().await.unwrap_or_default();
+        eprintln!("{}", diag("dispatch", status.as_u16(), &body));
         Err(())
     }
 }
@@ -180,5 +206,36 @@ mod tests {
         assert!(!SiteBuildStatus::bare(SiteBuildState::Failed).is_active());
         assert!(!SiteBuildStatus::bare(SiteBuildState::Idle).is_active());
         assert!(!SiteBuildStatus::bare(SiteBuildState::Unconfigured).is_active());
+    }
+
+    #[test]
+    fn diag_includes_context_status_and_body() {
+        let line = diag(
+            "dispatch",
+            403,
+            r#"{"message":"Resource not accessible by personal access token"}"#,
+        );
+        assert!(line.contains("dispatch"), "{line}");
+        assert!(line.contains("403"), "{line}");
+        assert!(
+            line.contains("Resource not accessible by personal access token"),
+            "{line}"
+        );
+    }
+
+    #[test]
+    fn diag_truncates_long_body_with_ellipsis() {
+        let body = "x".repeat(LOG_BODY_CAP + 50);
+        let line = diag("status", 500, &body);
+        assert!(line.ends_with('…'), "{line}");
+        // The body is capped, not echoed whole.
+        assert_eq!(line.chars().filter(|&c| c == 'x').count(), LOG_BODY_CAP);
+    }
+
+    #[test]
+    fn diag_short_body_has_no_ellipsis() {
+        let line = diag("dispatch", 422, "boom");
+        assert!(!line.contains('…'), "{line}");
+        assert!(line.ends_with("boom"), "{line}");
     }
 }
