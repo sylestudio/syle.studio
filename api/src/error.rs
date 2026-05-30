@@ -8,6 +8,8 @@ pub enum ApiError {
     Unauthorized,
     NotFound,
     BadRequest,
+    Conflict,
+    ServiceUnavailable,
     Internal,
 }
 
@@ -17,6 +19,8 @@ impl IntoResponse for ApiError {
             ApiError::Unauthorized => StatusCode::UNAUTHORIZED,
             ApiError::NotFound => StatusCode::NOT_FOUND,
             ApiError::BadRequest => StatusCode::BAD_REQUEST,
+            ApiError::Conflict => StatusCode::CONFLICT,
+            ApiError::ServiceUnavailable => StatusCode::SERVICE_UNAVAILABLE,
             ApiError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
         };
         code.into_response()

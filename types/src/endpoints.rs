@@ -23,6 +23,11 @@ pub const RECOVERY_GENERATE: &str = "/api/admin/recovery/generate";
 /// Read-only audit trail of authentication events (authenticated).
 pub const ADMIN_ACCESS_LOG: &str = "/api/admin/access-log";
 
+/// Trigger a rebuild of the static public site (authenticated, POST).
+pub const ADMIN_SITE_REBUILD: &str = "/api/admin/site/rebuild";
+/// Poll the status of the most recent public-site rebuild (authenticated, GET).
+pub const ADMIN_SITE_STATUS: &str = "/api/admin/site/status";
+
 pub const PUBLIC_GALLERIES: &str = "/api/public/galleries";
 pub const PUBLIC_POSTS: &str = "/api/public/posts";
 

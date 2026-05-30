@@ -8,6 +8,7 @@ pub mod post;
 pub mod recovery;
 pub mod security;
 pub mod shell;
+pub mod site_publish;
 
 pub use access_log::AccessLog;
 pub use command_palette::CommandPalette;

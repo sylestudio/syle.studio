@@ -1,5 +1,6 @@
 use crate::api::{self, ApiError};
 use crate::ui::{use_toaster, Badge, Button, Field, Heading, Skeleton, SlideOver, Tile, INPUT};
+use crate::views::site_publish::SitePublish;
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
 use std::collections::HashMap;
@@ -207,6 +208,8 @@ pub fn Dashboard() -> impl IntoView {
                     <Button on:click=move |_| g_open.set(true)>"Nueva galería"</Button>
                 </div>
             </div>
+
+            <SitePublish />
 
             <section class="space-y-4">
                 <h2 class="text-xs/6 font-medium tracking-wide text-zinc-500 uppercase">

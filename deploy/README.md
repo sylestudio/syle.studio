@@ -30,6 +30,8 @@ Provisioned out of band (the runner user is unprivileged):
 - `/etc/syle/api.env` (`DATABASE_URL`, `MEDIA_DIR`, `RP_ID`, `RP_ORIGIN`),
   `chmod 600`, root-owned. `RP_ID`/`RP_ORIGIN` are **required** — set them
   before shipping the passkey-enabled binary (the API fails fast without them).
+  Optionally `GITHUB_DISPATCH_TOKEN` + `GITHUB_REPO` enable "Publicar al sitio"
+  (see **Content**); absent, that feature stays dormant.
 - `syle-api.service` (this dir) → `/etc/systemd/system/`, `daemon-reload`,
   `enable`.
 - A scoped `sudoers` rule letting `github-runner` run **only**
@@ -81,6 +83,28 @@ Passkey (WebAuthn) login is **additive** over the existing password auth:
 
 ## Content
 
-The public site is static and reads the API **at build time** (`API_BASE`),
-so a publish in the CRM appears after the next deploy. A webhook-triggered
-rebuild can be added later.
+The public site is static and reads the API **at build time** (`API_BASE`), so
+content edits in the CRM don't show until the site is rebuilt. The full
+`deploy.yml` rebuilds everything on push to `main`; for content-only changes the
+CRM has a **"Publicar al sitio"** button that triggers a fast (~15s) rebuild of
+only the static site via `.github/workflows/site.yml`.
+
+How it works: the button calls `POST /api/admin/site/rebuild`; the API fires a
+GitHub `repository_dispatch` (`rebuild-site`) that runs `site.yml` on the same
+self-hosted runner (so it reuses the runner's existing perms — no new privilege).
+`site.yml` shares the `deploy-vps2` concurrency group, so a content rebuild never
+overlaps a full deploy's `rsync`. The CRM polls `GET /api/admin/site/status` for
+progress.
+
+One-time setup to enable it:
+
+1. Create a **fine-grained GitHub PAT** scoped to this repo only, with
+   permissions **Contents: Read and write** (to dispatch) and **Actions: Read**
+   (to read run status). Nothing else.
+2. Add to `/etc/syle/api.env` (root-owned, `chmod 600`): `GITHUB_DISPATCH_TOKEN=<pat>`
+   and `GITHUB_REPO=eddndev-studio/syle.studio`. Restart `syle-api`.
+3. `site.yml` must live on the **default branch** (`repository_dispatch` always
+   runs the default-branch copy) — it does, once this lands on `main`.
+
+The token is held server-side only and never reaches the browser; if it's
+unset the API reports `Unconfigured` and the CRM hides the control.

@@ -7,8 +7,8 @@ use serde::Serialize;
 use syle_types::{
     endpoints as ep, AccessLogEntry, BlogPost, CredentialInfo, FlowChallenge, Gallery,
     GalleryDetail, LoginRequest, NewGallery, NewPost, Photo, RecoveryCodes, RecoveryRedeem,
-    RenameCredential, Reorder, UpdateGallery, UpdatePhoto, UpdatePost, UploadedImage, User,
-    WebauthnFinish, WebauthnStart,
+    RenameCredential, Reorder, SiteBuildStatus, UpdateGallery, UpdatePhoto, UpdatePost,
+    UploadedImage, User, WebauthnFinish, WebauthnStart,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -325,4 +325,17 @@ pub async fn recovery_redeem(r: &RecoveryRedeem) -> Result<User, ApiError> {
 /// Read-only access-log audit trail, most recent first.
 pub async fn access_log() -> Result<Vec<AccessLogEntry>, ApiError> {
     get_json(ep::ADMIN_ACCESS_LOG).await
+}
+
+// --- Public-site rebuild ----------------------------------------------------
+
+/// Current status of the most recent public-site rebuild (for the poll loop).
+pub async fn site_status() -> Result<SiteBuildStatus, ApiError> {
+    get_json(ep::ADMIN_SITE_STATUS).await
+}
+
+/// Trigger a public-site rebuild. 200 → queued; `Status(409)` → one is already
+/// running; `Status(503)` → the rebuild trigger isn't configured server-side.
+pub async fn site_rebuild() -> Result<SiteBuildStatus, ApiError> {
+    post_empty(ep::ADMIN_SITE_REBUILD).await
 }

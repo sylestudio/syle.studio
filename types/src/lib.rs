@@ -10,6 +10,7 @@ pub mod endpoints;
 mod gallery;
 mod history;
 mod photo;
+mod site;
 mod slug;
 
 pub use auth::{
@@ -22,6 +23,7 @@ pub use history::History;
 pub use blog::{BlogPost, NewPost, PostStatus, UpdatePost, UploadedImage};
 pub use gallery::{Gallery, GalleryDetail, NewGallery, UpdateGallery};
 pub use photo::{ImageFormat, ImageVariant, Photo, Reorder, UpdatePhoto};
+pub use site::{SiteBuildState, SiteBuildStatus};
 pub use slug::is_valid_slug;
 
 use serde::{Deserialize, Serialize};

@@ -7,6 +7,7 @@ pub mod auth;
 mod error;
 mod gallery_row;
 mod public;
+mod site;
 mod state;
 
 pub use state::AppState;
@@ -101,5 +102,7 @@ pub fn app(state: AppState) -> Router {
             post(auth::recovery_generate),
         )
         .route("/api/admin/access-log", get(auth::list_access_log))
+        .route("/api/admin/site/rebuild", post(site::rebuild_site))
+        .route("/api/admin/site/status", get(site::site_status))
         .with_state(state)
 }

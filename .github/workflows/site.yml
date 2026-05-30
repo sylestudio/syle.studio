@@ -1,0 +1,70 @@
+name: site-rebuild
+
+# Rebuild ONLY the static public site (Astro), without recompiling the Rust API
+# or the CRM wasm. Triggered from the CRM ("Publicar al sitio") via the API,
+# which fires a repository_dispatch; also runnable by hand. The full `deploy`
+# workflow still rebuilds everything on push to main — this is the fast path for
+# content-only changes (~15s vs ~9min).
+#
+# repository_dispatch always runs the workflow file from the DEFAULT branch, so
+# this must live on `main` to be callable (it does, once merged).
+
+on:
+  repository_dispatch:
+    types: [rebuild-site]
+  workflow_dispatch:
+
+# Share the deploy concurrency group: deploy and site-rebuild BOTH rsync into
+# /opt/syle/web with --delete, so they must never overlap. cancel-in-progress
+# is false — a content rebuild waits for an in-flight deploy rather than
+# corrupting a half-synced tree.
+concurrency:
+  group: deploy-vps2
+  cancel-in-progress: false
+
+jobs:
+  site:
+    runs-on: [self-hosted, vps2]
+    timeout-minutes: 10
+    env:
+      API_BASE: http://127.0.0.1:8080
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure pnpm (idempotent, no sudo)
+        run: |
+          set -euo pipefail
+          export npm_config_prefix="$HOME/.npm-global"
+          mkdir -p "$npm_config_prefix/bin"
+          command -v pnpm >/dev/null 2>&1 || npm install -g pnpm >/dev/null 2>&1
+          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+
+      - name: Wait for the API to be healthy
+        run: |
+          set -euo pipefail
+          # getStaticPaths fetches galleries/posts from the live API at build
+          # time; a half-up API would silently produce an incomplete site.
+          ok=
+          for _ in $(seq 1 40); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/public/galleries || true)
+            if [ "$code" = "200" ]; then ok=1; break; fi
+            sleep 0.5
+          done
+          [ -n "$ok" ] || { echo "API not healthy — aborting site rebuild"; exit 1; }
+          echo "API healthy."
+
+      - name: Build public site (Astro, against the live API)
+        run: |
+          set -euo pipefail
+          pnpm --dir web install --frozen-lockfile --ignore-scripts
+          pnpm --dir web build
+
+      - name: Deploy public site, reload nginx, verify
+        run: |
+          set -euo pipefail
+          rsync -a --delete web/dist/ /opt/syle/web/
+          sudo /usr/bin/systemctl reload nginx
+          # Verify nginx serves the rebuilt site (matches the public vhost by Host).
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: syle.studio' http://127.0.0.1/ || true)
+          [ "$code" = "200" ] || { echo "Public site did not return 200 after reload (got $code)"; exit 1; }
+          echo "Site rebuilt and serving."
