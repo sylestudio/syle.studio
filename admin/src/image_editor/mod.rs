@@ -97,7 +97,13 @@ pub fn ImageEditorModal(
         store.with_value(|s| {
             if let (Some(c), Some((img, _))) = (canvas_el.as_ref(), s.as_ref()) {
                 if let Ok((_, _, sc)) = canvas::render_display(c, img, q, fh, fv, PREVIEW_W, PREVIEW_H) {
-                    scale.set(sc);
+                    // Second guard against the loop above: only notify on a real
+                    // change. `display.get()` must stay tracked (it's what fires
+                    // this Effect when the canvas first mounts) — get_untracked
+                    // would leave the canvas unpainted on load.
+                    if (sc - scale.get_untracked()).abs() > 0.000_1 {
+                        scale.set(sc);
+                    }
                 }
             }
         });
@@ -199,27 +205,33 @@ pub fn ImageEditorModal(
 
                 <div class="flex items-center justify-center rounded-lg border border-white/10 \
                     bg-black/40" style="min-height:440px">
-                    {move || if loaded.get() {
-                        let (dw, dh) = disp.get();
-                        view! {
-                            <div class="relative" style=format!("width:{dw}px;height:{dh}px")>
-                                <canvas node_ref=display class="block h-full w-full"
-                                    style:filter=move || {
-                                        let f = css.get();
-                                        if f.is_empty() { "none".to_string() } else { f }
-                                    }
-                                ></canvas>
-                                {move || matches!(preset.get(), Some(Preset::Vignette)).then(|| view! {
-                                    <div class="pointer-events-none absolute inset-0"
-                                        style="background:radial-gradient(ellipse at center, \
-                                            rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%)"></div>
-                                })}
-                                <CropOverlay crop=crop stage=stage.into() scale=scale.into() ratio=ratio.into() />
-                            </div>
-                        }.into_any()
-                    } else {
-                        view! { <p class="text-sm/6 text-zinc-400">"Cargando…"</p> }.into_any()
-                    }}
+                    // This closure depends on `loaded` ONLY, so the <canvas> (and
+                    // its node_ref) is created exactly once. The container size is
+                    // applied via reactive `style:` props that PATCH attributes in
+                    // place — reading `disp` here instead would re-create the canvas
+                    // on every `scale` write and the render Effect (which tracks the
+                    // node_ref) would re-fire forever, freezing the main thread.
+                    {move || loaded.get().then(|| view! {
+                        <div class="relative"
+                            style:width=move || format!("{}px", disp.get().0)
+                            style:height=move || format!("{}px", disp.get().1)>
+                            <canvas node_ref=display class="block h-full w-full"
+                                style:filter=move || {
+                                    let f = css.get();
+                                    if f.is_empty() { "none".to_string() } else { f }
+                                }
+                            ></canvas>
+                            {move || matches!(preset.get(), Some(Preset::Vignette)).then(|| view! {
+                                <div class="pointer-events-none absolute inset-0"
+                                    style="background:radial-gradient(ellipse at center, \
+                                        rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%)"></div>
+                            })}
+                            <CropOverlay crop=crop stage=stage.into() scale=scale.into() ratio=ratio.into() />
+                        </div>
+                    })}
+                    {move || (!loaded.get()).then(|| view! {
+                        <p class="text-sm/6 text-zinc-400">"Cargando…"</p>
+                    })}
                 </div>
 
                 // Transform + crop-ratio row
