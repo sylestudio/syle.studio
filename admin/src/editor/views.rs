@@ -2,6 +2,7 @@
 //! delete affordance live in the `BlockRow` wrapper; these render only content.
 
 use crate::api;
+use crate::ui::use_toaster;
 use leptos::prelude::*;
 use syle_types::Block;
 use wasm_bindgen::JsCast;
@@ -57,6 +58,7 @@ pub fn divider_view() -> impl IntoView {
 pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl IntoView {
     let id_up = id.clone();
     let (id_src, id_alt) = (id.clone(), id);
+    let toast = use_toaster();
     let has_src = !src.is_empty();
     let shown = src.clone();
     view! {
@@ -69,7 +71,7 @@ pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl 
                 "Subir imagen…"
                 <input
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/webp"
                     class="hidden"
                     on:change=move |e| {
                         let Some(input) =
@@ -86,24 +88,33 @@ pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl 
                         }
                         let id = id_up.clone();
                         spawn_local(async move {
-                            if let Ok(img) = api::upload_blog_asset(form).await {
-                                blocks.update(|v| {
-                                    if let Some(Block::Image {
-                                        src,
-                                        variants,
-                                        placeholder,
-                                        width,
-                                        height,
-                                        ..
-                                    }) = v.iter_mut().find(|b| b.id() == id)
-                                    {
-                                        *src = img.src;
-                                        *variants = img.variants;
-                                        *placeholder = img.placeholder;
-                                        *width = img.width;
-                                        *height = img.height;
-                                    }
-                                });
+                            match api::upload_blog_asset(form).await {
+                                Ok(img) => {
+                                    blocks.update(|v| {
+                                        if let Some(Block::Image {
+                                            src,
+                                            variants,
+                                            placeholder,
+                                            width,
+                                            height,
+                                            ..
+                                        }) = v.iter_mut().find(|b| b.id() == id)
+                                        {
+                                            *src = img.src;
+                                            *variants = img.variants;
+                                            *placeholder = img.placeholder;
+                                            *width = img.width;
+                                            *height = img.height;
+                                        }
+                                    });
+                                }
+                                // The pipeline rejects anything it can't decode
+                                // (or that's too large) with a 400 — tell the user
+                                // instead of failing silently.
+                                Err(api::ApiError::Status(400)) => {
+                                    toast.err("Formato no admitido o imagen dañada. Usa JPG, PNG o WebP.")
+                                }
+                                Err(_) => toast.err("No se pudo subir la imagen"),
                             }
                         });
                     }

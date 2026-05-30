@@ -329,7 +329,7 @@ pub fn GalleryView() -> impl IntoView {
                             </Field>
                             <Field label="Archivos">
                                 <input class=INPUT type="file" name="file"
-                                    accept="image/*" multiple />
+                                    accept="image/jpeg,image/png,image/webp" multiple />
                             </Field>
                             <div class="flex items-center gap-3">
                                 <Button disabled=Signal::derive(move || !uploading.get().is_empty())>

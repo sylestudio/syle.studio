@@ -21,6 +21,7 @@ sqlx = { version = "0.8", default-features = false, features = [
 image = { version = "0.25", default-features = false, features = [
   "jpeg",
   "png",
+  "webp",
 ] }
 fast_image_resize = "5"
 ravif = "0.11"
@@ -34,4 +35,5 @@ dotenvy = "0.15"
 image = { version = "0.25", default-features = false, features = [
   "jpeg",
   "png",
+  "webp",
 ] }

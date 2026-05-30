@@ -14,6 +14,26 @@ fn synthetic_png(w: u32, h: u32) -> Vec<u8> {
     buf
 }
 
+fn synthetic_webp(w: u32, h: u32) -> Vec<u8> {
+    let img = RgbImage::from_fn(w, h, |x, y| {
+        image::Rgb([(x % 256) as u8, (y % 256) as u8, 64])
+    });
+    let mut buf = Vec::new();
+    img.write_to(&mut Cursor::new(&mut buf), ImgFmt::WebP).unwrap();
+    buf
+}
+
+#[test]
+fn ingest_decodes_webp_input() {
+    // Browsers and modern image exports routinely hand us WebP. The pipeline
+    // must decode it (not reject it with a 400) just like JPEG/PNG.
+    let src = synthetic_webp(640, 480);
+    let out = ingest(&src, &[320, 640]).expect("ingest webp");
+    assert_eq!((out.width, out.height), (640, 480));
+    assert!(!out.derivatives.is_empty(), "produces derivatives from webp");
+    assert!(!out.thumbhash.is_empty());
+}
+
 #[test]
 fn ingest_produces_capped_derivatives_and_thumbhash() {
     let src = synthetic_png(1200, 800);
