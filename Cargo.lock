@@ -3366,6 +3366,7 @@ dependencies = [
  "pulldown-cmark",
  "serde",
  "serde_json",
+ "syle-imageedit",
  "syle-render",
  "syle-types",
  "wasm-bindgen",
@@ -3421,6 +3422,10 @@ dependencies = [
  "tokio",
  "uuid",
 ]
+
+[[package]]
+name = "syle-imageedit"
+version = "0.1.0"
 
 [[package]]
 name = "syle-render"

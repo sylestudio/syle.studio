@@ -25,6 +25,8 @@ pub fn GalleryView() -> impl IntoView {
     let confirm_photo = RwSignal::new(None::<String>);
     let confirm_photo_open = RwSignal::new(false);
     let uploading = RwSignal::new(String::new());
+    let alt_sig = RwSignal::new(String::new());
+    let editing = RwSignal::new(None::<web_sys::File>);
     let toast = use_toaster();
 
     let load = {
@@ -202,6 +204,38 @@ pub fn GalleryView() -> impl IntoView {
         }
     };
 
+    // Editor path: bake one photo client-side, then push it through the same
+    // `upload_photo` pipeline (with gallery_id + the shared alt) as a new photo.
+    let on_baked = {
+        let load = load.clone();
+        Callback::new(move |blob: web_sys::Blob| {
+            let id = gid();
+            let alt = alt_sig.get_untracked();
+            let Ok(fd) = web_sys::FormData::new() else { return };
+            let _ = fd.append_with_str("gallery_id", &id);
+            let _ = fd.append_with_str("alt", &alt);
+            let _ = fd.append_with_blob_and_filename("file", &blob, "edit.png");
+            editing.set(None);
+            uploading.set("Procesando… (codificando)".to_string());
+            let load = load.clone();
+            spawn_local(async move {
+                let progress = move |frac: f64| {
+                    if frac >= 1.0 {
+                        uploading.set("Procesando… (codificando)".to_string());
+                    } else {
+                        uploading.set(format!("Subiendo — {:.0}%", frac * 100.0));
+                    }
+                };
+                match api::upload_photo(fd, progress).await {
+                    Ok(_) => toast.ok("Foto subida"),
+                    Err(_) => toast.err("No se pudo subir la foto"),
+                }
+                uploading.set(String::new());
+                load();
+            });
+        })
+    };
+
     view! {
         <div class="space-y-8">
             // Sticky contextual action bar
@@ -325,7 +359,8 @@ pub fn GalleryView() -> impl IntoView {
                         </h2>
                         <form on:submit=upload class="space-y-3">
                             <Field label="Texto alternativo (se aplica a todas)">
-                                <input class=INPUT name="alt" />
+                                <input class=INPUT name="alt" prop:value=alt_sig
+                                    on:input=move |e| alt_sig.set(event_target_value(&e)) />
                             </Field>
                             <Field label="Archivos">
                                 <input class=INPUT type="file" name="file"
@@ -340,6 +375,23 @@ pub fn GalleryView() -> impl IntoView {
                                 </span>
                             </div>
                         </form>
+                        <label class="mt-3 block cursor-pointer border-t border-white/10 pt-3 \
+                            text-sm/6 text-zinc-300 hover:text-white">
+                            "Editar una foto antes de subir…"
+                            <input type="file" class="hidden"
+                                accept="image/jpeg,image/png,image/webp"
+                                on:change=move |e| {
+                                    let Some(input) = e.target()
+                                        .and_then(|t| t.dyn_into::<web_sys::HtmlInputElement>().ok())
+                                    else { return; };
+                                    let Some(file) = input.files().and_then(|f| f.get(0)) else {
+                                        return;
+                                    };
+                                    input.set_value("");
+                                    editing.set(Some(file));
+                                }
+                            />
+                        </label>
                     </div>
                 </div>
             </Card>
@@ -384,6 +436,14 @@ pub fn GalleryView() -> impl IntoView {
                     </Button>
                 </div>
             </Modal>
+
+            {move || editing.get().map(|file| view! {
+                <crate::image_editor::ImageEditorModal
+                    file=file
+                    on_baked=on_baked
+                    on_cancel=Callback::new(move |_| editing.set(None))
+                />
+            })}
         </div>
     }
 }

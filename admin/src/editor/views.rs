@@ -56,19 +56,53 @@ pub fn divider_view() -> impl IntoView {
 }
 
 pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl IntoView {
-    let id_up = id.clone();
-    let (id_src, id_alt) = (id.clone(), id);
+    let (id_src, id_alt) = (id.clone(), id.clone());
+    let id_up = id;
     let toast = use_toaster();
+    let editing = RwSignal::new(None::<web_sys::File>);
     let has_src = !src.is_empty();
     let shown = src.clone();
+
+    // The editor hands back a baked PNG; upload it through the existing
+    // blog-asset pipeline and copy the renditions onto this image block.
+    let on_baked = Callback::new(move |blob: web_sys::Blob| {
+        let id = id_up.clone();
+        let Ok(form) = FormData::new() else { return };
+        if form.append_with_blob_and_filename("file", &blob, "edit.png").is_err() {
+            return;
+        }
+        editing.set(None);
+        spawn_local(async move {
+            match api::upload_blog_asset(form).await {
+                Ok(img) => blocks.update(|v| {
+                    if let Some(Block::Image { src, variants, placeholder, width, height, .. }) =
+                        v.iter_mut().find(|b| b.id() == id)
+                    {
+                        *src = img.src;
+                        *variants = img.variants;
+                        *placeholder = img.placeholder;
+                        *width = img.width;
+                        *height = img.height;
+                    }
+                }),
+                // The pipeline rejects anything it can't decode (or that's too
+                // large) with a 400 — tell the user instead of failing silently.
+                Err(api::ApiError::Status(400)) => {
+                    toast.err("Formato no admitido o imagen dañada. Usa JPG, PNG o WebP.")
+                }
+                Err(_) => toast.err("No se pudo subir la imagen"),
+            }
+        });
+    });
+
     view! {
         <div class="rounded-lg border border-white/10 p-2">
             {has_src.then(|| view! {
                 <img src=shown alt=alt.clone() class="mx-auto max-h-80 rounded" />
             })}
-            // Upload a file (ingested server-side) or paste a URL — either sets src.
+            // Pick a file to open the editor (crop/adjust/filters), or paste a URL.
             <label class="mt-1 block cursor-pointer text-xs text-zinc-400 hover:text-white">
-                "Subir imagen…"
+                "Subir / editar imagen…"
                 <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
@@ -82,44 +116,40 @@ pub fn image_view(blocks: Blocks, id: String, src: String, alt: String) -> impl 
                         let Some(file) = input.files().and_then(|f| f.get(0)) else {
                             return;
                         };
-                        let Ok(form) = FormData::new() else { return };
-                        if form.append_with_blob("file", &file).is_err() {
-                            return;
-                        }
-                        let id = id_up.clone();
-                        spawn_local(async move {
-                            match api::upload_blog_asset(form).await {
-                                Ok(img) => {
-                                    blocks.update(|v| {
-                                        if let Some(Block::Image {
-                                            src,
-                                            variants,
-                                            placeholder,
-                                            width,
-                                            height,
-                                            ..
-                                        }) = v.iter_mut().find(|b| b.id() == id)
-                                        {
-                                            *src = img.src;
-                                            *variants = img.variants;
-                                            *placeholder = img.placeholder;
-                                            *width = img.width;
-                                            *height = img.height;
-                                        }
-                                    });
-                                }
-                                // The pipeline rejects anything it can't decode
-                                // (or that's too large) with a 400 — tell the user
-                                // instead of failing silently.
-                                Err(api::ApiError::Status(400)) => {
-                                    toast.err("Formato no admitido o imagen dañada. Usa JPG, PNG o WebP.")
-                                }
-                                Err(_) => toast.err("No se pudo subir la imagen"),
-                            }
-                        });
+                        input.set_value(""); // let the same file re-trigger change
+                        editing.set(Some(file));
                     }
                 />
             </label>
+            // Escape hatch: upload the original untouched (same pipeline), so a
+            // modal bug can never block adding an image to a post.
+            <label class="mt-1 block cursor-pointer text-xs text-zinc-500 hover:text-white">
+                "…o subir sin editar"
+                <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    class="hidden"
+                    on:change=move |e| {
+                        let Some(input) =
+                            e.target().and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                        else {
+                            return;
+                        };
+                        let Some(file) = input.files().and_then(|f| f.get(0)) else {
+                            return;
+                        };
+                        input.set_value("");
+                        on_baked.run(file.unchecked_into::<web_sys::Blob>());
+                    }
+                />
+            </label>
+            {move || editing.get().map(|file| view! {
+                <crate::image_editor::ImageEditorModal
+                    file=file
+                    on_baked=on_baked
+                    on_cancel=Callback::new(move |_| editing.set(None))
+                />
+            })}
             // src commits on blur/Enter so the preview <img> doesn't re-mount per keystroke.
             <input
                 class="mt-1 w-full bg-transparent text-xs text-zinc-400 outline-none \

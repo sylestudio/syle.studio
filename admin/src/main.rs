@@ -4,6 +4,7 @@
 mod api;
 mod app;
 mod editor;
+mod image_editor;
 mod ui;
 mod views;
 mod webauthn;

@@ -49,4 +49,14 @@ web-sys = { version = "0.3", features = [
   "DragEvent",
   "DomTokenList",
   "CssStyleDeclaration",
+  "Blob",
+  "Url",
+  "HtmlImageElement",
+  "HtmlCanvasElement",
+  "CanvasRenderingContext2d",
+  "CanvasGradient",
+  "PointerEvent",
+  "MouseEvent",
+  "DomRect",
 ] }
+syle-imageedit.workspace = true

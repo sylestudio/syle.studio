@@ -1,0 +1,12 @@
+[package]
+name = "syle-imageedit"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+# Pure, host-testable edit math for the CRM image editor (crop geometry, the
+# CSS/`ctx.filter` builder, bake-size capping). No `web-sys`, no `image`/`ravif`
+# — the admin canvas glue depends on this and the `cargo test` loop covers it,
+# mirroring the dependency-light `syle-render` crate.
+[dependencies]
