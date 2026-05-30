@@ -40,7 +40,7 @@ pub fn SlashMenu(
                                 >
                                     <span class="grid h-6 w-7 shrink-0 place-items-center rounded \
                                         bg-white/5 font-mono text-xs text-zinc-400">
-                                        {kind.glyph()}
+                                        {marker(kind)}
                                     </span>
                                     {kind.label()}
                                 </button>
@@ -65,4 +65,33 @@ pub fn SlashMenu(
             </div>
         </div>
     }
+}
+
+/// Slash-menu marker for a block kind. Headings keep their compact `H1`/`H2`/`H3`
+/// text (the universal editor convention); every other kind renders a monochrome
+/// Material Icons glyph — same family/viewBox as the link icon in `toolbar.rs` —
+/// inheriting the chip's `currentColor`.
+fn marker(kind: Kind) -> AnyView {
+    // Material Icons (baseline) path data, fetched verbatim — kept one-per-line
+    // intact (a backslash line-continuation would silently drop path segments).
+    let path = match kind {
+        Kind::H1 => return view! { "H1" }.into_any(),
+        Kind::H2 => return view! { "H2" }.into_any(),
+        Kind::H3 => return view! { "H3" }.into_any(),
+        Kind::Paragraph => "M14 17H4v2h10v-2zm6-8H4v2h16V9zM4 15h16v-2H4v2zM4 5v2h16V5H4z",
+        Kind::Bullet => "M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5S5.5 6.83 5.5 6S4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5s1.5-.68 1.5-1.5s-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z",
+        Kind::Numbered => "M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z",
+        Kind::Todo => "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z",
+        Kind::Quote => "M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z",
+        Kind::Code => "M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6l6 6l1.4-1.4zm5.2 0l4.6-4.6l-4.6-4.6L16 6l6 6l-6 6l-1.4-1.4z",
+        Kind::Divider => "M4 11h16v2H4z",
+        Kind::Callout => "M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7c0-3.9-3.1-7-7-7z",
+        Kind::Image => "M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z",
+    };
+    view! {
+        <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+            <path d=path></path>
+        </svg>
+    }
+    .into_any()
 }

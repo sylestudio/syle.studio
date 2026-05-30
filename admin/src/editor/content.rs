@@ -40,21 +40,23 @@ impl Kind {
         }
     }
 
-    /// Monospace glyph hint for the slash menu.
-    pub fn glyph(self) -> &'static str {
+    /// Search tokens for the slash menu, matched as a lowercase substring of the
+    /// query typed after `/`. Lets `/h1`, `/code`, `/cita` resolve even when the
+    /// visible label doesn't contain the typed text (the icon carries no text).
+    pub fn keywords(self) -> &'static str {
         match self {
-            Kind::Paragraph => "¶",
-            Kind::H1 => "H1",
-            Kind::H2 => "H2",
-            Kind::H3 => "H3",
-            Kind::Bullet => "•",
-            Kind::Numbered => "1.",
-            Kind::Todo => "☐",
-            Kind::Quote => "❝",
-            Kind::Code => "</>",
-            Kind::Divider => "—",
-            Kind::Callout => "💡",
-            Kind::Image => "🖼",
+            Kind::Paragraph => "texto parrafo p",
+            Kind::H1 => "h1 titulo 1 encabezado heading",
+            Kind::H2 => "h2 titulo 2 encabezado heading",
+            Kind::H3 => "h3 titulo 3 encabezado heading",
+            Kind::Bullet => "lista vinetas bullet ul puntos",
+            Kind::Numbered => "lista numerada ordenada numbered ol 1 2 3",
+            Kind::Todo => "casilla todo checkbox tarea pendiente",
+            Kind::Quote => "cita quote blockquote",
+            Kind::Code => "codigo code",
+            Kind::Divider => "divisor divider hr linea separador",
+            Kind::Callout => "llamado callout aviso nota destacado",
+            Kind::Image => "imagen image foto picture",
         }
     }
 
@@ -78,7 +80,7 @@ impl Kind {
 }
 
 /// Slash-menu kinds matching `query` (the text typed after `/`), by label or
-/// glyph substring. Empty query → the full menu, in order.
+/// keyword substring. Empty query → the full menu, in order.
 pub fn filter_kinds(query: &str) -> Vec<Kind> {
     let q = query.trim().to_lowercase();
     if q.is_empty() {
@@ -87,7 +89,7 @@ pub fn filter_kinds(query: &str) -> Vec<Kind> {
     Kind::menu()
         .iter()
         .copied()
-        .filter(|k| k.label().to_lowercase().contains(&q) || k.glyph().to_lowercase().contains(&q))
+        .filter(|k| k.label().to_lowercase().contains(&q) || k.keywords().contains(&q))
         .collect()
 }
 
