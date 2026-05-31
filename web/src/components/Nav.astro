@@ -1,15 +1,16 @@
 ---
 // Fixed nav that re-tones over dark sections (bitonal). The colour swap is a
 // zero-animation class toggle driven by IntersectionObserver — no scroll
-// handler, runs even with reduced motion. Keeps the real liquid wordmark
-// (logo-b.png) instead of a stand-in mark; it is inverted via CSS filter
-// for the dark state.
+// handler, runs even with reduced motion. The liquid wordmark is the
+// authoritative vector and inherits the nav's `currentColor`, so it re-tones
+// with the same toggle — no CSS filter needed.
+import Wordmark from "./Wordmark.astro";
 ---
 
 <nav id="nav">
   <div class="nav-row">
     <a href="/" class="nav-mark-link" aria-label="syle.studio — inicio">
-      <img src="/img/logo-b.png" alt="syle studio" class="nav-mark" width="120" height="36" />
+      <Wordmark class="nav-mark" />
     </a>
     <div class="nav-links lbl">
       <a href="/#proyectos">Proyectos</a>
@@ -35,11 +36,14 @@
     align-items: center;
     justify-content: space-between;
   }
-  .nav-mark {
+  /* The wordmark is a child component, so its <svg> lives outside this file's
+     scope — size it via :global() anchored to the (scoped) link. It inherits
+     the nav's currentColor, which transitions on the dark-section toggle. */
+  .nav-mark-link :global(.nav-mark) {
     height: 1.5rem;
     width: auto;
     display: block;
-    transition: filter 0.5s var(--e);
+    transition: color 0.5s var(--e);
   }
   .nav-links {
     display: flex;
@@ -57,14 +61,11 @@
   :global(#nav.on-dark) {
     color: var(--paper);
   }
-  :global(#nav.on-dark) .nav-mark {
-    filter: invert(1);
-  }
   @media (min-width: 768px) {
     .nav-row {
       padding: 1.25rem 3rem;
     }
-    .nav-mark {
+    .nav-mark-link :global(.nav-mark) {
       height: 1.75rem;
     }
   }

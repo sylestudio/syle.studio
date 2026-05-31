@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
 import Mark from "../components/Mark.astro";
+import Wordmark from "../components/Wordmark.astro";
 import { listGalleries, getGallery } from "../lib/api";
 
 // Each published gallery is a "Proyecto". The list endpoint carries no cover,
@@ -107,7 +108,7 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
       {archive.map((y, i) => (
         <div class={`arch-cell${i === 2 || i === 5 ? " inv" : ""}`}>
           <span class={`lbl ${y === 2026 ? "ox" : "muted"}`}>{y}</span>
-          <img src="/img/logo-b.png" alt="" class="arch-mark" />
+          <Wordmark class="arch-mark" />
         </div>
       ))}
       <div class="arch-cell next"><span class="lbl faint">Próximo</span></div>
@@ -271,12 +272,15 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
   }
   .arch-cell.inv { background: var(--dark); }
   .arch-cell.next { align-items: center; justify-content: center; }
-  .arch-mark {
+  /* arch-mark is a child component's <svg> (out of scope) — size it via
+     :global() anchored to the scoped cell; it inherits the cell's currentColor. */
+  .arch-cell :global(.arch-mark) {
     width: 70%;
     align-self: center;
     opacity: 0.9;
+    color: var(--ink);
   }
-  .arch-cell.inv .arch-mark { filter: invert(1); }
+  .arch-cell.inv :global(.arch-mark) { color: var(--paper); }
 
   /* closing */
   .close { min-height: 100dvh; display: flex; align-items: center; }
