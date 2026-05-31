@@ -157,18 +157,32 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
     display: flex;
     flex-direction: column;
   }
-  /* own layer: anchored in the upper-right negative space, never in flow so it
-     can't push the headline. Sized by min(vw,vh) so its height stays in the
-     top band and never collides with the bottom-aligned headline. Behind text
-     (z-index:-1) as a safety net. */
+  /* Oversized line-art backdrop behind the headline (no fill, traced by the
+     script below). Never in flow + behind text (z-index:-1) + pointer-events:
+     none, so it can't push or block. Horizontal anchor is fluid: centred on
+     small screens, then drifting right as the viewport widens (clamped so the
+     right star never bleeds off). */
   .hero-mark {
     position: absolute;
-    top: clamp(3rem, 12vh, 9rem);
-    right: 0;
-    width: min(30vw, 36vh);
+    top: 50%;
+    left: clamp(50%, calc(50% + (100vw - 768px) * 0.18), 64%);
+    transform: translate(-50%, -50%);
+    width: min(95vw, 92vh);
     color: var(--ink);
     z-index: -1;
     pointer-events: none;
+  }
+  /* line-art: no fill, thin stroke. overflow:visible so the rounded stroke
+     caps at the star tips aren't clipped by the svg viewport edge. With no JS /
+     reduced motion this stays a solid drawn outline; the script below turns it
+     into an endless draw with randomised accel/decel. */
+  .hero-mark :global(svg) { overflow: visible; }
+  .hero-mark :global(path) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 10;
+    stroke-linejoin: round;
+    stroke-linecap: round;
   }
   .hero-h {
     font-size: clamp(3.25rem, 15vw, 12rem);
@@ -354,3 +368,48 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
     .spec { font-size: 0.95rem; }
   }
 </style>
+
+<script>
+  // Hero mark line-art: a single lit segment (~60% of the line) travels along
+  // each star forever, like headlights on a highway — its leading edge draws new
+  // line while its trailing edge erases behind it. No bounce: the dash period
+  // equals the path length, so advancing the offset in one direction loops
+  // seamlessly. Speed eases toward a fresh random target every ~0.5–1.8s for
+  // organic accel/decel; the two stars run on independent seeds. Skipped under
+  // reduced motion (CSS leaves a solid outline).
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const paths = document.querySelectorAll<SVGPathElement>(".hero-mark path");
+
+  if (!reduce) {
+    paths.forEach((path) => {
+      const len = path.getTotalLength();
+      const seg = len * 0.6; // lit portion of the line
+      path.style.strokeDasharray = `${seg} ${len - seg}`;
+
+      let offset = Math.random() * len; // random start position
+      const dir = Math.random() < 0.5 ? 1 : -1; // fixed travel direction
+      let speed = len * 0.16; // path units / second
+      let target = speed;
+      let retargetAt = 0;
+      let last = performance.now();
+
+      const tick = (now: number) => {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+
+        if (now >= retargetAt) {
+          target = len * (0.07 + Math.random() * 0.4); // new random cruise speed
+          retargetAt = now + 500 + Math.random() * 1300;
+        }
+        speed += (target - speed) * 0.05; // smooth approach, no jerk
+
+        offset += dir * speed * dt;
+        offset = ((offset % len) + len) % len; // wrap one period -> seamless
+
+        path.style.strokeDashoffset = String(offset);
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+</script>
