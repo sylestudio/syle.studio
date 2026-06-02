@@ -2,7 +2,6 @@
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
 import Mark from "../components/Mark.astro";
-import Wordmark from "../components/Wordmark.astro";
 import { listGalleries, getGallery } from "../lib/api";
 
 // Each published gallery is a "Proyecto". The list endpoint carries no cover,
@@ -19,7 +18,20 @@ const projects = await Promise.all(
   })),
 );
 
-const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
+// Logos del grid "Trabajo conjunto". Cada entrada:
+//   logo  → ruta en /public  (ej. "/img/logos/cliente.svg")
+//   href  → URL de destino
+//   label → texto pequeño en esquina inferior izquierda
+//   inv   → true = fondo oscuro (usa variante blanca del logo)
+const clients = [
+  { logo: "/img/logo-b.png", href: "#", label: "Syle Studio",   inv: false },
+  { logo: "/img/Dango2025.svg", href: "https://festivaldango.com", label: "Cliente dos",   inv: false },
+  { logo: "/img/DGX.png", href: "#", label: "Cliente tres",  inv: true  },
+  { logo: "/img/logos/logo-4.svg", href: "#", label: "Cliente cuatro",inv: false },
+  { logo: "/img/logos/logo-5.svg", href: "#", label: "Cliente cinco", inv: false },
+  { logo: "/img/logos/logo-6.svg", href: "#", label: "Cliente seis",  inv: true  },
+  { logo: "/img/logos/logo-7.svg", href: "#", label: "Cliente siete", inv: false },
+];
 ---
 
 <Base title="Estudio creativo" bare>
@@ -105,11 +117,11 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
       tempor incididunt. <span class="faint">(Lorem ipsum.)</span>
     </p>
     <div class="arch-grid" data-reveal>
-      {archive.map((y, i) => (
-        <div class={`arch-cell${i === 2 || i === 5 ? " inv" : ""}`}>
-          <span class={`lbl ${y === 2026 ? "ox" : "muted"}`}>{y}</span>
-          <Wordmark class="arch-mark" />
-        </div>
+      {clients.map((c) => (
+        <a href={c.href} class={`arch-cell${c.inv ? " inv" : ""}`} target="_blank" rel="noopener noreferrer">
+          <img src={c.logo} alt="" class="arch-logo" />
+          <span class="arch-label lbl">{c.label}</span>
+        </a>
       ))}
       <div class="arch-cell next"><span class="lbl faint">Próximo</span></div>
     </div>
@@ -281,21 +293,29 @@ const archive = [2013, 2016, 2019, 2022, 2024, 2025, 2026];
     background: var(--paper);
     padding: 1.5rem;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    position: relative;
+    text-decoration: none;
+    transition: opacity 0.35s var(--e);
   }
+  a.arch-cell:hover { opacity: 0.75; }
   .arch-cell.inv { background: var(--dark); }
-  .arch-cell.next { align-items: center; justify-content: center; }
-  /* arch-mark is a child component's <svg> (out of scope) — size it via
-     :global() anchored to the scoped cell; it inherits the cell's currentColor. */
-  .arch-cell :global(.arch-mark) {
-    width: 70%;
+  .arch-logo {
+    width: 65%;
+    height: auto;
     opacity: 0.9;
-    color: var(--ink);
+    display: block;
   }
-  .arch-cell.inv :global(.arch-mark) { color: var(--paper); }
+  .arch-label {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1.5rem;
+    color: rgba(22, 20, 15, 0.4);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.35); }
 
   /* closing */
   .close { min-height: 100dvh; display: flex; align-items: center; }
