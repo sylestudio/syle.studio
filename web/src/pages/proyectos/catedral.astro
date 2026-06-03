@@ -1,0 +1,80 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base title="Catedral" bare>
+  <!-- Hero fijo: ocupa el 100vh inicial, queda detrás del contenido -->
+  <div class="hero-fixed">
+    <img src="/img/Simbolo/Simbolo.jpg" alt="Catedral" />
+  </div>
+
+  <!-- Contenido: empieza en 100vh y se desliza sobre la imagen al hacer scroll -->
+  <div class="page-wrap">
+    <main class="pg">
+      <header class="pg-head">
+        <span class="lbl muted">SYL · 001</span>
+        <h1 class="disp pg-title">Catedral</h1>
+        <p class="pg-meta lbl muted">35mm — 2025</p>
+      </header>
+
+      <section class="pg-body">
+        <!-- Contenido del proyecto aquí -->
+      </section>
+    </main>
+  </div>
+</Base>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.42); }
+
+  .hero-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 0;
+  }
+
+  .hero-fixed img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    margin-top: 100vh;
+    background: var(--paper);
+    min-height: 100vh;
+  }
+
+  .pg {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 10rem 1.5rem 8rem;
+  }
+
+  .pg-head {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 2rem;
+    margin-bottom: 6rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .pg-title {
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.88;
+  }
+
+  .pg-body {
+    min-height: 60vh;
+  }
+
+  @media (min-width: 768px) {
+    .pg { padding: 12rem 3rem 10rem; }
+  }
+</style>
