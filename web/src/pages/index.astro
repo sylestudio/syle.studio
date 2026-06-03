@@ -18,6 +18,17 @@ const projects = await Promise.all(
   })),
 );
 
+// Slides del slider "Bleed". Cada entrada:
+//   img     → ruta en /public
+//   caption → texto izquierdo del pie
+//   ref     → referencia derecha (ej. "SYL · 001")
+//   url     → enlace del proyecto (asignar cuando se creen)
+const slides = [
+  { img: "/img/hero.webp", caption: "Catedral — 35mm",        ref: "SYL · 001", url: "#" },
+  { img: "/img/hero.webp", caption: "Retrato — Análogo",      ref: "SYL · 002", url: "#" },
+  { img: "/img/hero.webp", caption: "Estudio — Formato medio",ref: "SYL · 003", url: "#" },
+];
+
 // Logos del grid "Trabajo conjunto". Cada entrada:
 //   logo  → ruta en /public  (ej. "/img/logos/cliente.svg")
 //   href  → URL de destino
@@ -28,9 +39,9 @@ const clients = [
   { logo: "/img/Dango2025.svg", href: "https://festivaldango.com", label: "Festival Dango",   inv: false },
   { logo: "/img/DGX.png", href: "https://www.instagram.com/dgx.archive/", label: "Cliente tres",  inv: true  },
   { logo: "/img/in.png", href: "#", label: "Cliente cuatro",inv: false },
-  { logo: "/img/logos/logo-5.svg", href: "#", label: "Cliente cinco", inv: false },
-  { logo: "/img/logos/logo-6.svg", href: "#", label: "Cliente seis",  inv: true  },
-  { logo: "/img/logos/logo-7.svg", href: "#", label: "Cliente siete", inv: false },
+  { logo: "/img/logo-b.png", href: "#", label: "Cliente cinco", inv: false },
+  { logo: "/img/logo-b.png", href: "#", label: "Cliente seis",  inv: true  },
+  { logo: "/img/logo-b.png", href: "#", label: "Cliente siete", inv: false },
 ];
 ---
 
@@ -39,24 +50,40 @@ const clients = [
   <header class="hero">
     <div class="hero-in">
       <div class="hero-mark" aria-hidden="true"><Mark /></div>
-      <div class="lbl muted" data-reveal>Estudio creativo — CDMX · MMXXVI</div>
+      <div class="lbl muted" data-reveal>Estudio creativo — Estado de México · 2025</div>
       <h1 class="disp hero-h" data-reveal>
         Maria Jose<br />Eres el amor de mi vida
       </h1>
       <div class="hero-foot">
         <p class="hero-lede" data-reveal>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua enim.
+          Estudio Creativo nacido en México, todos tienen una 
+          historia que contar, nuestra inspiracion es ayudarlos 
+          a contarla.
         </p>
       </div>
     </div>
   </header>
 
   <section class="bleed">
-    <figure data-reveal>
-      <div class="hero-img"><img src="/img/hero.webp" alt="" /></div>
+    <figure data-reveal class="bleed-sl" id="bleed-sl">
+      <div class="hero-img sl-track">
+        {slides.map((s, i) => (
+          <div
+            class={`sl-slide${i === 0 ? " is-active" : ""}`}
+            data-caption={s.caption}
+            data-ref={s.ref}
+            data-url={s.url}
+          >
+            <img src={s.img} alt={s.caption} />
+          </div>
+        ))}
+        <button class="sl-arrow sl-prev" aria-label="Anterior">←</button>
+        <button class="sl-arrow sl-next" aria-label="Siguiente">→</button>
+      </div>
       <figcaption class="lbl muted cap">
-        <span>Catedral — 35mm</span><span>SYL · 001</span>
+        <a class="sl-cap-text" href={slides[0].url}>{slides[0].caption}</a>
+        <span class="sl-counter">{`01 / ${String(slides.length).padStart(2, "0")}`}</span>
+        <span class="sl-ref-text">{slides[0].ref}</span>
       </figcaption>
     </figure>
   </section>
@@ -93,11 +120,12 @@ const clients = [
   <section class="section dark">
     <div class="proc">
       <div class="proc-copy">
-        <div class="lbl dim" data-reveal>Bitácora — sesión de estudio</div>
-        <h2 class="disp proc-h" data-reveal>Lorem ipsum dolor sit</h2>
+        <div class="lbl dim" data-reveal>Mas sobre Syle Studio</div>
+        <h2 class="disp proc-h" data-reveal>Syle Studio</h2>
         <p class="proc-p" data-reveal>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna.
+          Somos un estudio comprometido con los trabajos e
+          ideas que desarrollamos, un poco de nuestro trabajo
+          se ve reflejado en nuestra historia.
         </p>
       </div>
       <figure class="proc-fig" data-reveal>
@@ -109,12 +137,11 @@ const clients = [
   <!-- firma · archivo de lettering -->
   <section class="section">
     <div class="sec-head wrap-head">
-      <h2 class="disp sec-title" data-reveal>Trabajo conjunto</h2>
-      <span class="lbl muted">Wordmark — 2013 → 2026</span>
+      <h2 class="disp sec-title" data-reveal>Colaboracion con</h2>
+      <span class="lbl muted">Desde 2025 - 2026</span>
     </div>
     <p class="arch-note" data-reveal>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt. <span class="faint">(Lorem ipsum.)</span>
+      Desarrollos de algunos proyectos con gente independiente y artistas emergentes <span class="faint"></span>
     </p>
     <div class="arch-grid" data-reveal>
       {clients.map((c) => (
@@ -215,17 +242,54 @@ const clients = [
     color: rgba(22, 20, 15, 0.65);
   }
 
-  .bleed { padding: 0 1.5rem 7rem; }
-  .bleed figure { max-width: 1700px; margin: 0 auto; overflow: hidden; }
-  .hero-img { height: 62vh; }
-  .hero-img img { height: 100%; object-fit: cover; }
+  .bleed { padding: 0 0 7rem; }
+  .bleed figure { overflow: hidden; }
+  .cap { padding: 0 1.5rem; }
+  .hero-img { height: 62vh; position: relative; overflow: hidden; }
+  .hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .cap {
     margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+    align-items: center;
     justify-content: space-between;
   }
+
+  /* slider */
+  .sl-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s var(--e);
+    pointer-events: none;
+  }
+  .sl-slide.is-active { opacity: 1; pointer-events: auto; }
+  .sl-arrow {
+    position: absolute;
+    bottom: 1.25rem;
+    background: rgba(244, 241, 234, 0.88);
+    border: none;
+    cursor: pointer;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: rgba(22, 20, 15, 0.8);
+    opacity: 0;
+    transition: opacity 0.35s, transform 0.35s var(--e);
+    z-index: 2;
+  }
+  .bleed-sl:hover .sl-arrow { opacity: 1; }
+  .sl-arrow:hover { transform: scale(1.08); }
+  .sl-prev { right: 4.5rem; }
+  .sl-next { right: 1.25rem; }
+  .sl-cap-text { color: inherit; text-decoration: none; }
+  .sl-cap-text:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .sl-counter { font-size: 0.7rem; letter-spacing: 0.06em; }
 
   /* SECTION shell */
   .section { padding: 7rem 1.5rem; }
@@ -297,15 +361,19 @@ const clients = [
     justify-content: center;
     position: relative;
     text-decoration: none;
-    transition: opacity 0.35s var(--e);
+    overflow: hidden;
   }
-  a.arch-cell:hover { opacity: 0.75; }
   .arch-cell.inv { background: var(--dark); }
   .arch-logo {
     width: 65%;
     height: auto;
     opacity: 0.9;
     display: block;
+    transition: transform 0.6s var(--e), opacity 0.6s var(--e);
+  }
+  a.arch-cell:hover .arch-logo {
+    transform: scale(1.08);
+    opacity: 0.5;
   }
   .arch-label {
     position: absolute;
@@ -361,7 +429,8 @@ const clients = [
 
   @media (min-width: 768px) {
     .hero { padding: 8rem 3rem 2.5rem; }
-    .bleed { padding: 0 3rem 10rem; }
+    .bleed { padding: 0 0 10rem; }
+    .cap { padding: 0 3rem; }
     .hero-img { height: 86vh; }
     .section { padding: 11rem 3rem; }
 
@@ -391,6 +460,41 @@ const clients = [
 </style>
 
 <script>
+  // Bleed slider
+  const bleedSl = document.getElementById("bleed-sl");
+  if (bleedSl) {
+    const slSlides = bleedSl.querySelectorAll<HTMLElement>(".sl-slide");
+    const capEl    = bleedSl.querySelector<HTMLAnchorElement>(".sl-cap-text");
+    const refEl    = bleedSl.querySelector<HTMLElement>(".sl-ref-text");
+    const ctrEl    = bleedSl.querySelector<HTMLElement>(".sl-counter");
+    const total    = slSlides.length;
+    let cur = 0;
+
+    function goTo(n: number) {
+      slSlides[cur].classList.remove("is-active");
+      cur = ((n % total) + total) % total;
+      slSlides[cur].classList.add("is-active");
+      if (capEl) {
+        capEl.textContent = slSlides[cur].dataset.caption ?? "";
+        capEl.href = slSlides[cur].dataset.url ?? "#";
+      }
+      if (refEl) refEl.textContent = slSlides[cur].dataset.ref ?? "";
+      if (ctrEl) ctrEl.textContent =
+        `${String(cur + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+    }
+
+    bleedSl.querySelector(".sl-prev")?.addEventListener("click", () => goTo(cur - 1));
+    bleedSl.querySelector(".sl-next")?.addEventListener("click", () => goTo(cur + 1));
+
+    // swipe support on mobile
+    let touchX = 0;
+    bleedSl.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
+    bleedSl.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 40) goTo(cur + (dx < 0 ? 1 : -1));
+    });
+  }
+
   // Hero mark line-art: a single lit segment (~60% of the line) travels along
   // each star forever, like headlights on a highway — its leading edge draws new
   // line while its trailing edge erases behind it. No bounce: the dash period
