@@ -19,14 +19,11 @@ const projects = await Promise.all(
 );
 
 // Slides del slider "Bleed". Cada entrada:
-//   img     → ruta en /public
-//   caption → texto izquierdo del pie
-//   ref     → referencia derecha (ej. "SYL · 001")
-//   url     → enlace del proyecto (asignar cuando se creen)
 const slides = [
-  { img: "/img/hero.webp", caption: "Catedral — 35mm",        ref: "SYL · 001", url: "/proyectos/catedral" },
-  { img: "/img/hero.webp", caption: "Retrato — Análogo",      ref: "SYL · 002", url: "#" },
-  { img: "/img/hero.webp", caption: "Estudio — Formato medio",ref: "SYL · 003", url: "#" },
+  { img: "/img/hero.webp", caption: "Simbolo Vivo — Syle Studio",   ref: "SYL · 001", url: "/proyectos/catedral" },
+  { img: "/img/Slide/Dango.jpg", caption: "Dango — Festival",             ref: "SYL · 002", url: "#" },
+  { img: "/img/Slide/Insom.jpg", caption: "Insomnio — Fotografia",        ref: "SYL · 003", url: "#" },
+  { img: "/img/Slide/Concierto.jpg", caption: "La Obsesion — Fotografia", ref: "SYL · 004", url: "#" },
 ];
 
 // Logos del grid "Trabajo conjunto". Cada entrada:
@@ -35,13 +32,13 @@ const slides = [
 //   label → texto pequeño en esquina inferior izquierda
 //   inv   → true = fondo oscuro (usa variante blanca del logo)
 const clients = [
-  { logo: "/img/logo-b.png", href: "https://sylestudio.com", label: "Syle Studio",   inv: false },
-  { logo: "/img/Dango2025.svg", href: "https://festivaldango.com", label: "Festival Dango",   inv: false },
-  { logo: "/img/DGX.png", href: "https://www.instagram.com/dgx.archive/", label: "Cliente tres",  inv: true  },
-  { logo: "/img/in.png", href: "#", label: "Cliente cuatro",inv: false },
-  { logo: "/img/logo-b.png", href: "#", label: "Cliente cinco", inv: false },
-  { logo: "/img/logo-b.png", href: "#", label: "Cliente seis",  inv: true  },
-  { logo: "/img/logo-b.png", href: "#", label: "Cliente siete", inv: false },
+  { logo: "/img/Logos/logo-b.png", href: "https://sylestudio.com", label: "Syle Studio",   inv: false },
+  { logo: "/img/Logos/Dango2025.svg", href: "https://festivaldango.com", label: "Festival Dango",   inv: false },
+  { logo: "/img/Logos/DGX.png", href: "https://www.instagram.com/dgx.archive/", label: "Cliente tres",  inv: true  },
+  { logo: "/img/Logos/in.png", href: "#", label: "Cliente cuatro",inv: false },
+  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente cinco", inv: false },
+  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente seis",  inv: true  },
+  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente siete", inv: false },
 ];
 ---
 
