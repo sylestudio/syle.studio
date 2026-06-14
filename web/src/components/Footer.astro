@@ -2,32 +2,96 @@
 const year = "2025";
 ---
 
-<footer class="site-footer dark">
-  <div class="foot-row lbl">
-    <span>syle.studio&reg;</span>
-    <span> <link rel="stylesheet" href="https://sylestudio.com">Sylestudio.com </link> &middot; Nosotros </span>
-    <span>Estado de México / {year}</span>
+<footer class="site-footer">
+  <div class="foot-inner">
+    <!-- Wordmark -->
+    <a href="/" class="foot-brand" aria-label="syle.studio">
+      <img class="foot-fuente" src="/img/Syle_Fuente_Negro%20(1).svg" alt="SYLE" />
+    </a>
+
+    <!-- Sitio -->
+    <a href="https://sylestudio.com" class="foot-site ln">SYLESTUDIO.COM</a>
+
+    <!-- Instagram -->
+    <a
+      href="https://instagram.com/sylestudio"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Instagram"
+      class="foot-ig"
+    >
+      <img src="/img/instagram.svg" alt="Instagram" />
+    </a>
+
+    <!-- Símbolo -->
+    <a href="/" class="foot-mark" aria-label="syle.studio">
+      <img src="/img/Syle_Logo_Negro%20(1).svg" alt="Syle" />
+    </a>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    border-top: 1px solid rgba(244, 241, 234, 0.1);
-    padding: 2rem 1.5rem;
+    position: relative;
+    z-index: 1;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 2.5rem 1.5rem;
   }
-  .foot-row {
-    max-width: 1700px;
+
+  .foot-inner {
+    max-width: 1820px;
     margin: 0 auto;
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
     align-items: center;
     justify-content: space-between;
-    color: rgba(244, 241, 234, 0.35);
+    gap: 1.5rem;
   }
+
+  .foot-fuente {
+    width: auto;
+    height: 2.25rem;
+  }
+
+  .foot-site {
+    font-family: "Space Mono", ui-monospace, monospace;
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+  }
+
+  .foot-ig {
+    display: inline-flex;
+    opacity: 0.85;
+    transition: opacity 0.2s var(--e);
+  }
+  .foot-ig:hover { opacity: 1; }
+  .foot-ig img {
+    width: auto;
+    height: 1.75rem;
+  }
+
+  .foot-mark {
+    display: inline-flex;
+  }
+  .foot-mark img {
+    width: auto;
+    height: 2rem;
+  }
+
   @media (min-width: 768px) {
     .site-footer {
-      padding: 2rem 3rem;
+      padding: 2.5rem 3rem;
     }
+  }
+
+  @media (max-width: 640px) {
+    .foot-inner {
+      gap: 1rem;
+    }
+    .foot-fuente { height: 1.5rem; }
+    .foot-site { font-size: 0.75rem; letter-spacing: 0.08em; }
+    .foot-ig img { height: 1.4rem; }
+    .foot-mark img { height: 1.5rem; }
   }
 </style>
