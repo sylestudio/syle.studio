@@ -68,6 +68,19 @@ import Base from "../../layouts/Base.astro";
         <img src="/img/Simbolo/Diseno_3.jpg" alt="" />
       </div>
 
+      <!-- ── Texto centrado ─────────────────────────────────── -->
+      <div class="wrap">
+        <div class="text-c">
+          <h2 class="disp center-h">El Proceso</h2>
+          <p class="body-s">
+            Cada prenda y cada toma nacieron de un proceso colaborativo donde
+            la experimentacion fue la constante. Llevamos la idea del simbolo
+            mas alla de la prenda, construyendo una narrativa visual completa
+            que conecta el concepto con la estetica final del proyecto.
+          </p>
+        </div>
+      </div>
+
       <!-- ── Slider ─────────────────────────────────────────── -->
       <div class="slider-wrap">
         <div class="slider" id="slider">
@@ -81,6 +94,21 @@ import Base from "../../layouts/Base.astro";
           <span class="dot active" data-i="0"></span>
           <span class="dot" data-i="1"></span>
           <span class="dot" data-i="2"></span>
+        </div>
+      </div>
+
+      <!-- ── Créditos ───────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="credits">
+          <div class="credit-col">
+            <span class="lbl muted">Proyecto</span>
+            <a href="#" class="ln credit-val disp">Simbolo Vivo</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Fotografía</span>
+            <a href="#" class="ln credit-val">Daniel</a>
+            <a href="#" class="ln credit-val">Emmanuel</a>
+          </div>
         </div>
       </div>
 
@@ -189,6 +217,21 @@ import Base from "../../layouts/Base.astro";
   }
   .text-r .body-s { max-width: 44ch; }
 
+  /* ── Texto centrado ── */
+  .text-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .center-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-c .body-s { max-width: 52ch; }
+
   /* ── Triple ── */
   .triple {
     display: grid;
@@ -260,6 +303,30 @@ import Base from "../../layouts/Base.astro";
   }
   .dot.active { background: rgba(22,20,15,0.75); }
 
+  /* ── Créditos ── */
+  .credits {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    margin-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: space-between;
+  }
+  .credit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .credit-val {
+    width: fit-content;
+    font-size: 1rem;
+  }
+  .credit-val.disp {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
   /* ── Mobile ── */
   @media (max-width: 768px) {
     .intro-grid {
@@ -279,11 +346,17 @@ import Base from "../../layouts/Base.astro";
       text-align: left;
     }
     .triple {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
     }
+
+    /* Mostrar las fotos completas en móvil, sin recorte */
+    .diptych img,
+    .triple img,
     .triple img:nth-child(2) {
-      grid-column: span 2;
-      aspect-ratio: 16 / 9;
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
     }
   }
 </style>
