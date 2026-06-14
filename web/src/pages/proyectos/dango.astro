@@ -36,22 +36,20 @@ import Base from "../../layouts/Base.astro";
         </div>
       </div>
 
-      <!-- ── Mampostería horizontal ─────────────────────────── -->
-      <div class="masonry-wrap">
-        <div class="masonry-track" id="masonry">
-          <img src="/img/Dango/Manposteria/Man.jpg" alt="" />
+      <!-- ── Mampostería horizontal (avanza con el scroll) ──── -->
+      <section class="hscroll">
+        <div class="hscroll-pin">
+          <div class="masonry-track" id="masonry">
           <img src="/img/Dango/Manposteria/Man_1.jpg" alt="" />
           <img src="/img/Dango/Manposteria/Man_2.jpg" alt="" />
           <img src="/img/Dango/Manposteria/Man_3.jpg" alt="" />
           <img src="/img/Dango/Manposteria/Man_5.jpg" alt="" />
-          <!-- duplicado para el bucle infinito -->
-          <img src="/img/Dango/Manposteria/Foto1.jpg" alt="" aria-hidden="true" />
-          <img src="/img/Dango/Manposteria/Foto2.jpg" alt="" aria-hidden="true" />
-          <img src="/img/Dango/Manposteria/Foto3.jpg" alt="" aria-hidden="true" />
-          <img src="/img/Dango/Manposteria/Foto4.jpg" alt="" aria-hidden="true" />
-          <img src="/img/Dango/Manposteria/Foto5.jpg" alt="" aria-hidden="true" />
+          <img src="/img/Dango/Manposteria/Man_6.jpg" alt="" />
+          <img src="/img/Dango/Manposteria/Man_7.jpg" alt="" />
+
+          </div>
         </div>
-      </div>
+      </section>
 
       <!-- ── Texto de la derecha ───────────────────── -->
       <div class="wrap">
@@ -243,34 +241,67 @@ import Base from "../../layouts/Base.astro";
     aspect-ratio: 3 / 4;
   }
 
-  /* ── Mampostería horizontal ── */
-  .masonry-wrap {
-    overflow: hidden;
-    width: 100%;
+  /* ── Mampostería horizontal (avanza con el scroll) ──
+     Base / fallback: tira con scroll horizontal manual. Si el navegador
+     soporta scroll-driven animations (ver @supports más abajo), se convierte
+     en una sección "pineada" que avanza de izquierda a derecha al bajar. */
+  .hscroll {
+    position: relative;
+  }
+  .hscroll-pin {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
   .masonry-track {
     display: flex;
     gap: 3px;
     width: max-content;
-    animation: scroll-x 40s linear infinite;
   }
-  .masonry-wrap:hover .masonry-track {
-    animation-play-state: paused;
-  }
+  /* todas las imágenes con el mismo tamaño (caja uniforme) */
   .masonry-track img {
-    height: 60vh;
-    width: auto;
+    height: 70vh;
+    width: 52vh;          /* mismo ancho y alto para todas */
     object-fit: cover;
     display: block;
     flex: 0 0 auto;
   }
-  /* alturas alternadas para dar el efecto de mampostería */
-  .masonry-track img:nth-child(2n) { height: 48vh; align-self: flex-start; }
-  .masonry-track img:nth-child(3n) { height: 70vh; align-self: flex-end; }
 
-  @keyframes scroll-x {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+  /* Efecto pin + desplazamiento horizontal accionado por el scroll vertical.
+     Solo CSS — no usa JS ni interactúa con Lenis (lee el scroll nativo). */
+  @supports (animation-timeline: view()) {
+    .hscroll {
+      /* distancia de scroll: más alto = recorrido horizontal más lento */
+      height: 260vh;
+      /* línea de tiempo basada en el paso de esta sección por el viewport */
+      view-timeline-name: --hsec;
+      view-timeline-axis: block;
+    }
+    .hscroll-pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .masonry-track {
+      will-change: transform;
+      animation: hscroll-move linear both;
+      animation-timeline: --hsec;
+      /* "contain" abarca justo el tramo en que la sección está pineada */
+      animation-range: contain 0% contain 100%;
+    }
+    @keyframes hscroll-move {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(-100% + 100vw)); }
+    }
+  }
+
+  /* Accesibilidad: sin animación de scroll si el usuario lo pide */
+  @media (prefers-reduced-motion: reduce) {
+    .hscroll { height: auto; }
+    .hscroll-pin { position: static; height: auto; overflow-x: auto; }
+    .masonry-track { animation: none; transform: none; }
   }
 
   /* ── Créditos ── */
@@ -319,11 +350,15 @@ import Base from "../../layouts/Base.astro";
       grid-template-columns: 1fr;
     }
 
-    .masonry-track img,
-    .masonry-track img:nth-child(2n),
-    .masonry-track img:nth-child(3n) {
-      height: 40vh;
+    /* en móvil cada imagen ocupa casi toda la pantalla */
+    .masonry-track img {
+      height: 82vh;
+      width: 92vw;
       align-self: center;
+    }
+    /* recorrido más largo (más lento) en móvil, sólo si hay soporte de pin */
+    @supports (animation-timeline: view()) {
+      .hscroll { height: 380vh; }
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
