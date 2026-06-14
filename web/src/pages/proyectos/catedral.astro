@@ -12,9 +12,9 @@ import Base from "../../layouts/Base.astro";
 
       <div class="wrap">
         <header class="pg-head">
-          <span class="lbl muted">SYL · 001</span>
-          <h1 class="disp pg-title">Catedral</h1>
-          <p class="pg-meta lbl muted">35mm — 2025</p>
+          <span class="lbl muted">SYLE · 002</span>
+          <h1 class="disp pg-title">Simbolo Vivo</h1>
+          <p class="pg-meta lbl muted">Drop - 2025</p>
         </header>
       </div>
 
@@ -24,12 +24,14 @@ import Base from "../../layouts/Base.astro";
           <div class="intro-left">
             <h2 class="disp intro-h">Simbolo Vivo</h2>
             <p class="body-s">
-              Visual identity for Gilga Farm, Donald Glover's creative studio
-              and artistic sanctuary located in Ojai, California.<br />
-              Both a functioning farm and a multidisciplinary incubator, Gilga
-              Farm serves as a production company, cultural library, and
-              collaborative space where creators from diverse backgrounds
-              come together to explore and experiment freely.
+              Este fue un proyecto totalmente hecho por nosotros desde 
+              los diseños de las prendas hasta la fotografia, la idea central
+              del proyecto estubo basada en la resignificacion de las cosas
+              usamos uno de los simbolos mas importantes de la religion que en 
+              nuestra epoca actual significa fe, esperanza. Todo esto cambia cuando 
+              se remonta a los origenes de este simbolo, mediante los diseños buscamos 
+              plasmar esta idea mezclando colores y una estetica contraria a lo que 
+              se podria conocer normalmente.
             </p>
           </div>
           <div class="intro-right">
@@ -45,17 +47,16 @@ import Base from "../../layouts/Base.astro";
         <img src="/img/about-manifiesto-2.webp" alt="" />
       </div>
 
-      <!-- ── Subtitulo 2 (texto derecha) ───────────────────── -->
+      <!-- ── Texto de la derecha ───────────────────── -->
       <div class="wrap">
         <div class="text-r">
-          <h2 class="disp sub2-h">Subtitulo 2</h2>
+          <h2 class="disp sub2-h">Estetica del Proyecto</h2>
           <p class="body-s">
-            Visual identity for Gilga Farm, Donald Glover's creative studio
-            and artistic sanctuary located in Ojai, California.<br />
-            Both a functioning farm and a multidisciplinary incubator, Gilga
-            Farm serves as a production company, cultural library, and
-            collaborative space where creators from diverse backgrounds
-            come together to explore and experiment freely.
+            Durante la elaboracion de todo este proyecto buscamos mantener 
+            una estetica acorde a la idea de nuestro proyecto, la idea de las
+            locaciones, los colores, y la edicion de las fotos buscaba una idea 
+            agresiva, contrastada con colores limpios donde se enfatizara la otra 
+            contra parte del significado.
           </p>
         </div>
       </div>
@@ -68,8 +69,19 @@ import Base from "../../layouts/Base.astro";
       </div>
 
       <!-- ── Slider ─────────────────────────────────────────── -->
-      <div class="slider">
-        <img src="/img/hero.webp" alt="" />
+      <div class="slider-wrap">
+        <div class="slider" id="slider">
+          <div class="slide active"><img src="/img/Simbolo/Slide1.jpg" alt="Slide 1" /></div>
+          <div class="slide"><img src="/img/Simbolo/Slide2.jpg" alt="Slide 2" /></div>
+          <div class="slide"><img src="/img/Simbolo/Slide3.jpg" alt="Slide 3" /></div>
+        </div>
+        <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
+        <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
+        <div class="sl-dots">
+          <span class="dot active" data-i="0"></span>
+          <span class="dot" data-i="1"></span>
+          <span class="dot" data-i="2"></span>
+        </div>
       </div>
 
     </main>
@@ -188,22 +200,65 @@ import Base from "../../layouts/Base.astro";
     width: 100%;
     display: block;
     object-fit: cover;
+    aspect-ratio: 3 / 4;
   }
-  .triple img:nth-child(1) { aspect-ratio: 3 / 4; }
-  .triple img:nth-child(2) { aspect-ratio: 2 / 4; }
-  .triple img:nth-child(3) { aspect-ratio: 3 / 4; }
 
   /* ── Slider ── */
-  .slider {
+  .slider-wrap {
+    position: relative;
     margin-top: 8rem;
+  }
+  .slider {
+    position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
+    background: #000;
   }
-  .slider img {
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .slide.active { opacity: 1; }
+  .slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
+  .sl-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(22,20,15,0.45);
+    color: #fff;
+    border: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s;
+  }
+  .sl-btn:hover { background: rgba(22,20,15,0.75); }
+  .sl-prev { left: 1rem; }
+  .sl-next { right: 1rem; }
+  .sl-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(22,20,15,0.25);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .dot.active { background: rgba(22,20,15,0.75); }
 
   /* ── Mobile ── */
   @media (max-width: 768px) {
@@ -232,3 +287,23 @@ import Base from "../../layouts/Base.astro";
     }
   }
 </style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>('.slide');
+  const dots   = document.querySelectorAll<HTMLElement>('.dot');
+  let cur = 0;
+
+  function goTo(n: number) {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+  }
+
+  document.querySelector('.sl-prev')?.addEventListener('click', () => goTo(cur - 1));
+  document.querySelector('.sl-next')?.addEventListener('click', () => goTo(cur + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+
+  setInterval(() => goTo(cur + 1), 4000);
+</script>
