@@ -1,0 +1,339 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base title="Dango" bare>
+  <div class="hero-fixed">
+    <img src="/img/Dango/Main.jpg" alt="Dango" />
+  </div>
+
+  <div class="page-wrap">
+    <main>
+
+      <div class="wrap">
+        <header class="pg-head">
+          <span class="lbl muted">SYLE · 002</span>
+          <h1 class="disp pg-title">Dango</h1>
+          <p class="pg-meta lbl muted">Drop - 2026</p>
+        </header>
+      </div>
+
+      <!-- ── Intro grid ──────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="intro-grid">
+          <div class="intro-left">
+            <h2 class="disp intro-h">Festival Dango</h2>
+            <p class="body-s">
+              Dango fue un festival de música que tuvo sede en Teotihuacan, se presentaron
+              artistas Mexicanos recoconocidos dentro del ambito del reggeaton, rock indie y 
+              otros generos.
+            </p>
+          </div>
+          <div class="intro-right">
+            <h2 class="disp intro-h">Syle Studio</h2>
+            <span class="lbl muted">2025</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Mampostería horizontal ─────────────────────────── -->
+      <div class="masonry-wrap">
+        <div class="masonry-track" id="masonry">
+          <img src="/img/Dango/Manposteria/Man.jpg" alt="" />
+          <img src="/img/Dango/Manposteria/Man_1.jpg" alt="" />
+          <img src="/img/Dango/Manposteria/Man_2.jpg" alt="" />
+          <img src="/img/Dango/Manposteria/Man_3.jpg" alt="" />
+          <img src="/img/Dango/Manposteria/Man_5.jpg" alt="" />
+          <!-- duplicado para el bucle infinito -->
+          <img src="/img/Dango/Manposteria/Foto1.jpg" alt="" aria-hidden="true" />
+          <img src="/img/Dango/Manposteria/Foto2.jpg" alt="" aria-hidden="true" />
+          <img src="/img/Dango/Manposteria/Foto3.jpg" alt="" aria-hidden="true" />
+          <img src="/img/Dango/Manposteria/Foto4.jpg" alt="" aria-hidden="true" />
+          <img src="/img/Dango/Manposteria/Foto5.jpg" alt="" aria-hidden="true" />
+        </div>
+      </div>
+
+      <!-- ── Texto de la derecha ───────────────────── -->
+      <div class="wrap">
+        <div class="text-r">
+          <h2 class="disp sub2-h">Estetica del Proyecto</h2>
+          <p class="body-s">
+            Durante la elaboracion de todo este proyecto buscamos mantener
+            una estetica acorde a la idea de nuestro proyecto, la idea de las
+            locaciones, los colores, y la edicion de las fotos buscaba una idea
+            agresiva, contrastada con colores limpios donde se enfatizara la otra
+            contra parte del significado.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Triple imágenes ────────────────────────────────── -->
+      <div class="triple">
+        <img src="/img/Dango/Diseno.jpg" alt="" />
+        <img src="/img/Dango/Diseno_2.jpg" alt="" />
+        <img src="/img/Dango/Diseno_3.jpg" alt="" />
+      </div>
+
+      <!-- ── Texto centrado ─────────────────────────────────── -->
+      <div class="wrap">
+        <div class="text-c">
+          <h2 class="disp center-h">El Proceso</h2>
+          <p class="body-s">
+            Cada prenda y cada toma nacieron de un proceso colaborativo donde
+            la experimentacion fue la constante. Llevamos la idea del simbolo
+            mas alla de la prenda, construyendo una narrativa visual completa
+            que conecta el concepto con la estetica final del proyecto.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Diptych ────────────────────────────────────────── -->
+      <div class="diptych">
+        <img src="/img/Dango/Dango_2.jpg" alt="" />
+        <img src="/img/Dango/Dango_3.jpg" alt="" />
+      </div>
+
+      <!-- ── Créditos ───────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="credits">
+          <div class="credit-col">
+            <span class="lbl muted">Proyecto</span>
+            <a href="#" class="ln credit-val disp">Dango</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Fotografía</span>
+            <a href="#" class="ln credit-val">Daniel</a>
+            <a href="#" class="ln credit-val">Emmanuel</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</Base>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.42); }
+
+  /* ── Shell ── */
+  .hero-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero-fixed img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    margin-top: 100vh;
+    background: var(--paper);
+  }
+
+  .wrap {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  /* ── Header ── */
+  .pg-head {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 10rem;
+    padding-bottom: 5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .pg-title {
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.88;
+  }
+
+  /* ── Intro grid ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 5rem;
+  }
+  .intro-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .intro-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .intro-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+  }
+
+  .body-s {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    line-height: 1.65;
+    color: rgba(22, 20, 15, 0.72);
+  }
+
+  /* ── Diptych ── */
+  .diptych {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-top: 8rem;
+  }
+  .diptych img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Text right ── */
+  .text-r {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    margin-left: auto;
+    max-width: 60%;
+  }
+  .sub2-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-r .body-s { max-width: 44ch; }
+
+  /* ── Texto centrado ── */
+  .text-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .center-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-c .body-s { max-width: 52ch; }
+
+  /* ── Triple ── */
+  .triple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    align-items: start;
+  }
+  .triple img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* ── Mampostería horizontal ── */
+  .masonry-wrap {
+    overflow: hidden;
+    width: 100%;
+  }
+  .masonry-track {
+    display: flex;
+    gap: 3px;
+    width: max-content;
+    animation: scroll-x 40s linear infinite;
+  }
+  .masonry-wrap:hover .masonry-track {
+    animation-play-state: paused;
+  }
+  .masonry-track img {
+    height: 60vh;
+    width: auto;
+    object-fit: cover;
+    display: block;
+    flex: 0 0 auto;
+  }
+  /* alturas alternadas para dar el efecto de mampostería */
+  .masonry-track img:nth-child(2n) { height: 48vh; align-self: flex-start; }
+  .masonry-track img:nth-child(3n) { height: 70vh; align-self: flex-end; }
+
+  @keyframes scroll-x {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ── Créditos ── */
+  .credits {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    margin-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: space-between;
+  }
+  .credit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .credit-val {
+    width: fit-content;
+    font-size: 1rem;
+  }
+  .credit-val.disp {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+    .intro-right {
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .diptych {
+      grid-template-columns: 1fr;
+    }
+    .text-r {
+      max-width: 100%;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .triple {
+      grid-template-columns: 1fr;
+    }
+
+    .masonry-track img,
+    .masonry-track img:nth-child(2n),
+    .masonry-track img:nth-child(3n) {
+      height: 40vh;
+      align-self: center;
+    }
+
+    /* Mostrar las fotos completas en móvil, sin recorte */
+    .diptych img,
+    .triple img,
+    .triple img:nth-child(2) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
+    }
+  }
+</style>
