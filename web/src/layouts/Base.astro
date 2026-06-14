@@ -31,7 +31,9 @@ const { title, bare = false } = Astro.props;
         color-scheme: light;
       }
       * { box-sizing: border-box; margin: 0; }
-      html, body { overflow-x: hidden; }
+      /* clip (no "hidden"): evita scroll horizontal SIN crear un contenedor de
+         scroll, que rompería position:sticky y las scroll-driven animations. */
+      html, body { overflow-x: clip; }
       body {
         font-family: "Space Grotesk Variable", system-ui, sans-serif;
         background: var(--paper);
