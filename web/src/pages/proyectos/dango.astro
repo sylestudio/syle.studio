@@ -13,8 +13,8 @@ import Base from "../../layouts/Base.astro";
       <div class="wrap">
         <header class="pg-head">
           <span class="lbl muted">SYLE · 002</span>
-          <h1 class="disp pg-title">Dango</h1>
-          <p class="pg-meta lbl muted">Drop - 2026</p>
+          <h1 class="disp pg-title">Festival Dango</h1>
+          <p class="pg-meta lbl muted">Sponsor - 2026</p>
         </header>
       </div>
 
@@ -22,9 +22,10 @@ import Base from "../../layouts/Base.astro";
       <div class="wrap">
         <div class="intro-grid">
           <div class="intro-left">
-            <h2 class="disp intro-h">Festival Dango</h2>
+            <h2 class="disp intro-h">Sponsors en Festival Dango</h2>
             <p class="body-s">
-              Dango fue un festival de música que tuvo sede en Teotihuacan, se presentaron
+              Dango fue un festival de música del cual pudimos formar parte como
+              sponsors, el festival tuvo sede en Teotihuacan, se presentaron
               artistas Mexicanos recoconocidos dentro del ambito del reggeaton, rock indie y 
               otros generos.
             </p>
@@ -40,13 +41,37 @@ import Base from "../../layouts/Base.astro";
       <section class="hscroll">
         <div class="hscroll-pin">
           <div class="masonry-track" id="masonry">
-          <img src="/img/Dango/Manposteria/Man_1.jpg" alt="" />
-          <img src="/img/Dango/Manposteria/Man_2.jpg" alt="" />
-          <img src="/img/Dango/Manposteria/Man_3.jpg" alt="" />
-          <img src="/img/Dango/Manposteria/Man_5.jpg" alt="" />
-          <img src="/img/Dango/Manposteria/Man_6.jpg" alt="" />
-          <img src="/img/Dango/Manposteria/Man_7.jpg" alt="" />
-
+            <!-- ESPACIO con imagen VERTICAL (retrato): una sola foto llena el slot.
+                 Cuando tengas verticales, úsalas así:
+            <div class="slot">
+              <img src="/img/Dango/Manposteria/TuVertical.jpg" alt="" />
+            </div>
+            -->
+          <div class="slot">
+              <img src="/img/Dango/Manposteria/Man_2.jpg" alt="" />
+          </div>
+          <div class="slot">
+              <img src="/img/Dango/Manposteria/Man_4.jpg" alt="" />
+          </div>
+          <div class="slot slot--stack">
+              <img src="/img/Dango/Manposteria/Man_11.jpg" alt="" />
+              <img src="/img/Dango/Manposteria/Man_12.jpg" alt="" />
+          </div>
+          <div class="slot">
+              <img src="/img/Dango/Manposteria/Man_8.jpg" alt="" />
+          </div>
+          <div class="slot">
+              <img src="/img/Dango/Manposteria/Man_5.jpg" alt="" />
+          </div>
+          <div class="slot slot--stack">
+              <img src="/img/Dango/Manposteria/Man_13.jpg" alt="" />
+              <img src="/img/Dango/Manposteria/Man_14.jpg" alt="" />
+          </div>
+          <div class="slot">
+              <img src="/img/Dango/Manposteria/Man_6.jpg" alt="" />
+          </div>
+            <!-- ESPACIO con 2 HORIZONTALES apiladas (mismo tamaño que un slot vertical) -->
+      
           </div>
         </div>
       </section>
@@ -67,9 +92,9 @@ import Base from "../../layouts/Base.astro";
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Dango/Diseno.jpg" alt="" />
-        <img src="/img/Dango/Diseno_2.jpg" alt="" />
-        <img src="/img/Dango/Diseno_3.jpg" alt="" />
+        <img src="/img/Dango/Logo_1.jpg" alt="" />
+        <img src="/img/Dango/Logo_2.jpg" alt="" />
+        <img src="/img/Dango/Logo_4.jpg" alt="" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -87,8 +112,8 @@ import Base from "../../layouts/Base.astro";
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/Dango/Dango_2.jpg" alt="" />
-        <img src="/img/Dango/Dango_3.jpg" alt="" />
+        <img src="/img/Dango/Logo_5.jpg" alt="" />
+        <img src="/img/Dango/Logo_3.jpg" alt="" />
       </div>
 
       <!-- ── Créditos ───────────────────────────────────────── -->
@@ -257,13 +282,28 @@ import Base from "../../layouts/Base.astro";
     gap: 3px;
     width: max-content;
   }
-  /* todas las imágenes con el mismo tamaño (caja uniforme) */
-  .masonry-track img {
-    height: 70vh;
-    width: 52vh;          /* mismo ancho y alto para todas */
-    object-fit: cover;
-    display: block;
+  /* Sistema de ESPACIOS: cada slot mide exactamente lo mismo.
+     - .slot          → 1 imagen vertical (retrato) que llena el espacio
+     - .slot--stack   → 2 imágenes horizontales apiladas en el mismo espacio */
+  .slot {
     flex: 0 0 auto;
+    height: 82vh;         /* más alto → verticales más largas */
+    width: 46vh;          /* más angosto → formato retrato más estilizado */
+  }
+  .slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* la vertical llena el espacio sin deformar */
+    display: block;
+  }
+  /* ESPACIO de 2 horizontales: mismo alto que el slot vertical, pero más ANCHO
+     (ancho fijo ~3:2 a media altura) para que la horizontal entre completa
+     sin recortarse a lo ancho y sin romper la cuadrícula. */
+  .slot--stack {
+    width: 62vh;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;              /* el gap se descuenta del alto automáticamente */
   }
 
   /* Efecto pin + desplazamiento horizontal accionado por el scroll vertical.
@@ -271,7 +311,7 @@ import Base from "../../layouts/Base.astro";
   @supports (animation-timeline: view()) {
     .hscroll {
       /* distancia de scroll: más alto = recorrido horizontal más lento */
-      height: 260vh;
+      height: 360vh;
       /* línea de tiempo basada en el paso de esta sección por el viewport */
       view-timeline-name: --hsec;
       view-timeline-axis: block;
@@ -350,15 +390,14 @@ import Base from "../../layouts/Base.astro";
       grid-template-columns: 1fr;
     }
 
-    /* en móvil cada imagen ocupa casi toda la pantalla */
-    .masonry-track img {
+    /* en móvil cada ESPACIO ocupa casi toda la pantalla */
+    .slot {
       height: 82vh;
       width: 92vw;
-      align-self: center;
     }
     /* recorrido más largo (más lento) en móvil, sólo si hay soporte de pin */
     @supports (animation-timeline: view()) {
-      .hscroll { height: 380vh; }
+      .hscroll { height: 480vh; }
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
