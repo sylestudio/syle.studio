@@ -45,29 +45,48 @@ import Base from "../../layouts/Base.astro";
       <!-- ── Texto de la derecha ───────────────────── -->
       <div class="wrap">
         <div class="text-r">
-          <h2 class="disp sub2-h">Estetica del Proyecto</h2>
+          <h2 class="disp sub2-h">Diseños basados en ellos </h2>
           <p class="body-s">
-            Describe aqui la estetica del proyecto: locaciones, colores,
-            edicion y la direccion visual que define a La Obsesion.
+            Realizamos dos diseños basados en la estética de algunos integrantes de la Obsesion
+            Yeyo y Doony Graff y los Tres Chakas (Novato el flow, Nasty Vato y Dulzon).
+            Toda la narrativa visual se baso en un elemento caracteristico de los cantantes, las cadenas, 
+            partiendo de esa idea se creo diges personalizados relacionados con cada uno de ellos.
           </p>
         </div>
       </div>
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Obsesion/Diseno.jpg" alt="" />
-        <img src="/img/Obsesion/Diseno_2.jpg" alt="" />
-        <img src="/img/Obsesion/Diseno_3.jpg" alt="" />
+        <img src="/img/Obsesion/Play_2.jpg" alt="" />
+        <img src="/img/Obsesion/Play_4.jpg" alt="" />
+        <img src="/img/Obsesion/Play_3.jpg" alt="" />
+      </div>
+
+      <div class="wrap">
+        <div class="intro-grid">
+          <div class="intro-left">
+            <h2 class="disp intro-h">Mas del Proceso</h2>
+            <p class="body-s">
+              Ambos diseños fueron bajo la estetica de las cadenas, para la de los Tres Chakas agregamos un detalle mas
+              que fueron las mangas,haciendo a la playera una long sleeve y escribiendo el nombre de cada integrante en el
+              antebrazo. 
+          </div>
+        </div>
+      </div>
+
+      <div class="triple">
+        <img src="/img/Obsesion/Play_5.jpg" alt="" />
+        <img src="/img/Obsesion/obs_1.jpg" alt="" />
+        <img src="/img/Obsesion/Play_6.jpg" alt="" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
       <div class="wrap">
         <div class="text-c">
-          <h2 class="disp center-h">El Proceso</h2>
+          <h2 class="disp center-h">Fotografia</h2>
           <p class="body-s">
-            Describe aqui el proceso creativo detras de La Obsesion, desde
-            la experimentacion hasta la construccion de la narrativa visual
-            que conecta el concepto con la estetica final.
+            Muchas de estas fotografias fueron durante su presentacion en el Festival Dango en 
+            la cual tambien formamos parte.
           </p>
         </div>
       </div>
@@ -75,9 +94,10 @@ import Base from "../../layouts/Base.astro";
       <!-- ── Slider ─────────────────────────────────────────── -->
       <div class="slider-wrap">
         <div class="slider" id="slider">
-          <div class="slide active"><img src="/img/Obsesion/Slide1.jpg" alt="Slide 1" /></div>
-          <div class="slide"><img src="/img/Obsesion/Slide2.jpg" alt="Slide 2" /></div>
-          <div class="slide"><img src="/img/Obsesion/Slide3.jpg" alt="Slide 3" /></div>
+          <div class="slide active"><img src="/img/Obsesion/Play.jpg" alt="Slide 1" /></div>
+          <div class="slide"><img src="/img/Obsesion/obs_5.jpg" alt="Slide 2" /></div>
+          <div class="slide"><img src="/img/Obsesion/obs_6.jpg" alt="Slide 3" /></div>
+          <div class="slide"><img src="/img/Obsesion/obs_7.jpg" alt="Slide 4" /></div>
         </div>
         <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
         <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
@@ -85,7 +105,18 @@ import Base from "../../layouts/Base.astro";
           <span class="dot active" data-i="0"></span>
           <span class="dot" data-i="1"></span>
           <span class="dot" data-i="2"></span>
+          <span class="dot" data-i="3"></span>
         </div>
+      </div>
+
+      <!-- ── Grid de 6 imágenes ─────────────────────────────── -->
+      <div class="gallery">
+        <img src="/img/Obsesion/obs_8.jpg" alt="" />
+        <img src="/img/Obsesion/Play_1.jpg" alt="" />
+        <img src="/img/Obsesion/obs_9.jpg" alt="" />
+        <img src="/img/Obsesion/obs_11.jpg" alt="" />
+        <img src="/img/Obsesion/obs_10.jpg" alt="" />
+        <img src="/img/Obsesion/obs_12.jpg" alt="" />
       </div>
 
       <!-- ── Créditos ───────────────────────────────────────── -->
@@ -242,6 +273,20 @@ import Base from "../../layouts/Base.astro";
     aspect-ratio: 3 / 4;
   }
 
+  /* ── Gallery (grid de 6) ── */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    margin-top: 8rem;
+  }
+  .gallery img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
   /* ── Slider ── */
   .slider-wrap {
     position: relative;
@@ -344,11 +389,15 @@ import Base from "../../layouts/Base.astro";
     .triple {
       grid-template-columns: 1fr;
     }
+    .gallery {
+      grid-template-columns: 1fr;
+    }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
     .diptych img,
     .triple img,
-    .triple img:nth-child(2) {
+    .triple img:nth-child(2),
+    .gallery img {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
