@@ -141,6 +141,11 @@ import Base from "../../layouts/Base.astro";
 
     </main>
   </div>
+
+  <!-- ── Lightbox ── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+    <img src="" alt="" />
+  </div>
 </Base>
 
 <style>
@@ -287,6 +292,51 @@ import Base from "../../layouts/Base.astro";
     aspect-ratio: 3 / 4;
   }
 
+  /* ── Hover discreto + zoom al click ── */
+  .diptych img,
+  .triple img,
+  .gallery img {
+    cursor: zoom-in;
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+  .diptych img:hover,
+  .triple img:hover,
+  .gallery img:hover {
+    filter: brightness(1.05);
+    transform: scale(1.012);
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    background: rgba(16, 14, 10, 0.82);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lightbox img {
+    max-width: min(90vw, 1100px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    transform: scale(0.96);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img { transform: scale(1); }
+
   /* ── Slider ── */
   .slider-wrap {
     position: relative;
@@ -424,4 +474,32 @@ import Base from "../../layouts/Base.astro";
   dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
 
   setInterval(() => goTo(cur + 1), 4000);
+
+  // ── Lightbox: click en imagen para ver mejor ──
+  const lightbox  = document.getElementById('lightbox') as HTMLElement | null;
+  const lightImg  = lightbox?.querySelector('img') as HTMLImageElement | null;
+  const zoomables = document.querySelectorAll<HTMLImageElement>('.diptych img, .triple img, .gallery img');
+
+  function openLightbox(src: string, alt: string) {
+    if (!lightbox || !lightImg) return;
+    lightImg.src = src;
+    lightImg.alt = alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightImg) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  zoomables.forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  lightbox?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
 </script>
