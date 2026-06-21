@@ -1,0 +1,239 @@
+---
+import Base from "../../layouts/Base.astro";
+
+
+
+//
+// SYLE STUDIO PAGINA DE PRUEBA PARA MENU DE PROYECTOS 
+//
+//
+// Página de obras estilo "Tamaki Yoshida": una rejilla de trabajos filtrable por
+// categoría y por año. Tipografía mínima, negro sobre papel, mucho aire.
+// Cada obra usa imágenes ya presentes en /public/img.
+type Work = {
+  title: string;
+  category: "Fotografia" | "Diseño" | "Direccion";
+  year: number;
+  img: string;
+  url: string;
+};
+
+const works: Work[] = [
+  { title: "Simbolo Vivo", category: "Direccion", year: 2025, img: "/img/Simbolo/Simbolo.jpg", url: "/proyectos/catedral" },
+  { title: "Insomnio Studio", category: "Fotografia", year: 2026, img: "/img/Insomnio/Main.jpg", url: "/proyectos/insomnio" },
+  { title: "Festival Dango", category: "Direccion", year: 2025, img: "/img/Dango/Main.jpg", url: "/proyectos/dango" },
+  { title: "Estado Liminal", category: "Fotografia", year: 2026, img: "/img/Insomnio/Ins_2.jpg", url: "/proyectos/insomnio" },
+  { title: "Identidad Dango", category: "Diseño", year: 2025, img: "/img/Dango/Logo_2.jpg", url: "/proyectos/dango" },
+  { title: "Ritual", category: "Diseño", year: 2025, img: "/img/Simbolo/Diseno_2.jpg", url: "/proyectos/catedral" },
+  { title: "Noche Fria", category: "Fotografia", year: 2026, img: "/img/Insomnio/Ins_4.jpg", url: "/proyectos/insomnio" },
+  { title: "Simbolo II", category: "Direccion", year: 2025, img: "/img/Simbolo/Simbo_2.jpg", url: "/proyectos/catedral" },
+];
+
+const categories = ["Todo", ...Array.from(new Set(works.map((w) => w.category)))];
+const years = Array.from(new Set(works.map((w) => w.year))).sort((a, b) => b - a);
+---
+
+<Base title="Obras" bare>
+  <main class="syle">
+    <!-- ── Hero ───────────────────────────────────────────── -->
+    <header class="hero">
+      <h1 class="disp name" data-reveal>SYLE STUDIO<span class="alt">— 樣 工作室</span></h1>
+      <p class="tagline" data-reveal>
+        Reexaminamos la existencia humana a traves de la imagen y el oficio.
+        Expresion creativa centrada en la fotografia y el diseño.
+      </p>
+    </header>
+
+    <!-- ── Filtros ────────────────────────────────────────── -->
+    <section class="filters" aria-label="Filtros de obras">
+      <div class="filter-row" data-group="cat">
+        <span class="lbl muted f-label">Categoria</span>
+        {categories.map((c, i) => (
+          <button class={`f-btn lbl${i === 0 ? " is-active" : ""}`} data-cat={c}>{c}</button>
+        ))}
+      </div>
+      <div class="filter-row" data-group="year">
+        <span class="lbl muted f-label">Año</span>
+        <button class="f-btn lbl is-active" data-year="Todo">Todo</button>
+        {years.map((y) => (
+          <button class="f-btn lbl" data-year={y}>{y}</button>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Rejilla de obras ───────────────────────────────── -->
+    <section class="works" id="works">
+      {works.map((w) => (
+        <a
+          href={w.url}
+          class="work"
+          data-reveal
+          data-cat={w.category}
+          data-year={w.year}
+        >
+          <div class="work-img">
+            <img src={w.img} alt={w.title} loading="lazy" />
+          </div>
+          <div class="work-meta">
+            <h2 class="work-title">{w.title}</h2>
+            <span class="lbl muted">{w.category} · {w.year}</span>
+          </div>
+        </a>
+      ))}
+      <p class="empty lbl muted" id="empty" hidden>Sin obras en esta seleccion.</p>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.42); }
+
+  .syle {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 3vw, 3rem) 8rem;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 11rem 0 4rem;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .name {
+    font-size: clamp(2rem, 6vw, 5rem);
+    line-height: 0.95;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .name .alt {
+    font-weight: 400;
+    font-size: clamp(1rem, 2.2vw, 1.75rem);
+    letter-spacing: 0;
+    color: rgba(22, 20, 15, 0.5);
+  }
+  .tagline {
+    max-width: 42rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgba(22, 20, 15, 0.68);
+  }
+
+  /* ── Filtros ── */
+  .filters {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    border-bottom: 1px solid rgba(22, 20, 15, 0.15);
+    padding: 1.75rem 0;
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 4rem;
+  }
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+  }
+  .f-label { width: 4.5rem; }
+  .f-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    color: rgba(22, 20, 15, 0.45);
+    transition: color 0.3s var(--e);
+    position: relative;
+  }
+  .f-btn:hover { color: var(--ink); }
+  .f-btn.is-active { color: var(--ink); }
+  .f-btn.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+  }
+
+  /* ── Rejilla ── */
+  .works {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem 2rem;
+  }
+  .work { display: block; }
+  .work-img {
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: rgba(22, 20, 15, 0.06);
+  }
+  .work-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.1s var(--e);
+  }
+  .work:hover .work-img img { transform: scale(1.05); }
+  .work-meta {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .work-title {
+    font-size: clamp(1rem, 1.6vw, 1.35rem);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .work.is-hidden { display: none; }
+  .empty { grid-column: 1 / -1; padding: 3rem 0; }
+
+  @media (min-width: 768px) {
+    .works { grid-template-columns: repeat(4, 1fr); gap: 4rem 2rem; }
+  }
+</style>
+
+<script>
+  // Filtrado por categoría + año. Ambos grupos son single-select; un trabajo se
+  // muestra solo si pasa ambos filtros activos.
+  const worksEl = document.getElementById("works");
+  if (worksEl) {
+    const items = Array.from(worksEl.querySelectorAll<HTMLElement>(".work"));
+    const empty = document.getElementById("empty");
+    let cat = "Todo";
+    let year = "Todo";
+
+    function apply() {
+      let shown = 0;
+      items.forEach((el) => {
+        const okCat = cat === "Todo" || el.dataset.cat === cat;
+        const okYear = year === "Todo" || el.dataset.year === year;
+        const show = okCat && okYear;
+        el.classList.toggle("is-hidden", !show);
+        if (show) shown++;
+      });
+      if (empty) empty.hidden = shown !== 0;
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-group="cat"] .f-btn').forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll('[data-group="cat"] .f-btn').forEach((x) => x.classList.remove("is-active"));
+        b.classList.add("is-active");
+        cat = b.dataset.cat ?? "Todo";
+        apply();
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-group="year"] .f-btn').forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll('[data-group="year"] .f-btn').forEach((x) => x.classList.remove("is-active"));
+        b.classList.add("is-active");
+        year = b.dataset.year ?? "Todo";
+        apply();
+      });
+    });
+  }
+</script>
