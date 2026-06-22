@@ -1,0 +1,66 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<Base title={title} bare>
+  <div class="syle-watermark" aria-hidden="true">
+    <img src="/Syle_Fuente_Negro.svg" alt="" />
+    <span class="wm-t"></span>
+    <span class="wm-r"></span>
+    <span class="wm-b"></span>
+    <span class="wm-l"></span>
+  </div>
+  <slot />
+</Base>
+
+<style>
+  .syle-watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70vw;
+    max-width: 1100px;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 2;
+    user-select: none;
+  }
+  .syle-watermark img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Four sides drawn clockwise: top → right → bottom → left */
+  .wm-t, .wm-r, .wm-b, .wm-l { position: absolute; background: #16140f; }
+
+  .wm-t {
+    top: -10px; left: -10px; right: -10px; height: 1px;
+    transform: scaleX(0); transform-origin: left center;
+    animation: grow-x 0.45s cubic-bezier(0.32, 0.72, 0, 1) 0.4s forwards;
+  }
+  .wm-r {
+    top: -10px; bottom: -10px; right: -10px; width: 1px;
+    transform: scaleY(0); transform-origin: top center;
+    animation: grow-y 0.45s cubic-bezier(0.32, 0.72, 0, 1) 0.8s forwards;
+  }
+  .wm-b {
+    bottom: -10px; left: -10px; right: -10px; height: 1px;
+    transform: scaleX(0); transform-origin: right center;
+    animation: grow-x 0.45s cubic-bezier(0.32, 0.72, 0, 1) 1.2s forwards;
+  }
+  .wm-l {
+    top: -10px; bottom: -10px; left: -10px; width: 1px;
+    transform: scaleY(0); transform-origin: bottom center;
+    animation: grow-y 0.45s cubic-bezier(0.32, 0.72, 0, 1) 1.6s forwards;
+  }
+
+  @keyframes grow-x { to { transform: scaleX(1); } }
+  @keyframes grow-y { to { transform: scaleY(1); } }
+</style>
