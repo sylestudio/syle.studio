@@ -58,6 +58,8 @@ integridad de datos, rendimiento o despliegue.
   hash de origen, dimensiones, ThumbHash y versión del pipeline.
 - [x] La generación es incremental, valida el hash de cada archivo restaurado
   del cache y elimina derivados obsoletos.
+- [x] El encoder AVIF usa un número fijo de hilos, por lo que sus hashes son
+  reproducibles entre desarrollo, CI y el host de despliegue.
 - [x] Todas las páginas de proyecto usan `picture`, `srcset`, `sizes`, ancho,
   alto, lazy loading y placeholder; los héroes usan prioridad alta.
 - [x] Ningún original fotográfico pesado se copia al `dist`.

@@ -22,7 +22,7 @@ pub const MAX_INPUT_DIMENSION: u32 = 16_384;
 const MAX_DECODE_ALLOC_BYTES: u64 = 384 * 1024 * 1024;
 /// Increment whenever encoding settings or pixel transformations change. Static
 /// manifests use it to invalidate otherwise unchanged source images.
-pub const INGEST_PIPELINE_VERSION: u32 = 2;
+pub const INGEST_PIPELINE_VERSION: u32 = 3;
 
 /// Stable SHA-256 content key for immutable derivative names and cache busting.
 pub fn content_key(bytes: &[u8]) -> String {
@@ -135,6 +135,10 @@ fn encode_avif(rgba: &[u8], w: u32, h: u32) -> anyhow::Result<Vec<u8>> {
     let encoded = ravif::Encoder::new()
         .with_quality(AVIF_QUALITY)
         .with_speed(AVIF_SPEED)
+        // rav1e changes its tile layout with the available thread count. Pin
+        // it so content-addressed AVIF names are reproducible across developer,
+        // CI, and deployment hosts instead of depending on their CPU count.
+        .with_num_threads(Some(2))
         .encode_rgba(ravif::Img::new(pixels.as_slice(), w as usize, h as usize))?;
     Ok(encoded.avif_file)
 }
