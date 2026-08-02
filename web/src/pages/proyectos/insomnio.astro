@@ -1,0 +1,475 @@
+---
+import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
+---
+
+<ProyectoBase title="Insomnio Studio">
+  <div class="hero-fixed">
+    <StaticPicture src="/img/Insomnio/Main.jpg" alt="Insomnio Studio" eager fill />
+  </div>
+
+  <div class="page-wrap">
+    <main>
+
+      <div class="wrap">
+        <header class="pg-head">
+          <span class="lbl muted">Fotografia · 003</span>
+          <h1 class="disp pg-title">Insomnio Studio</h1>
+          <p class="pg-meta lbl muted">Colaboracion - 2026</p>
+        </header>
+      </div>
+
+      <!-- ── Intro grid ──────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="intro-grid">
+          <div class="intro-left">
+            <h2 class="disp intro-h">Insomnio Studio</h2>
+            <p class="body-s">
+              Insomnio Studio nacio de la idea de explorar ese estado entre
+              el sueno y la vigilia, ese espacio liminal donde los pensamientos
+              se vuelven mas claros y al mismo tiempo mas difusos. Trabajamos
+              junto a Insomnio para construir una identidad visual que capturara
+              esa tension, usando la noche como metafora central de todo el proyecto.
+            </p>
+          </div>
+          <div class="intro-right">
+            <h2 class="disp intro-h">Sesion Fotografica</h2>
+            <span class="lbl muted">2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Diptych ────────────────────────────────────────── -->
+      <div class="diptych">
+        <StaticPicture src="/img/Insomnio/Ins_1.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Insomnio/Ins_2.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+      </div>
+
+      <!-- ── Texto de la derecha ───────────────────── -->
+      <div class="wrap">
+        <div class="text-r">
+          <h2 class="disp sub2-h">Identidad Visual</h2>
+          <p class="body-s">
+            La paleta cromatica del proyecto gira en torno a los azules profundos,
+            los negros y destellos de blanco frio. Cada decision de diseno refuerza
+            la atmosfera de insomnio: tipografias que se disuelven, composiciones
+            que incomodan con sutileza, imagenes que oscilan entre lo familiar
+            y lo extrano.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Triple imágenes ────────────────────────────────── -->
+      <div class="triple">
+        <StaticPicture src="/img/Insomnio/Ins_3.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Insomnio/Ins_4.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Insomnio/Ins_5.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+      </div>
+
+      <!-- ── Texto centrado ─────────────────────────────────── -->
+      <div class="wrap">
+        <div class="text-c">
+          <h2 class="disp center-h">El Proceso</h2>
+          <p class="body-s">
+            Desde las primeras sesiones de boceteo hasta la entrega final,
+            el proceso estuvo guiado por la intuicion tanto como por la razon.
+            Exploramos diferentes estados de luz, de textura y de composicion
+            hasta encontrar el lenguaje visual que le pertenecia al proyecto.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Slider ─────────────────────────────────────────── -->
+      <div class="slider-wrap">
+        <div class="slider" id="slider">
+          <div class="slide active"><StaticPicture src="/img/Insomnio/Slide_1.jpg" alt="Slide 1" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Insomnio/Slide_2.jpg" alt="Slide 2" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Insomnio/Slide_3.jpg" alt="Slide 3" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Insomnio/Slide_4.jpg" alt="Slide 4" fill /></div>
+        </div>
+        <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
+        <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
+        <div class="sl-dots">
+          <button type="button" class="dot active" data-i="0" aria-label="Mostrar imagen 1" aria-current="true"></button>
+          <button type="button" class="dot" data-i="1" aria-label="Mostrar imagen 2" aria-current="false"></button>
+          <button type="button" class="dot" data-i="2" aria-label="Mostrar imagen 3" aria-current="false"></button>
+          <button type="button" class="dot" data-i="3" aria-label="Mostrar imagen 4" aria-current="false"></button>
+        </div>
+      </div>
+
+      <!-- ── Créditos ───────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="credits">
+          <div class="credit-col">
+            <span class="lbl muted">Proyecto</span>
+            <a href="#" class="ln credit-val disp">Insomnio Studio</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Fotografia / Diseño</span>
+            <a href="https://www.instagram.com/dxniel.py/" class="ln credit-val">Dxniel.py</a>
+            <a href="https://www.instagram.com/byxmmxx/" class="ln credit-val">Emma Acosta</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Colaboracion</span>
+            <a href="https://www.instagram.com/insomniostudio__/" class="ln credit-val">Insomnio Studio</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── Lightbox ── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+    <img src="" alt="" />
+  </div>
+</ProyectoBase>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.68); }
+
+  /* ── Shell ── */
+  .hero-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero-fixed :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    margin-top: 100vh;
+    background: var(--paper);
+  }
+
+  .wrap {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+    background: var(--paper);
+  }
+
+  /* ── Header ── */
+  .pg-head {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 10rem;
+    padding-bottom: 5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .pg-title {
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.88;
+  }
+
+  /* ── Intro grid ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 5rem;
+  }
+  .intro-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .intro-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .intro-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+  }
+
+  .body-s {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    line-height: 1.65;
+    color: rgba(22, 20, 15, 0.72);
+  }
+
+  /* ── Diptych ── */
+  .diptych {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+  .diptych :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Text right ── */
+  .text-r {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    margin-left: auto;
+    max-width: 60%;
+  }
+  .sub2-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-r .body-s { max-width: 44ch; }
+
+  /* ── Texto centrado ── */
+  .text-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .center-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-c .body-s { max-width: 52ch; }
+
+  /* ── Triple ── */
+  .triple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    align-items: start;
+  }
+  .triple :global(img) {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* ── Slider ── */
+  .slider-wrap {
+    position: relative;
+    margin-top: 8rem;
+  }
+  .slider {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .slide.active { opacity: 1; }
+  .slide :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sl-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(22,20,15,0.45);
+    color: #fff;
+    border: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s;
+  }
+  .sl-btn:hover { background: rgba(22,20,15,0.75); }
+  .sl-prev { left: 1rem; }
+  .sl-next { right: 1rem; }
+  .sl-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 1rem 0;
+  }
+  .dot {
+    padding: 0;
+    border: 0;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    cursor: pointer;
+  }
+  .dot::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(22,20,15,0.25);
+    transition: background 0.2s;
+  }
+  .dot.active::before { background: rgba(22,20,15,0.75); }
+  .dot:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+
+  /* ── Créditos ── */
+  .credits {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    margin-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: space-between;
+  }
+  .credit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .credit-val {
+    width: fit-content;
+    font-size: 1rem;
+  }
+  .credit-val.disp {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+    .intro-right {
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .diptych {
+      grid-template-columns: 1fr;
+    }
+    .text-r {
+      max-width: 100%;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .triple {
+      grid-template-columns: 1fr;
+    }
+
+    .diptych :global(img),
+    .triple :global(img) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
+    }
+  }
+
+  /* ── Hover discreto + zoom al click ── */
+  .diptych :global(img),
+  .triple :global(img) {
+    cursor: zoom-in;
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
+    filter: brightness(1.05);
+    transform: scale(1.012);
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    background: rgba(16, 14, 10, 0.82);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lightbox img {
+    max-width: min(90vw, 1100px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    transform: scale(0.96);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img { transform: scale(1); }
+</style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>('.slide');
+  const dots   = document.querySelectorAll<HTMLButtonElement>('.dot');
+  let cur = 0;
+
+  function goTo(n: number) {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+    dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === cur)));
+  }
+
+  document.querySelector('.sl-prev')?.addEventListener('click', () => goTo(cur - 1));
+  document.querySelector('.sl-next')?.addEventListener('click', () => goTo(cur + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.setInterval(() => goTo(cur + 1), 4000);
+  }
+
+  // ── Lightbox ──
+  const lightbox  = document.getElementById('lightbox') as HTMLElement | null;
+  const lightImg  = lightbox?.querySelector('img') as HTMLImageElement | null;
+  const zoomables = document.querySelectorAll<HTMLImageElement>('.diptych img, .triple img');
+
+  function openLightbox(src: string, alt: string) {
+    if (!lightbox || !lightImg) return;
+    lightImg.src = src;
+    lightImg.alt = alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightImg) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  zoomables.forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  lightbox?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>

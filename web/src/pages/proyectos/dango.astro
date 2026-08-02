@@ -1,0 +1,501 @@
+---
+import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
+---
+
+<ProyectoBase title="Dango">
+  <div class="hero-fixed">
+    <StaticPicture src="/img/Dango/Main.jpg" alt="Dango" eager fill />
+  </div>
+
+  <div class="page-wrap">
+    <main>
+
+      <div class="wrap">
+        <header class="pg-head">
+          <span class="lbl muted">SYLE · 002</span>
+          <h1 class="disp pg-title">Festival Dango</h1>
+          <p class="pg-meta lbl muted">Sponsor - 2026</p>
+        </header>
+      </div>
+
+      <!-- ── Intro grid ──────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="intro-grid">
+          <div class="intro-left">
+            <h2 class="disp intro-h">Sponsors en Festival Dango</h2>
+            <p class="body-s">
+              Dango fue un festival de música del cual pudimos formar parte como
+              sponsors, el festival tuvo sede en Teotihuacan, se presentaron
+              artistas Mexicanos recoconocidos dentro del ambito del reggeaton, rock indie y
+              otros generos.
+            </p>
+          </div>
+          <div class="intro-right">
+            <h2 class="disp intro-h">Syle Studio</h2>
+            <span class="lbl muted">2025</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Mampostería horizontal (avanza con el scroll) ──── -->
+      <section class="hscroll">
+        <div class="hscroll-pin">
+          <div class="masonry-track" id="masonry">
+            <!-- ESPACIO con imagen VERTICAL (retrato): una sola foto llena el slot.
+                 Cuando tengas verticales, úsalas así:
+            <div class="slot">
+              <StaticPicture src="/img/Dango/Manposteria/TuVertical.jpg" alt="" sizes="70vw" fill />
+            </div>
+            -->
+          <div class="slot">
+              <StaticPicture src="/img/Dango/Manposteria/Man_2.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Dango/Manposteria/Man_4.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot slot--stack">
+              <StaticPicture src="/img/Dango/Manposteria/Man_11.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Dango/Manposteria/Man_12.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Dango/Manposteria/Man_8.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Dango/Manposteria/Man_5.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot slot--stack">
+              <StaticPicture src="/img/Dango/Manposteria/Man_13.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Dango/Manposteria/Man_14.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Dango/Manposteria/Man_6.jpg" alt="" sizes="70vw" fill />
+          </div>
+            <!-- ESPACIO con 2 HORIZONTALES apiladas (mismo tamaño que un slot vertical) -->
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Texto de la derecha ───────────────────── -->
+      <div class="wrap">
+        <div class="text-r">
+          <h2 class="disp sub2-h">Estetica del Proyecto</h2>
+          <p class="body-s">
+            Durante la elaboracion de todo este proyecto buscamos mantener
+            una estetica acorde a la idea de nuestro proyecto, la idea de las
+            locaciones, los colores, y la edicion de las fotos buscaba una idea
+            agresiva, contrastada con colores limpios donde se enfatizara la otra
+            contra parte del significado.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Triple imágenes ────────────────────────────────── -->
+      <div class="triple">
+        <StaticPicture src="/img/Dango/Logo_1.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_2.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_4.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+      </div>
+
+      <!-- ── Texto centrado ─────────────────────────────────── -->
+      <div class="wrap">
+        <div class="text-c">
+          <h2 class="disp center-h">El Proceso</h2>
+          <p class="body-s">
+            Cada prenda y cada toma nacieron de un proceso colaborativo donde
+            la experimentacion fue la constante. Llevamos la idea del simbolo
+            mas alla de la prenda, construyendo una narrativa visual completa
+            que conecta el concepto con la estetica final del proyecto.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Diptych ────────────────────────────────────────── -->
+      <div class="diptych">
+        <StaticPicture src="/img/Dango/Logo_5.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_3.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+      </div>
+
+      <!-- ── Créditos ───────────────────────────────────────── -->
+      <div class="wrap">
+        <div class="credits">
+          <div class="credit-col">
+            <span class="lbl muted">Proyecto</span>
+            <a href="#" class="ln credit-val disp">Dango</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Fotografía</span>
+            <a href="https://www.instagram.com/dxniel.py/" class="ln credit-val">Daijin</a>
+            <a href="https://www.instagram.com/pipian.syle/" class="ln credit-val">Angel Torres</a>
+            <a href="https://www.instagram.com/byxmmxx/" class="ln credit-val">Emma Acosta</a>
+            <a href="https://www.instagram.com/ag_palacios_z/" class="ln credit-val">Angel Gael</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Diseno</span>
+            <a href="https://www.instagram.com/dxniel.py/" class="ln credit-val">Daijin</a>
+          </div>
+           <div class="credit-col">
+            <span class="lbl muted">Sponsor con</span>
+            <a href="https://www.instagram.com/festivaldango/" class="ln credit-val">Festival Dango</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── Lightbox ── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+    <img src="" alt="" />
+  </div>
+</ProyectoBase>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.68); }
+
+  /* ── Shell ── */
+  .hero-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero-fixed :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    margin-top: 100vh;
+    background: var(--paper);
+  }
+
+  .wrap {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  /* ── Header ── */
+  .pg-head {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 10rem;
+    padding-bottom: 5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .pg-title {
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.88;
+  }
+
+  /* ── Intro grid ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 5rem;
+  }
+  .intro-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .intro-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .intro-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+  }
+
+  .body-s {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    line-height: 1.65;
+    color: rgba(22, 20, 15, 0.72);
+  }
+
+  /* ── Diptych ── */
+  .diptych {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-top: 8rem;
+  }
+  .diptych :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Text right ── */
+  .text-r {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    margin-left: auto;
+    max-width: 60%;
+  }
+  .sub2-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-r .body-s { max-width: 44ch; }
+
+  /* ── Texto centrado ── */
+  .text-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .center-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-c .body-s { max-width: 52ch; }
+
+  /* ── Triple ── */
+  .triple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    align-items: start;
+  }
+  .triple :global(img) {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* ── Mampostería horizontal (avanza con el scroll) ──
+     Base / fallback: tira con scroll horizontal manual. Si el navegador
+     soporta scroll-driven animations (ver @supports más abajo), se convierte
+     en una sección "pineada" que avanza de izquierda a derecha al bajar. */
+  .hscroll {
+    position: relative;
+  }
+  .hscroll-pin {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .masonry-track {
+    display: flex;
+    gap: 3px;
+    width: max-content;
+  }
+  /* Sistema de ESPACIOS: cada slot mide exactamente lo mismo.
+     - .slot          → 1 imagen vertical (retrato) que llena el espacio
+     - .slot--stack   → 2 imágenes horizontales apiladas en el mismo espacio */
+  .slot {
+    flex: 0 0 auto;
+    height: 82vh;         /* más alto → verticales más largas */
+    width: 46vh;          /* más angosto → formato retrato más estilizado */
+  }
+  .slot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* la vertical llena el espacio sin deformar */
+    display: block;
+  }
+  /* ESPACIO de 2 horizontales: mismo alto que el slot vertical, pero más ANCHO
+     (ancho fijo ~3:2 a media altura) para que la horizontal entre completa
+     sin recortarse a lo ancho y sin romper la cuadrícula. */
+  .slot--stack {
+    width: 62vh;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;              /* el gap se descuenta del alto automáticamente */
+  }
+
+  /* Efecto pin + desplazamiento horizontal accionado por el scroll vertical.
+     Solo CSS — no usa JS ni interactúa con Lenis (lee el scroll nativo). */
+  @supports (animation-timeline: view()) {
+    .hscroll {
+      /* distancia de scroll: más alto = recorrido horizontal más lento */
+      height: 360vh;
+      /* línea de tiempo basada en el paso de esta sección por el viewport */
+      view-timeline-name: --hsec;
+      view-timeline-axis: block;
+    }
+    .hscroll-pin {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .masonry-track {
+      will-change: transform;
+      animation: hscroll-move linear both;
+      animation-timeline: --hsec;
+      /* "contain" abarca justo el tramo en que la sección está pineada */
+      animation-range: contain 0% contain 100%;
+    }
+    @keyframes hscroll-move {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(-100% + 100vw)); }
+    }
+  }
+
+  /* Accesibilidad: sin animación de scroll si el usuario lo pide */
+  @media (prefers-reduced-motion: reduce) {
+    .hscroll { height: auto; }
+    .hscroll-pin { position: static; height: auto; overflow-x: auto; }
+    .masonry-track { animation: none; transform: none; }
+  }
+
+  /* ── Créditos ── */
+  .credits {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    margin-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: space-between;
+  }
+  .credit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .credit-val {
+    width: fit-content;
+    font-size: 1rem;
+  }
+  .credit-val.disp {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+    .intro-right {
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .diptych {
+      grid-template-columns: 1fr;
+    }
+    .text-r {
+      max-width: 100%;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .triple {
+      grid-template-columns: 1fr;
+    }
+
+    /* en móvil cada ESPACIO ocupa casi toda la pantalla */
+    .slot {
+      height: 82vh;
+      width: 92vw;
+    }
+    /* recorrido más largo (más lento) en móvil, sólo si hay soporte de pin */
+    @supports (animation-timeline: view()) {
+      .hscroll { height: 480vh; }
+    }
+
+    /* Mostrar las fotos completas en móvil, sin recorte */
+    .diptych :global(img),
+    .triple :global(img) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
+    }
+  }
+
+  /* ── Hover discreto + zoom al click ── */
+  .diptych :global(img),
+  .triple :global(img) {
+    cursor: zoom-in;
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
+    filter: brightness(1.05);
+    transform: scale(1.012);
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    background: rgba(16, 14, 10, 0.82);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lightbox img {
+    max-width: min(90vw, 1100px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    transform: scale(0.96);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img { transform: scale(1); }
+</style>
+
+<script>
+  // ── Lightbox ──
+  const lightbox  = document.getElementById('lightbox') as HTMLElement | null;
+  const lightImg  = lightbox?.querySelector('img') as HTMLImageElement | null;
+  const zoomables = document.querySelectorAll<HTMLImageElement>('.diptych img, .triple img');
+
+  function openLightbox(src: string, alt: string) {
+    if (!lightbox || !lightImg) return;
+    lightImg.src = src;
+    lightImg.alt = alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightImg) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  zoomables.forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  lightbox?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>

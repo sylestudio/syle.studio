@@ -6,8 +6,7 @@ use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
 use syle_types::{
-    is_valid_slug, Gallery, GalleryDetail, ImageVariant, NewGallery, Photo, Reorder,
-    UpdateGallery,
+    is_valid_slug, Gallery, GalleryDetail, ImageVariant, NewGallery, Photo, Reorder, UpdateGallery,
 };
 use uuid::Uuid;
 
@@ -155,23 +154,26 @@ pub async fn delete_gallery(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<(), ApiError> {
+    let mut tx = state.pool.begin().await?;
     let paths: Vec<(String,)> = sqlx::query_as(
         "SELECT v.path FROM photo_variants v \
-         JOIN photos p ON p.id = v.photo_id WHERE p.gallery_id = $1",
+         JOIN photos p ON p.id = v.photo_id WHERE p.gallery_id = $1 \
+         FOR UPDATE OF v",
     )
     .bind(id)
-    .fetch_all(&state.pool)
+    .fetch_all(&mut *tx)
     .await?;
-    for (p,) in &paths {
-        remove_media_file(&state.media_dir, p);
-    }
     // FK ON DELETE CASCADE removes photos + variants.
     let done = sqlx::query("DELETE FROM galleries WHERE id = $1")
         .bind(id)
-        .execute(&state.pool)
+        .execute(&mut *tx)
         .await?;
     if done.rows_affected() == 0 {
         return Err(ApiError::NotFound);
+    }
+    tx.commit().await?;
+    for (p,) in &paths {
+        remove_media_file(&state.media_dir, p);
     }
     Ok(())
 }
@@ -185,14 +187,12 @@ pub async fn reorder_photos(
 ) -> Result<(), ApiError> {
     let mut tx = state.pool.begin().await?;
     for (i, pid) in req.ids.iter().enumerate() {
-        sqlx::query(
-            "UPDATE photos SET position = $1 WHERE id = $2 AND gallery_id = $3",
-        )
-        .bind(i as i32)
-        .bind(pid)
-        .bind(gallery_id)
-        .execute(&mut *tx)
-        .await?;
+        sqlx::query("UPDATE photos SET position = $1 WHERE id = $2 AND gallery_id = $3")
+            .bind(i as i32)
+            .bind(pid)
+            .bind(gallery_id)
+            .execute(&mut *tx)
+            .await?;
     }
     tx.commit().await?;
     Ok(())

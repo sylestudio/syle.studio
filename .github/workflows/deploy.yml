@@ -21,11 +21,27 @@ jobs:
     runs-on: [self-hosted, vps2]
     env:
       CARGO_TERM_COLOR: always
+      NO_COLOR: "false"
       API_BASE: http://127.0.0.1:8080
+      PUBLIC_BUILD_SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Toolchain (rust + wasm + trunk + pnpm, idempotent, no sudo)
+      - name: Restore generated responsive images
+        uses: actions/cache@v4
+        with:
+          path: web/public/project-media
+          key: static-images-${{ runner.os }}-${{ hashFiles('web/src/generated/static-images.json') }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Toolchain (rust + wasm + trunk, idempotent, no sudo)
         run: |
           set -euo pipefail
           if [ ! -x "$HOME/.cargo/bin/rustc" ]; then
@@ -35,12 +51,7 @@ jobs:
           . "$HOME/.cargo/env"
           rustup target add wasm32-unknown-unknown
           command -v trunk >/dev/null 2>&1 || cargo install trunk --locked
-          export npm_config_prefix="$HOME/.npm-global"
-          mkdir -p "$npm_config_prefix/bin"
-          command -v pnpm >/dev/null 2>&1 || "$HOME/.npm-global/bin/pnpm" --version >/dev/null 2>&1 \
-            || npm install -g pnpm >/dev/null 2>&1
           echo "$HOME/.cargo/bin"     >> "$GITHUB_PATH"
-          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
 
       - name: Build API (release)
         run: cargo build --release -p syle-api
@@ -83,4 +94,6 @@ jobs:
           set -euo pipefail
           rsync -a --delete web/dist/ /opt/syle/web/
           sudo /usr/bin/systemctl reload nginx
-          echo "Deploy complete."
+          html=$(curl -fsS -H 'Host: syle.studio' http://127.0.0.1/)
+          grep -Fq "name=\"syle-revision\" content=\"$GITHUB_SHA\"" <<<"$html"
+          echo "Deploy complete; public site serves $GITHUB_SHA."

@@ -26,7 +26,10 @@ import Wordmark from "./Wordmark.astro";
     inset: 0 0 auto 0;
     z-index: 50;
     color: var(--ink);
-    transition: color 0.5s var(--e);
+    transition: color 0.5s var(--e), transform 0.4s var(--e);
+  }
+  :global(#nav.nav--hidden) {
+    transform: translateY(-110%);
   }
   .nav-row {
     max-width: 1700px;
@@ -70,3 +73,16 @@ import Wordmark from "./Wordmark.astro";
     }
   }
 </style>
+
+<script>
+  const nav = document.getElementById("nav")!;
+  let prev = window.scrollY;
+
+  window.addEventListener("scroll", () => {
+    const curr = window.scrollY;
+    const delta = curr - prev;
+    if (Math.abs(delta) < 4) return;
+    nav.classList.toggle("nav--hidden", delta > 0 && curr > 80);
+    prev = curr;
+  }, { passive: true });
+</script>
