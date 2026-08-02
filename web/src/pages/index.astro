@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
+import StaticPicture from "../components/StaticPicture.astro";
 import Mark from "../components/Mark.astro";
 import { listGalleries, getGallery } from "../lib/api";
 
@@ -45,6 +46,7 @@ const clients = [
 ---
 
 <Base title="Estudio creativo" bare>
+  <main>
   <!-- HERO · light -->
   <header class="hero">
     <div class="hero-in">
@@ -55,8 +57,8 @@ const clients = [
       </h1>
       <div class="hero-foot">
         <p class="hero-lede" data-reveal>
-          Estudio Creativo nacido en México, todos tienen una 
-          historia que contar, nuestra inspiracion es ayudarlos 
+          Estudio Creativo nacido en México, todos tienen una
+          historia que contar, nuestra inspiracion es ayudarlos
           a contarla.
         </p>
       </div>
@@ -74,7 +76,7 @@ const clients = [
             data-url={s.url}
           >
             <a href={s.url} class="sl-img-link" tabindex="-1" aria-label={s.caption}>
-              <img src={s.img} alt={s.caption} />
+              <StaticPicture src={s.img} alt={s.caption} fill />
             </a>
           </div>
         ))}
@@ -130,7 +132,11 @@ const clients = [
         </p>
       </div>
       <figure class="proc-fig" data-reveal>
-        <img src="/img/about-manifiesto-2.webp" alt="" />
+        <StaticPicture
+          src="/img/about-manifiesto-2.webp"
+          alt=""
+          sizes="(min-width: 900px) 55vw, 100vw"
+        />
       </figure>
     </div>
   </section>
@@ -173,12 +179,13 @@ const clients = [
       </dl>
     </div>
   </section>
+  </main>
 </Base>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
-  .dim { color: rgba(244, 241, 234, 0.4); }
-  .faint { color: rgba(22, 20, 15, 0.32); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
+  .dim { color: rgba(244, 241, 234, 0.68); }
+  .faint { color: rgba(22, 20, 15, 0.62); }
   .ox { color: var(--ox); }
 
   /* HERO */
@@ -248,7 +255,7 @@ const clients = [
   .cap { padding: 0 1.5rem; }
   .hero-img { height: 62vh; position: relative; overflow: hidden; }
   .sl-img-link { display: block; width: 100%; height: 100%; }
-  .hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-img :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
   .cap {
     margin-top: 1rem;
     display: grid;
@@ -339,13 +346,13 @@ const clients = [
     color: rgba(244, 241, 234, 0.55);
   }
   .proc-fig { overflow: hidden; }
-  .proc-fig img { height: 55vh; object-fit: cover; }
+  .proc-fig :global(img) { height: 55vh; object-fit: cover; }
 
   /* lettering archive */
   .wrap-head { margin-bottom: 1.5rem; }
   .arch-note {
     max-width: 28rem;
-    color: rgba(22, 20, 15, 0.5);
+    color: rgba(22, 20, 15, 0.68);
     margin-bottom: 4rem;
   }
   .arch-grid {
@@ -381,11 +388,11 @@ const clients = [
     position: absolute;
     bottom: 1.25rem;
     left: 1.5rem;
-    color: rgba(22, 20, 15, 0.4);
+    color: rgba(22, 20, 15, 0.68);
     font-size: 0.7rem;
     letter-spacing: 0.04em;
   }
-  .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.35); }
+  .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.72); }
 
   /* closing */
   .close { min-height: 100dvh; display: flex; align-items: center; }
@@ -449,7 +456,7 @@ const clients = [
     .card:nth-child(4n) .card-img { aspect-ratio: 16 / 11; }
 
     .proc { grid-template-columns: 5fr 7fr; align-items: center; }
-    .proc-fig img { height: 80vh; }
+    .proc-fig :global(img) { height: 80vh; }
     .arch-grid { grid-template-columns: repeat(4, 1fr); }
 
     .close-in {

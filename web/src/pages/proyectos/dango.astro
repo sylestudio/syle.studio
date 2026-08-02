@@ -1,10 +1,11 @@
 ---
 import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
 <ProyectoBase title="Dango">
   <div class="hero-fixed">
-    <img src="/img/Dango/Main.jpg" alt="Dango" />
+    <StaticPicture src="/img/Dango/Main.jpg" alt="Dango" eager fill />
   </div>
 
   <div class="page-wrap">
@@ -26,7 +27,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
             <p class="body-s">
               Dango fue un festival de música del cual pudimos formar parte como
               sponsors, el festival tuvo sede en Teotihuacan, se presentaron
-              artistas Mexicanos recoconocidos dentro del ambito del reggeaton, rock indie y 
+              artistas Mexicanos recoconocidos dentro del ambito del reggeaton, rock indie y
               otros generos.
             </p>
           </div>
@@ -44,34 +45,34 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
             <!-- ESPACIO con imagen VERTICAL (retrato): una sola foto llena el slot.
                  Cuando tengas verticales, úsalas así:
             <div class="slot">
-              <img src="/img/Dango/Manposteria/TuVertical.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/TuVertical.jpg" alt="" sizes="70vw" fill />
             </div>
             -->
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_2.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_2.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_4.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_4.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Dango/Manposteria/Man_11.jpg" alt="" />
-              <img src="/img/Dango/Manposteria/Man_12.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_11.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Dango/Manposteria/Man_12.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_8.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_8.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_5.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_5.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Dango/Manposteria/Man_13.jpg" alt="" />
-              <img src="/img/Dango/Manposteria/Man_14.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_13.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Dango/Manposteria/Man_14.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_6.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_6.jpg" alt="" sizes="70vw" fill />
           </div>
             <!-- ESPACIO con 2 HORIZONTALES apiladas (mismo tamaño que un slot vertical) -->
-      
+
           </div>
         </div>
       </section>
@@ -92,9 +93,9 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Dango/Logo_1.jpg" alt="" />
-        <img src="/img/Dango/Logo_2.jpg" alt="" />
-        <img src="/img/Dango/Logo_4.jpg" alt="" />
+        <StaticPicture src="/img/Dango/Logo_1.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_2.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_4.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -112,8 +113,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/Dango/Logo_5.jpg" alt="" />
-        <img src="/img/Dango/Logo_3.jpg" alt="" />
+        <StaticPicture src="/img/Dango/Logo_5.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_3.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
       </div>
 
       <!-- ── Créditos ───────────────────────────────────────── -->
@@ -151,7 +152,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 </ProyectoBase>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   /* ── Shell ── */
   .hero-fixed {
@@ -159,7 +160,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     inset: 0;
     z-index: 0;
   }
-  .hero-fixed img {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -228,7 +229,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     margin-top: 8rem;
   }
-  .diptych img {
+  .diptych :global(img) {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -274,7 +275,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     align-items: start;
   }
-  .triple img {
+  .triple :global(img) {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -305,7 +306,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     height: 82vh;         /* más alto → verticales más largas */
     width: 46vh;          /* más angosto → formato retrato más estilizado */
   }
-  .slot img {
+  .slot :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;     /* la vertical llena el espacio sin deformar */
@@ -416,9 +417,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
-    .diptych img,
-    .triple img,
-    .triple img:nth-child(2) {
+    .diptych :global(img),
+    .triple :global(img) {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
@@ -427,13 +427,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   /* ── Hover discreto + zoom al click ── */
-  .diptych img,
-  .triple img {
+  .diptych :global(img),
+  .triple :global(img) {
     cursor: zoom-in;
     transition: filter 0.35s ease, transform 0.35s ease;
   }
-  .diptych img:hover,
-  .triple img:hover {
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
     filter: brightness(1.05);
     transform: scale(1.012);
   }

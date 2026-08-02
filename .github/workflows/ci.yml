@@ -1,0 +1,94 @@
+name: ci
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: syle
+          POSTGRES_PASSWORD: syle
+          POSTGRES_DB: syle_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U syle -d syle_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      TEST_DATABASE_URL: postgres://syle:syle@127.0.0.1:5432/syle_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Check native workspace
+        run: cargo check --workspace --all-targets
+      - name: Check CRM wasm target
+        run: cargo check -p syle-admin --target wasm32-unknown-unknown
+      - name: Test workspace with PostgreSQL integration tests
+        run: cargo test --workspace --all-targets
+
+  rust-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rustsec/audit-check@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore generated responsive images
+        uses: actions/cache@v4
+        with:
+          path: web/public/project-media
+          key: static-images-${{ runner.os }}-${{ hashFiles('web/src/generated/static-images.json') }}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile --ignore-scripts
+      - name: Type and Astro diagnostics
+        run: pnpm --dir web check
+      - name: Unit tests
+        run: pnpm --dir web test
+      - name: Production build and image budgets
+        run: pnpm --dir web build
+      - name: Generated manifest is reproducible
+        run: git diff --exit-code -- web/src/generated/static-images.json
+
+  admin-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - name: Install CRM dependencies
+        run: pnpm --dir admin install --frozen-lockfile --ignore-scripts
+      - name: Build CRM CSS
+        run: pnpm --dir admin build:css

@@ -8,10 +8,16 @@ import Footer from "../components/Footer.astro";
 
 interface Props {
   title: string;
+  description?: string;
   /** Landing renders full-bleed sections; other pages get a readable container. */
   bare?: boolean;
 }
-const { title, bare = false } = Astro.props;
+const {
+  title,
+  description = "Syle Studio — estudio creativo de fotografía, dirección y diseño en México.",
+  bare = false,
+} = Astro.props;
+const revision = import.meta.env.PUBLIC_BUILD_SHA;
 ---
 
 <!doctype html>
@@ -19,6 +25,8 @@ const { title, bare = false } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {revision && <meta name="syle-revision" content={revision} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title} · syle.studio</title>
     <style is:global>
@@ -88,17 +96,14 @@ const { title, bare = false } = Astro.props;
          A safety timeout reveals anything IO missed. No JS / JS error / reduced
          motion => everything stays visible. */
       .reveal-ready [data-reveal] {
-        opacity: 0;
         transform: translateY(20px);
         clip-path: inset(0 0 8% 0);
         transition:
-          opacity 1s var(--e),
           transform 1s var(--e),
           clip-path 1s var(--e);
-        will-change: opacity, transform;
+        will-change: transform, clip-path;
       }
       .reveal-ready [data-reveal].in {
-        opacity: 1;
         transform: none;
         clip-path: inset(0 0 0 0);
       }

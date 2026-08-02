@@ -1,0 +1,3088 @@
+{
+  "/img/Dango/Logo_1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "0e30039dd273fb5c315405a0b608460a508966f71384ef01cf3c544dd6df169c",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "31280a0504f8887987b75878787c6678f7758cd027",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/225e61afdef0ef11d8e18d39029837e13b45cf9bfdffb86119dac23800279695.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/7f003468e558453644c935ff9fe1a254d18d642bff1c936dee11964eecbe96da.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/3b07206ce041cc718ffda6ebbcd9871de1cee53b058815caad133ba60268af65.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/6e1da6bf7d2a0327935466eb7d5b99b1c444c7318b42f09c4b8d4a6d57cb3c36.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/3a96483207c6de7dcfb5af6894dc70e9bc9ee2397358a20b7606f188a9dc37c7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/053f9d56a5efedb9ee070bfb38319b7c414bf7c1537a9fe7b7c464179df071c1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/710f4fac34a70f3afd9c7ee254a6b30bc88384296975307ad0f843736ca1766e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/791055732d21f21a0784827568d7f459366a98e05d172e2b1cfa8a100b79e00d.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Logo_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "788f86bce3015c3ba05b1119f0b90475507baffc02bfccb9a7983b3fe5a1d701",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "6a280a05029929705d5c98c6989f8678459f6a9077",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/3a2293c76a84edcdf657a7029fc4dc648b60ea39ef1384a29f9e649dd0031388.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/1578bb762e6c5b25539dbfa68191b5ac5aab728dc96f4bc4d06dfa3f4fa3743d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/685f9160b3fdba13229ec532e20203cdab43d5eefa61c628c64f39683e476b71.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/e4603fb63a00a6495a3e2c7951224b158136590bb1b577aee43785cec1b23759.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/63e94df2e14cb12f796430ea5638e6f9843b0e33e34acfcb8446b584066cc446.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/2ba641db8e264d85606666719c7b72e3bba7026cd8d4594aaf571f24f3d5b6fa.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/558d56fee9f393383859f460ec8ecf35cf634bf29aa37be3a49874956dfea614.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/8d1cd58f1e2b78c756a0811094dab3e1603661cf9072d6317228ff4fc3f820c3.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Logo_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "43f737ead99d31630a64c5dea3aab0ef88267b88ad1b1d931920b4ecb5524537",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "e4170a0d0286678f68f8944a6983d7b964806b48f6",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/31e02de81ff246abf341c95864848eb9049d17ace36a77a75abd140594f7257a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/424928e166b0c92d552531f7ef17e6d61e622edc0ec92f0d7aff9984450a0403.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/28ee93615d97813757b24a483940b8f9c5b7ddcb0a9bc0d07c5558ef16a47f59.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/3ed97f91baf934f2809fb38505c80e98f4dd9114005b45620c53dac78949699f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/1d5f64ed139345b481027d9f14a1747a85d106cc03e08cac0eb0dcdd9db85a7c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/205d106fc46c82c40dae0c920d53ba5661003f4dbd13db088e814ee9f8b130e9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c9f61274b3cb5f42449ae15278cf5ae5ff6995955c0d9aa1d99b9e9bb6eb6b0c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/7c2f774c48b32b0d36bf2b1f09b346ba511a3987f82130bd542b181f5a095ee9.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Logo_4.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "1b1921fe6ad0eb321a3a9b7a5489acfb35d4068625649d18411b7e426e6739a2",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "37080a0d02f8377788976778877976b79880782008",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/ae52c642da65215a30f9bf347d8c3512c984f3a1b7658702b4922a37039edeac.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/8ec32eecc54b5e340e3d4c428f27ad225d495bb08089b7a33a3dda8160fc4fb8.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/9efdf68e15e19bf1383ba1d5947838145ec81f7e1fdb2ffa4943db76dc21984a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/4a2cb8b4927c365e3ce36a967c5b8afa80f881df991e41d7e0004d4c156e6acc.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/4a247061f9595169366f94eee3190bd4d16c409e81dd56582e012f37d8f8940e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/25a3934492365c15859a50bdeb5b79d5ea450124d2b2dd7f3ab7a9b19b9f8b5d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/6dc26f759112a0cd0ffc45012dcc49914c4ee7ce485baa7786397ef3884cd6cc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/71155621a3a3cdd7c91cdfdc2c1dbe894f19e12ee2dd61420c3fb86aeebe233b.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Logo_5.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "2b9a28185106c9eb5688b484cf5c1c5ebdc791ea9162b30751399b923da7c3a6",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "21280a0d0422605945668a68967a953999b005e264",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/1fd66d38f1e59ff127bd64f6d5581b0fa608afcc041126990041324e0505531f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/5c812bd151a0bc78be42f8fdf1c10d77ea30265111ff3d3c4bb71d91dd6108be.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/7a892725820de2c9dbea24b7f06c1aaf360b140e751ecbf78874dcc89ad38db6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/3fb3e28cd76072dab779252b5f2541e5c6c02c022489be83bd9ea03c23729b79.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/2e4ff0943b95d7f25cdc2f62e6829e270607eef5df6c001b20b3b08bbe3cad45.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/730f6eb9c34a293f0583fa54733289f22bb5c191ee48bd1dfe841207ea85ffd9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/9e67b233ae3f96c8cb40126931001c8816f46cba61d65ff7230a6bc3e06dabbc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/a921425755dcf0b7a3d00206feda82a06812694618b655b9647bc73db1a8d717.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Main.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "b90071ac470e3f3fcd4d253c337c1e2dfd4dd87eff5f0782a22c05a000df1a39",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "e3370a0d867957677f7787a29699888609778e9c06",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/1846b2ff5e59fa0a906fbc0db68b2b92c528c38950eb080b295b06c92ae6ca8f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/9ac9ffeb7610b45f8c6498eb806f79de615a8ef021b7bb3ff97e1e8d82ecc4fd.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/96f3008863925dbb84c6f420236d296bc87c9feda26be9df4d90c0f206640c99.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/638939907e335c1b68dd066bdfe5808d414cad9eeb309576dbee42a71f98876b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/d0593a530b4d28a0f60423dd3021d39341d6158f2e192216212013f1f1c0f177.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/60cd02864c3c37f56d1ea42bffc37ca8ba8cc07310ea98677f5171f0b728b50b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/b3c1ec293a68cc14d72bb1758da61336657aef0643c571c5eeb978ef2c6a3ed6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/0195d0647dd7598a32cfc25c24774bb68725c375ec9fdfdd9a6a54bc9be782ad.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f17804ffd9d4580eb262146a78e246a8434e4cf68a77c5b8363014f9e4544311",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "da270a0d069e987f77376798898578892589af6906",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/fc201ce0e55d64cdc994eb5bfcb568238396b36936193078055c9bf16f1a2edd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/ea3a7ad558c0b703663be4339448887e1a57dc11aef417700ff0d9b493bdcae1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/03a0081468ca4aa15f1879d892f0db9b9727c97fdb6d40a0c54cd3179a8dad73.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/6cb53d17374e8e664281e79fd1d140ea89346d03eaf73eebe0c721218e8169fb.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/06ad0ed683a7fe0af7ca867d093e513625640bd45f596fc7db83d68552e78b5b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/10b959d49ba18f1a634ff97316b9c91673e3a7cedb19ddd46be9def04e3eda2e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/46001fa92ebfcebaed0773c123d6a571b7395a5fa8f8661ab9d16f59c46cf54d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/f77a246c4fdf880a4b4fdc5623904fba8885024d1685bba302cf47a93b97b636.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_10.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "630f0cabf5e8dfc6dfe1c64c18a548135ded3421a248e0eb93f247c004a9296a",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "0408060502538b7887079b85785d96470b89727026",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/69454fc21b6920d4e24ab41f3fe948e40a91b197f033dbc3b410a0826e948429.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/e0b715a8c36d44577ea2e8c356fb2b758c835886405f549d3ff2c31f54ad1683.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/dab383d7acc54799a3c92ec318f61430275987d1c5cc2418518a18e4a9825635.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/e696a926bf0d7342514fb95c9d7a6ee98828fee6fb27c4830aa3b14300d28117.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/fe7f63339eda258711d7084d3ebeae2adaec263bd1726d1a17dc93d32a0fb176.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/bb2508640db834c9e66963ead3ad70b8396f60e3c0d3efde194a9d9d7250c665.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/7c9d3882a3933a2406ccf09ac026329b7dcc3fe79f164f1a0ab8931f86b5e533.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/7dd0b5f29f7d43a690ac2913a413f0ce2f03b499364b2eb5ed37984b4688a4ba.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_11.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "23b069793641111a22aa253860509fd231a28f000b7850b49df8428540a50531",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "4328060d8619947a76897760acb6588a1a76a06107",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/13e667545fd689525f54f319afb18e5fd67bdf8f3e1bcc021c0ffc6193b29bfa.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/e7e80800820d9f2f49c4a2930dcfa5e4e1a15ce117236270745241db0025c1f9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/7dc1c49fdb1373084e059680725e481b5fda72957b2b314abdf25897a0a89dcf.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/c3de71d8460b2d86fe047e039835adc3ad2063de51bf8c020c0deb235c840efc.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/cc790a897857c1376d6869ea9cc5724d6883918c4caec91ecbcc154ee44c5df6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/c7a277c2e249ffbb2b305783c7bbb87c27f04a2ef97f57faeb288dc8856c5e76.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/f1fc96d96990e65018ba1d5f87775f937267d5aa2cc730c065f00ba3257acc29.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/faaa5be8d70e8cb648ad067dc9c05a7f9a31ea3b7992a4ae471f1aa654b6af78.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_12.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "fde65a8deb528dfb231634ce42adfa0956593e1a2ab138cb6c12768bf4bbca50",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "89e70d15845ba9667579875079c6689993884f8af8",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/64f1e2673e9f65f13b01dcc8c844fe457bd6c3947a8b12dd6bd0126ef0c51e44.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/2e3fc0c05d2df00d4b33f6dce5e88a566f69ce40b2583985f9ee31ac61fdad01.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8252703860046d934a553e9e44852934a539059e611898b387b82b055729a17b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/8cea6ab2efa044b1902452d17f738eabb4abdcfdc003cbbbc94c5d966dd589b0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/5856d91b1e48bcc84c34f7ee62e6c99352977252eb7d47401bdfadf4696b7565.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/2390875be8fe8c47a25735166a669c103391fb64dc69ca30147739718245b86a.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/5a92bd2f5f0d5e2b49e45c36b1539b98049500da2f789e72afcdf559781dada3.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/dfdd9b3c5dfe66b06745f98f7b3be5b3871f4de399cf9911eb41f77b2ea3efa9.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_13.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "b73a67d2e8769a535417745925f12926c40877eb3187acf76e1535e8fe989960",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "23380a0d849d49687d8887807678897409728eae07",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/117f1d6317588ad5d0dabd0cd77647e97707443b5433641fa4f1298ae21dd877.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/de66389a19f8873bf4de08444e79fa3a12a22b85bcd8d892939ef307abca8e16.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8e64be22091d1d761f4ff08a744807d6a87a149b79cd246c3a175acc9da7f002.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/6b63b2b75d55ba11d5deada7a730ae1c104f4aceae2d16d5f294fb9074e1d35d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/c5fec5eb1339368d5b381164d03e5a3a6f4b6d5cf8a578b2cd6dbecdebd6635c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f4af065030e74bbe08a54fd98b4ba00cceb9bda77fcdadc6a6d9e415f0722020.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/81cab502b684e4245120f0ae97438101f7fd90c11797e8556c4b99ed3daf6261.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/09d0de4628c147cf7bc40c59efa9ee0d8f64630158b57a531cf5d32571d290c7.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_14.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f6e56a2fb8cbf8eb4f94f4778308bfbc17307c5f9a2b8aab86e56664822765e8",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "ccf7090d801e336659a87630acc5698b8260230a47",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/a196f5a661046a59256bd3a1ddbf8e93931cfc13dc2607d5f551e142b4291c31.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/417578557b6a5f57c6b95cf9b46df11860d1f9d54c68edf657c99032fc0ee34e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/6d2242fe1b3a0f3b0465d9ba7667f308c574714b9597663433b39a33dd6dbb64.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/27a1f742f196ceb243169ebacaf53fb1151ec3cb4a17c98a13992e62689fda2c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b64a43679a1831f75b1a6931bf0781b98b9bd607bc28ce9c70d2e7a72c345943.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/188ab7dc5dd7e988e5857374bc820b10ba8d563437de0eeee948a97d5d0f606d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/dc847e4fb786e4fd4c5923b949637e09ef624c537968338b162247ec38c7da40.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/cd59767fe777f595f31ada24d1079d5cf9c8d4ac22cf912a4391299099634a5a.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "5ae91f73b146f39131e23e1d58490645114feaac13e4a73967608d9ba4e2d2df",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "d4270a0d0686799d89086b66766978880c884d9a08",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/24fa3134e6f5ed6a7b84899bb9807a71b80eca61dfb0f80ba31782c1a7d48efc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/cd134638d2bf731966d0109f1bdc76c6f88197ca119fe7ab9a668690cb612f30.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/1445a02989a782537ce805ad060f89e0b341418c79483ae3c25981bdf2149219.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/44a1cba65e49e06e487601d27216929a87991685074214929f23e9d1756558e3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b6a44eb7df190dffbcf9c14f52c8c4e18167fe49c52d8eaad42d3ce05397b308.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/6f5cef255adb6f436aeca1c0d8c160b66c003e2e8ca6f64facae60f461264ba0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/128dc9c656a3a22bbbc6642469a58a0c51c49b11b1abc54d2cb97bc16a6d78d6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/036787189a7b372baab1dfc5bbba09182297dd411ea4dea92d48f059fad37cae.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "753d720dbae9883ce70f13de8d589e85566a60bf4df0d3e6a3f7d58ac53c5bcd",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "02080205003b786c760775a6989e6756085aae2087",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4d67fa0cd1509022657f8cdc65f059cbd9108c861c02c618d4639a3ad53d6dbd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/0ab16ea618c433ccb78244814951fd050872f97060da124b5cd8d3aef4f00891.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/edcff5a73b2cdfb2ceaaa091699c418dd07d509922012c59c77553d42ff05a68.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/636778ff9f6749dbb0333d83440627de1bf50206fe5e40713a15e1d66c8a1a25.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/e8324cad5d3867c6ff861e92296c1a2026095e2da1db5a6df341c70a33cdf62b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/3d957aad736b82b625ef0b8dd82916725156a0f230bf1474a03ad36b63943500.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/5192323caf71ba90a4c5a56b93e739b0a2ec358af3de8911331bfead03bb0224.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/a95ee04aaa63ddbaeda804d587db7f0975db2cf9d57451894debc4d12c34480c.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_4.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "89aeb849d404a91cba2f767179c12477c00c1d22e3c0405fe916f662475a8895",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "6278121d08428a4f771875b87999797759ceaf86af",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/cb635828f1e7d607713ef137bbb03e341bdf10fed2c34c61006ae91941da1970.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/44272f95153515835de301b794df1d5e98b9d98c7f4d754ca8c252009c238295.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/81b6c554072f2012379a7c1ebb321cb73113e4c662a3df9442bde6cc877eca19.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/190061aee439a674db5c40075efde20319ecccddf9482b752ee0417e7a82309c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/3e9623e151a1713b69888dc4fa6bf196265c696b142884f0a44928309335b9ed.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/01886377d0f2dd190f972d5875c5bb05058aff709a0b038ba54f78047fdc0785.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/d2b52714d61aab85c3bb5f0b791c7f3406970f8cfb3f8264bc3a632f2ae894ad.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/7d3869a1c0f6a1d4dd2ccb94b0de63c7c20daca2e7e144af387ad3946d3d2334.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_5.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "6a8f73686b6210cbb183bef1247d5717dc19bb0f153ec35b7ae6123c7e4e6ade",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "09180a0d02af679a7807634964abb88a6ca8b08409",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/3f550c15f7f51797f6c0c1849b9031c18c3bc3cf2383578291af7a2075e1ace9.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/719d4a3162741a84fd7b729e4c7cc3d944186cba0defab9705eefd4a177d2bcf.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/c232eff701c0c50d747036c28d49dfb6ddb8b2a0874af648ccf073b90995be8e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/16adad2a1443bd4024ffdd852b2607347a6a4e15ed5a1f6d6a33f06947d9988e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/6299bff0cfe80f697178a22beda9881fb6b16b4113026ce7c78c4861fc7e4a30.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/3c503f3718db96128eed6d63230ef1b6183d1ddc848f3f6278d8552c588fd5c8.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/0bca8632b8a84e29162ede4598b2458c357f96ba41b66fac92325fa9b8f7d11f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/697dbf551ef07cdfc7448c3c0a2a817329886d4e4cae7eada273c055899f0604.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_6.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "7080d5b279995110a1790bfab98455654150cbcb7599deff4d3e722850496498",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "ccf70905008f77bf78979a8888897867da96af8bfa",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/3e2102941ed99cf40f63a2e3bd272ae30581cd85adf9c29fff846b89efe7e4e0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/e17daca6f6a7007228cbee19d467ac775f9141c25110a3819421b59b6822c7da.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/2becb730e580a1937f667b5cb4272aa0e1a35a51651f1dda6f7e1202f2ef9e2c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/a7c766f0b6c67c37c4495963b5afdc0a218bce7190464f6180cb7e8ca0e18891.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/ceebb13d7a0db8ca81d032810fa61e16c6547fe9e2e48e9c6ab74ebac927169b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/07eea157555c216268391b8a5ab247f0d2692ebd913a44103d49131d0e52db53.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/858bd1ac9322e37013f2a36d02b3dc806203d2557b5369bfbf91cf007f04d605.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/a692afc7a2f4852cc9a0abab7ffbd2b78186b1f75e60cb44cca11848b63f2657.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_7.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "723e15df874e40879ca5ec53b3722409d096d448985643134201d6ab4f34b657",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "9ef60d0d006a66bb8809a48a85948797aa60320717",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/d9dea50eadf5098a70d2f1e449f437173b414d50d52a042e2430016ff08d2855.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/814543e66e1a1f5ee862b294f908b6e8b0f9bc41daa05f608e8c4daca502dee6.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/bd0cc902a3d6c227bcffb6c5e69bde4da1b889ffacf0046909f23ade04fd9494.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/c5139667f628420c2502e6818fc6f76757d4184763197ae433425a49eaa7925f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/032b72129b7025f57af783577d572e1102e99f0345a4d4fe95b67ebe982512b0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/680c987177c53529accd77b13e7826a5c4bed0092154f3f7638e3f03da3816fd.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/3c828476a8c4bd3862ccc1910c0b6f434ca026bd0ce1085d2b35882ef816a5d7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/390a68ae5731059b7eb98c0036d885b1c0c8864e43068afdc5380a6e8035c225.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_8.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "13d2531752bf6c7719250c36e5cae9174287af120106e66ca01818741f51b9a3",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "d3170a0d0285c045789ad2885c853886b76079b0a7",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/255bc9e05ec5139770e96e2383b611fd6171aaa12974129e09731d06571443a2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/395fd2f4a453671420ecfcca9deee2c8416a6aba70d484fdfd9710fd3fb645c0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/015c27b6ea7826398ea90b8ac5c1231b1d832c55e319bb2c702d379c9d2757ac.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/f7cd595e69e725fe349bda38e932594dd158fdfd84f7be7ad13dd37de469fcb8.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/d66c1a64873f56bb1b90d09330de05cce2d1fc389628f889ed9422d35d5f1469.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/84d508ae0a4e50df3bf97802ecab60f66a992d68d8267f826be5abfbf0878568.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c112ce3ea484f4ad946b887c16993a9152d4f15847c1eefd093caa93d186ad59.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/3e73f8f9c3a13ef68437a2b881a868b8b1c448ace5f5ae376ed3d3fc27c20a32.jpeg"
+      }
+    ]
+  },
+  "/img/Dango/Manposteria/Man_9.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "286f8ed4979707ff22d9fcb3fc0e13fb70336b6517914e839153eb1a6b06dc6f",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "cb27060d04bd979f881755976874797705849d7b07",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/5ddb026aefb308a7ad88e2978255ffea4db7aa0485cebee91da099adfe7633ad.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/5c28f20d71ed07157a1936692e2e285af689131eafdcf9203ad67123e103c5cc.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/be4fa48adcd8149f48087f580682866f0b78666831bb0009bb2b7d8a4dcc207d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/462fff00ee7e951fb0a2eaa3ae90ce1642960feb495b85cfc718f433e637e7a3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/9a25aaa1a721bab4b00944d4dbb5aafd8c0fb1992dc469b4f538ddaa48133b79.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/a1b5d2ea1fbc7560c4fa7fa38fbfeee44e591a45ed17c5e8aed9f36f4287242b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/1a786b0acf48a2e8cc725493fb0b5bae1e067d100da791264bcac555efa18859.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b45759946685289777cbfd2965aa9be137884976e2222f39e3fb6146771e15d7.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Ins_1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "b9ae704b17cf3a51a6061364f9ee9a4e9a7b5eda1e829644d0047828954d4ec7",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "1639120d02a9687f8a97768766788787867a408608",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/263dbaa24aafc61f5e6892fdc040e2c765295f4d8638f7041618d3cab5cf3498.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/3feec98e54e3c877b00c9b84a656cbc371968bef9910268d359a4280574fe68d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/43825a8358d522b0e27955bc227930558433b0266402c8424acb069369a42b24.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/9629c3bc7a5c53997f251424dfbcc19620e0a409d35add19bcc642a5eca18a83.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/8a081fc2da894e4e081add2bddc009563cdd3184b96caad6057ffafa9f133b78.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/a899b5ae32262cfd8b249da068bd0a186ce0361e54e189c31a226fe9be987746.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/a4e4efb2e4a46ddf2ba8a04d8bf51a581f8e5524b0e0a8b30ba4539833be976f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/ea03950e092424ab93987816cacf3936fd22bb5be0f77491db8d6cccb079c332.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Ins_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "765651365395c6218573ee7b43ceb8763195e390dc55c3d5f5c159d64273373f",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "62491215028b588f776786a878796677b049035a03",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/9eee12621405a2f64156fe3f903040d754999d2f1e4418d962527b71d31df043.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/277ddbfde4373c07b75269cd44d497b22aab22eadbf9657dd694d08e6115b2a5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/336b24fe0c826c82f7a0f244b0a690e1dabd5c108cb3409f15e5c352a97f1806.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/540ed8fc0b75d9441b3c275ea9b898fc52f593bfcfa088fe5a765a4277fc1f5d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/1f41418841c46fa7b13dddb05f5415d7877b52be974338fe51633ef30ad35cf3.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/3743cacc1be42709af75af9e46deeb4e75e5ef3cb54f84683568b59d12d5bb90.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/9b38793003574b4f1d6e018afaac7b9ef27f05cbf54a25cf977a14c77b6a4994.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/3bd75c5dd7dfe871568412857618087d706b24f121f8ced7f8715270288247c3.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Ins_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "58022c070604fa48b89bd1cbc30ddf6b578c6a75faa4782d903fcb2a85b15173",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "99f7110d02d6877f77d6687868897787057f67f377",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/1e6fabf533f55548a8ff24a33dbe053e13918682c88d247d6756b24b31a105f4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/3a454c9e11030743eb0e303cb708dee79344788add6b19a7886b74bf48ce03f5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8dba49631a7fad5a84353379fe36e75f314a904bbd341b69a5b3524c0b3e5e29.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/9fd725e0156a9cc6c494744796d2f91baebf04b0825a4dfae0fc96063113a4e7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/cb380f63add85b0ff287f58ef6b9c3c00cde8a25eb431274b1d72d353a3bfeae.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/68d59f04d308b906666498efcd61701974727297a0891f04e54135e4fb9afa48.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/1f090a774c616e8862916c262e18e859136f290a72e2aa6ef93a61274a90a30a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/47bbb841e359fb5b28ce7af9ed4584ac5aa17752d6b98fe868e31c8a94d73af3.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Ins_4.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "888ec9234fc15772058e71277d8bb074766eb053b69eab5c95b914bd1c13273b",
+    "width": 4000,
+    "height": 6000,
+    "thumbhash": "16080a0d02f3b59f7586567a7995b9664f4bfa8585",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/99a009aa414df5cac4ae0f7b1a420a3ee7a34385592f35b0e8799d68ef50a1e4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c69b45af82285befadd9070aeb41d523a6859185a283bf12afc5df61072765f4.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/80a4427bfaf140983a9382d2279a3a084d35a169bcb78bc5cc19639778f1f87d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/77a240b294018d8c558a0d8df91693a43a535ce663a1e1f218f1f55237a8ab6f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/15e096e84f1a5ecce765ba866344f212a99d8fac55fa2d31d53d306fa978651f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/4c327fccb1f64dfdb054125cc2e92a4b67e0d57bfddd8f638e7fb3714e048789.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c8ea96844e27e61ea76167eb93dfa555f7942232404e4f4430e25de25a5b3e75.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/f5d65d12f1336f2564e5d2f37480a22c0c37fcb11894d2c18cc315887f29d852.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Ins_5.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "264d1aa358e50aa31ae3e8b13bb76f4320fa52f2ed37afba65835beddf02d785",
+    "width": 4000,
+    "height": 6000,
+    "thumbhash": "0e080a05006b898f77988897786886a84603a00912",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f4926950d99f29fc80e623d194368bd75b89fd13b7db411566752b030cae7c54.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/9214fadcb85aacd2d79933c7ed9bfa6e56ba05533480d86254f764acfd52a2ed.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/7af6c70c479f8441cc011b4fcaa1b477f9209cdec07a7bf6d01070aabd6a72e2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/ec4ba21e090aaa0a3cef832400320297e17544ed3c90739caab29a2aeab5c187.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/e0fadec5ca1d95d1cd287089f759afe919929d9dadb6912f5fc3f0716cfefce0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/d1cd46c2ac49e0890691361cc8b41f4a4c67900d33945d9950038c3c6f5bd6b2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c426c3382d4bd1c21f19b62699850f10b53501d735beb1ec548f28c79f71781d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/9997ee46c863b4ef061d2eece979c3d15974ecd9cd9ff288a6d97cda81a5366a.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Main.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "b775c183ea45be862f7ce9387a9f6993982121ba82776f87fce18510e390fa9f",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "da38160d846987888f78887b888677760859847045",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/136dbadb063e029a038bfebe3002ac2ba0735c895bece13296d3ec91526a16fa.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c767dcb47aad167a835bf44635d524cd6fabc52ec29a9d4938cfc8cd0ed97f0b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/6c5c4a9e4e40f4f77e9bae51c33ce1a434cfc94b9b8ade3a717b5cef50d1afd4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/fc35907b7a49b2c23d6fad7cd8a21a0aff139b0a6cf2053a3a1c1d8e580a7677.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/437db1c4353dbe4fa1e1cabbcae4fa9581b95e187f1b7a770e7dfb0d1227f334.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/b580db1fe18b1bf0f5cc8d35e9ef2e5981960d69460fc92ff99c6c3cbf8ca483.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/fd81d8c4b8cb5c14e52d90fae62ca4e5c16722fd76267fdfed34f8c1769008cd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/634b14af2b0dbb783a03fa73618aa9910e3cc6c9471aff4b940d9e14cef91a54.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Slide_1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "1d7c6f4e34f6000bc757f750e4725d578f0146be281c580ffc32181bb488c2d3",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "96790a0d8205aac579d6697a86779999978d906f08",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/6a829bd52098a87a5640f468ffd82417d68430ee5554f68caeb2480da9960d75.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/79515214eeefb0c0a3c770ba4475142ebf12607438ccc74893566a6fcfb6f972.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/48a686a4019a282cd83961d39fc8e18f4cb4f7882223cd7af1a0232ed03078a1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/f46a65d0fad99a65329e73b31929395491a386ea742be51bafcb07cc88cd722b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/f34c9d5be0499104fdca866a5d45f371c3471061f84a2bb9a1ef3ff33ae7f62e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/b4e76d1f5fd7a76087db88166f9495800d6910b21b16ed606201b7091ab109e6.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/621a4b6e2ef1ddc4761dde476f3f47b0e5402981182edc67b597d8e698b9711f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/7447a2ae6398eafe7948cde531275346c332b94c8f9f82e93231aa843316987b.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Slide_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "d6ad30fc28066f96abd6fdbaedb91ece418c2cf5d5aeb86688a615f3e0288e8b",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "49180e1d844747aa7f74957b76886887377f6bf3a7",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/76410d8ae1b885809b771588b3c839a20f0130916ea0cf15dc240c16cddb2f7a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/8fb88fd172c5d96f5d7d2d9f18a5996df043d12e47043390b4f4120073f22d99.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/6569d59dd2d090c542f0c53754910a0d4c24564892b4f26b84f35844ba61fa05.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/a382ba4e151eb10679863ccd4ab66d847ae74b45b409748a167554a5ff705ec4.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/7fb231e9d9b9e6f30b24d2cdddf07bc3edecb170332c74ee5196e638ba3cf8b3.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/3e49f29fe51ce704341d083886218331b9b8dda9865c00486f4881b7a1a7c56b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/47ac0c8e3ca846e0d79bb88094a52a4040bd4ea39eb8758a0f366b4349c13728.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/254e259733b5c8e5d8a03e8785a7a373e3aaf3188059bc662e0294d0a2b94fce.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Slide_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "43f855a2eba5b6f7e7a0af8fb6e06400ac05b6244431f23ad93fd3b657bb0624",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "d2281215827f57858878668b867866996f76fb7497",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/81f0d5b00fe365366d63725fe1ba4c2612a22c069f0ebb3ab6d314f20ef8a2a2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/2334fad3f3df8608348c5af9eb1fd798460f58a47ed4384d824f5e5c52c9eba6.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/616a4819ae4d13cb6d711cfaad70bcb7d683708bd5f555c053dbe66732d9fc69.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/42640827600fcfc305111d1f7eb6d24d3161f033921ac28352d285f846095cc1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/e1c185fbb24bb692f13a58c6bbc6d738937675493b11e32e712603ded7d3c5d6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/7f68d9f3885717f85d7a08cf49a7d335c4f6c147d53a4a146b2a9fc62b170cee.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/03796ccefa3d86ae118f0fbaf144faf3668094c313fb33eb065b8e2cee5bf2cb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/03d96795136bff6836ddcdc3f07a094710f07974323062ef1645ea513c3307c4.jpeg"
+      }
+    ]
+  },
+  "/img/Insomnio/Slide_4.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "983120d183220cc05d602cc99e65b9547928c6b4f3c4845cafe1373a266a17d0",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "0b390625862751984f7d754d7799979709788a7097",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/af687c7e3dabfc8863b4ad82c0d13081e44142bd0ef0c239d1ba0f1bf20768b0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/98b0f3ae19ebb68a675a3a0c110265bb7138f543d66c940c75223edcfd943ea0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/b303cd9e7d4de976ab651464e22f66b8a16dfea5f7a140b2983dd764f904403c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/3a22218b8a8b38dcf3164e7f5bfef66d8853e881d74816cb96321a1168c427ac.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/c0285f935a6395713ce5ef57a7cede48f9436fa98a3d051475ddcf94408d88ab.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/55fc31614124d8eded1a039974619ce059e073f3858267959aaf5a34d2dea170.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/8c1295e535b69f6ef17b76e571de65aea9e46615d2c00b9d731c53c847d216c5.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/56b0fbdaa3766eb3a1430fa3f195d4d50e0a78e57432a5c307bf904355b97fbc.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Main.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f380a9b08428cae9053b3209ad969a2c11a09c874ff927823fde5d9cc5eff2b7",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "09080a05804764978f567799578879a6499fecd0dc",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/6afbe10812211117f8e22e787a580071b65d8a3e135fc9cf81e44253f4da0097.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/76f3a5280d9c87100f5ad509799dcd7e2f8462b38431218aca9f23d9e85a3585.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/e63762236bef9c09d9eed721824dee7f1ff4ed9678c948cf8ef33ba654fdddc2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/c4087a52d6f5618ffcbf71ba07168d8bd08acc1196b1d7f256dd4bbc576ec9f9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/fae3f42b42217a40a22390c83f06aefd2e1193d97e63a40f3a1afaeaf244ce84.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f1ccf075a4952ce16814e0aa402ff4ed21bd5509fdc37145fd3888e4a181b3ed.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/78c72ba841f80c4e3cc83b1af041f549062a927fd6ed737b07603204d47a0f67.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b11d9fa6fa29541e1e534deea8ffcbfdbf7138867191acb554666382cfa61c0e.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f492fed6e234cefdf7964c44be8146067f85225f3a1f14e3728d3b7ab8de4d61",
+    "width": 2160,
+    "height": 1350,
+    "thumbhash": "350806048085f9579b58889e975933fe39d089",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/adc142c19eb24c8e61c62b33e9af0d6222649fa1a3d80109eb90df793499e4c8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/0e503b0e2958923220443f6ab589b774ae762f97b32bee7b5a1165b47cdf330d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/f9d6b8ce2ff5e8e0cbdbd1163bf065a0a38074ac9ffa7e082cf13ffcd69b40bc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/249e3346b3d04dfe7d7c8db739542d2ac8a07efe00d604a46e7ec59015a55bc1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/8075a4f8f41f686d73c57945f6f2d9f3338b2eb33c70ab42b55fc41c35c6a6bb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ce8329cdd395cabb2739ab578c16010f10a41cf3fd0c361bf28857f73307951a.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play_1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "51e41847c46670f8a23f511a2776b21d977309a08c050add20e70b4ad869b6c1",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "e8071605006868886707789779728968b240935505",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/e360bf74240eb55530d2225f32ae3cf21d43983d37164ab5317f22ff24a13bf3.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/926f69b4cd42dbe94e8c025a80dc471c219bee81fbb73b9f69da81c1007f9b7d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8ddd87b281174466bf8e603f66c9880dfcfeb87317b0987740f5dfc6813f3b07.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/d94cbb6fa19b8a0e02d22307a568ada6a303bd4088da855f4ad9b825785e1c96.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/85cc012ff01b077e846eb5288dba2b75c1a27c13e4ed621e4b92d7d174392c80.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/89b80ce1f82d16fb53fd3aa61611186ae2373fda4ca266cf9dd5cc158fc1a637.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/e43022939a6864d03552fad6850eb5f92e04c64a2dcfeb65bc315369227d8e92.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/f464238e6df8f30f32fc5bba8fb93a3a060db6aa0601a1a940a09e550ad2d824.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "9a1815e0e600531533747dcd1b968f0661351c677dffe75c1903e7e86298b971",
+    "width": 3000,
+    "height": 3770,
+    "thumbhash": "3608060e00a8e65748a8f74868867a77896776855f506a",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/2eb7437f9448ba977c264bae664fbdf3985ff52a86975fe77c6ee814434145c9.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/ce37f0aad10cbf9a18650c79687d62389bdfcb51d631338d7396eefed3f892c9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/501ddd9a5c2f593c7dfe62956f643c1235f160822a42a9a44576679170eb5b13.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/e8dbf03cee5f570811ed55f3d81d4ac4b7760cbec279567471f4f7b5e50748b8.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/3da9bf9a2a15b2b30fb4aaba094c70fe6aa4982bca41f04ae4c668fa9ab303be.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/64d5e005b6900a9f1466b44ed27df390664ff75e810229f7635290e48448adc9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/9117a7795dc315eba605e44a8baac28b68f90f1cbbc40b581701d528906ea39e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/e0275f988ce0474001afb76616163307aaf8bbf7d7a623e28daead6bd5789879.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "ccf903be10f95b698cf2206b932b0d0fbe198b897d0fc21e84535d7039f9c40f",
+    "width": 3000,
+    "height": 3770,
+    "thumbhash": "740806060097d84858a7f748678789859978e3cf033367",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/2f456b062b00d5df1bfb5ed317c14c0a9a1c028e6dd94e33674d396cfe019b6b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/ff00416d6836fe4c97f64e099fe610be66f4c30111db40cd96035a63888a91b2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/66374a966ea7fda2b2bde039ee24f17393eef99b8237a5b34bf213e5f884defa.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/4822955106de95f71b82be9e060d8cd7d6b6e64e6a07327d5b4f66ed9a65a95d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/cea61821538f8cad467a75b8b69b05c17a819f311368d47e5f86493eead86fa0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f8b33a32aece30427b0165c7ec4b53f5c432bf61f1aa23900dccac90121e3682.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/ad0e7ee760e3d804e18a250bb316f03fc482fdaf31b207fb5233969503754edb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/62332c43a32eaf4fb48bd8e1a649d356557f1458612d0b6381bd8f2c17bd2897.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play_4.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "3bec185c35d47af5ad54a3531a7c7dee4112530bd4b648ec8de485ce28fb3a37",
+    "width": 3000,
+    "height": 3770,
+    "thumbhash": "59180a0e02b27909d7a7e76777679889a8a8846940b406",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4a8b1a810e2b047c57dfcd050b691d3db20bb5ff44cfd99a542a08d0692f92dc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c521119eca2811266d055cca0f59d47718ec0746b2bf86fff48a5abb0ece8176.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/df8ded746301817bc24d96857426af295705b976f3784a1b347700ef970b4285.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/e95269a72d5beb808247c2418deb25c16e5f49b4a38a9c15be4028402bde6620.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/bada7369036423b08a5b564b3f11c9edc897d8d59bfa15f88ba0b760bb03ee41.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/a7965fc95e7629cfd9af78e979778dcd7eca0990f04e45d2811bc8759ac6d299.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/6d90c34e57f46b989ef2d5a572a6c8c56794e1030e77d920eb55cd013e6c0a51.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b2d432888550ce101e6bec6565ab6372c960879f3803c69d2c56c74c319d409c.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play_5.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f7b79be57d695a6e58d8034671773b0286a0601abbf6066057b42f07080fd50f",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "15180e0d025a857f77e877977898776992204757f1",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/987bc2ecbea97b4ba61e6ea8367686f2333800adfc908d6278819a135e8aa26a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/d9c150bbfa370e12692b80be077d53df50807bdd255b62d8bb99faa304352f09.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/557a7d6037ac49b8443d07bde53229366caaf6b9a713ea6b95466c87941ae700.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/644da0dfbd87da099613b61225bae179a28edf876638354d55923508b938ab3b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/8e480cca0a9f5986d3f51e11cdb3ad0390cda5eea62d7169c3657a6e5aef9d64.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/0f4256a07ee6e90ef490acfdd0d57497135133e8245c9e2e8d7e9ababb78c1e7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/f3521866ca4ac83346655e744d501dd1efabe194e49ab94922e3f5a9bcbc9860.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/adf11559750f5565753d14fa480b4ba9898956d5f5ea182449a17fee49e6e465.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/Play_6.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "686a529fb8f85398848edfbc594e563451df1a9198dec56eb2d156b4d6ca7004",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "53080e0d0059699f87678836887588886670573068",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/0c84e3ae1ac2034568b69f309974e6a3699c6888e51cc3818d0851a811e49799.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/d4caa1163c04269648f8c9c747e682a825baaa25d6d90195898ef94c121d7b3c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/d15b95ed91a06569df7b51fe350f60ea8c562b000f096bfd8cd87de117a67651.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/9426912b4970613c6948f031a6e756e0ba76b58914c05afba224ff38c1d46ede.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/d3477b65d47792e30d87e24cf2d43e5ed5adff47a403d9a8d8886938c12b0423.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/6e8ec989f06ec533f4964486ecf5586f89831ec68b3278dee210ce46e4f93659.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/aa1ce6087d5469cbe00321a164dcb6c8ac6982fd2572ff0a37f5b82a9904f767.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/8360b9059de774e9af362096c78bc46e78c82ef4e1044ca12169fc53971e327f.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "e56561d936cb786cd607b3104e26736a72932b1fd095f6a852bdfe6c175ba120",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "1a080e0d002678c577f88778a955c7865a75bf06c2",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/ec4957ed9f3ae624d570828b35649593f731446ba19d93e4209e938b5289677e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/1249f2f0c26f27b5c352dbd5ee6c0c37cd2944de79d3ea874836927d86648890.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/229940c1194df1e800d1bba649750427b5f58ac177630c03ba25483665f574dd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/9d3d573e9f5005b7781ca3e8d01b8556279540a41ec9d5d538d0b0ec9dd17c5c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b07b3dd5e32e5f288679350daa2d1bf3b6b0a2aa4e351c5bc6c289afc5562961.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ed7f8501e51d57b8fd7313a8ef5b5a729c039eda46b6d4e8f42be9446d2fa131.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/18356af6a3edfced73ab851d851ee9acbfd593b26de75005e99138080a6ee7d7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/60bec4aeefb1721f0d18d519954b642cf7d34d2a8012ec59262d67151f845005.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_10.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "3a8814d61950cab87370c1fdac61f66eb6c2ec478f66a3ec44c0373d90ec0f1f",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "c2e701050211e3436c06e7ac77f4443b7fd4a9fff8",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/71af25c164747d26579cff2a006558d4e73b74f2d17acc3429418f99bc73a044.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c7e330989a57cf47f5ddaa741540af60d0f8f87ebc2ccd8393b1d0f5e883caad.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/eacc93181639786270ce18a705f11b5dbfa347c03b37ad0ba28f80ed6a8962ac.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/77a3c5f63c67cb93868dea14a8dfb7aea44eee222d6681bb727e60f6547f0352.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/9e0a0314dd335329bbc0af859c9495ff3e09c5191cd9d6b96809c26ce8c08e7a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/d5724a8367ca4db2cd836b695b0d0584e785b695fe94c4e59d9cce2f730f984e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/d2261a359c146e895360121656145808ca11f348a4b57ea3eac2fc1b5d8928c9.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/272918b39e8e0bc71f45dc55f74d33b8a0218acdd81a95d0883349ddcea966c9.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_11.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "696ac004347600308d37e5ccc76353741c4a04d86bae10226f6990c609bf886f",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "cbc9061d065a767a7807596886676c585a7ad07405",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/03c579965ab7c2b347286311f60792b858bbe09d5b3d467efcaefbea40663e68.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/369ca19921aab36fed720c3d2e35233d0660b93d23302766412ba4fa1745ec83.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/f77f27962c54d400bfad368f410b01e8f43c330b51e3f5cf3bdac042bb4d78ab.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/9867eb018a2b402d52a6e57050a7ec4da3ad4fd4ca095c965583047bc7627d72.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/462c912528b5662891380146bdb1b87fa85d7e73578d7fc08dcf6a4ac8f0ee61.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/076b57b0ea7b97f9493f466970a790977cd32e93583747a0533ebb8e9cdf6f0e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/fbbd90d52442a854dfb800893d7819cef6cfde8634b48b85c3f23391cb41ae4a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/1f101af43232ae408b6f4146229744cefd9338a7a0176a5884791516709e1c7b.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_12.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "e770eb887a8f358efec1117c75f3e6ea0b352efaf05957b6d193ef18cb1b8745",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "0779061d085879ac8707b5478aaa785659ac80c40b",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4dbe7727675666f1a5dac1d6c543425e8fb15771a44d0610df661b44e06d8784.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/2bee5d6c471628af011e6b5acfd95511f2a07b7a1580695f43ff1372b27c6a82.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/62896f7f48b8dfb144a06c65feea6411977ac1bda0e550df3297ed05aa330124.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/225a639a9bb9e0c8d6ab8bea258bf84402607ce37368f1a0fdb0ef8249bb0d7f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/08ba7f720355467ebe586e9ddcd4715084f0b86ee4fbd30f505c862b2df5fcad.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f7a0f4d6f16f9912412b5baf7033953bfaad58939e2603d24306df9a35abbdca.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/1b239c37f8f38005582bc60dfc082c0efec5bd4647e851eb862511a0eab91c77.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/e590c3c717b9f94127c22151a80f2cabd15276e7b90a18b345e481d242c53f93.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "7d4b8be1738b37decb35706d3ab33509a4f63c4d70cada7c6f107f2b7a693936",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "6278121d08428a4f771875b87999797759ceaf86af",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/06edbe29235469d635c611b855d0e146b9a4b64f652bdf705b0556f4d4988969.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/005f46dfaa45f645ac7cddf051b598b41799509f86c26da87323cc509fb66fd9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/346ad5ce4346e1630267fb89feaee0b95f8e7dd04f5a4cb0354ceb32b108c529.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/2ed8ba85f09e7b7bcb058e13fb7ce8a03e7bbc75d7868679dee0edaa4d84fbd5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b872fcd36e57d2d6e9286592f040dcf2fb40c776a0e4d0dccd0cf83a55c8a076.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/c27120a80c4c29105555cfd0dc310565fc38ee60fbbf31ba2c92ecd97ea77270.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/ec72fc98c778804910983b2610973e36040b58bdfb73b35ff0abc085f0cc8a5a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/8056d663de6b2fada925da6b99b774158557f80e4330684215a0cb7354cebdd7.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "ca42bb57f9aec7b1b1e6d093f79b074fcd43604790bbb5ed08a5eaea8c1c96cf",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "0208020500af78a9770853b8a8cc69479af6720d4c",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/67565e6af1869ec3a6954fa4329a6acc12a5fccaf189f03b95da4c751f71a188.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/21244a2086a4465acd9c9bdea0ffab4d6d8276ad0e8ce151cb6fdc308af2a1b0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/7e974665728e1e609b884b8685b530ec13fddd21b77414fca31dd90bb2ea1cbc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/08952a14c99d7dae53f7eadc323dfd786607e481d014712df920dc75e861e8a4.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/85bbc0c29979bfff24b6efcdb458213faf6f3c70ab230ea6db39f3d2f315e762.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/a010d95dc5646debee3b1f72db8168082695796deb928683cd0cda582d5efdcf.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/e811d604e32a504d5d813c23d68237dc9154bec76d2ff4587a0bb8a94b9cea0e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/7c602d14b7dbe8fb479123fd8bc561c0400c5be2006932f19bd2a5453b351516.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_4.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "565a8c9759a93de5302291872113c703120a859b95dcbb5d6868ada496d9cd6d",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "52280a250c755756880887c8867a77a87a70ab07b7",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/882d64ba111dc0e13289bc4810ec66e2c8fc5a496771e4dd4e2fe2d5ba84642f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c8e043e9f1c9cbb5bb52cb790ec3e6892c7fc98fdd98766c0a410808cdf4a0dd.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/e53fe1ba3193066be1ea9d1a08a9f7762dbbb0f63ba1c973cecea57a58596476.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/0e9d94c852e858e8ccffd9b319a0fe35e36545a715814b28a387795dc08a80f1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/f33f8905a7dcf7dcf6b8cafa928cb4bd156afa71ecccb0dc6c359061e15c8566.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/2c8f9319941e9f396deffc8590f85254a910b60bb36309c9f3207ef1e0a72ba5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/76f7bf393dc00cc862363a858a2fa0a52f8fd76bc10a64571d1a118e5db25f15.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/f2b480b46f8276de66a8f1b4990c094ba6370b75a3714286acfbe502dcd9c49e.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_5.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f77b69719466710036369e4cbbd45a2467529adc31402ccef28dd252d9fb376f",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "4828061d84882fb89367796895678695bf67f64b66",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/cde405bafa5e4c37eb56d2cf628187d7ef02763f1fdcb788900d2f9d3bb29718.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/cdeef7a7b0113f3ee4e0ab6b927d607922a19fe6ab96ffa0bdaf5d6ea0ba9c89.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/407398f103c19546ead2e8447d0a45889c5a1f9fd6c494745961a66d51f943f8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/7bb98a62cfed0e05e3aa2ca0a26191664fa9f6abb86b8784178c34d3f6819ece.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/9758f522c2de4e55eae108876ca838a122174c6263b8394ec3b7c10dd965299c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/d00b190a69ab1d0da8e4341d9f9fb2bf78051c7142e0b7b60f8b23fa0dd59a58.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c8a55b8d9ba3435ad7e11cf6e6e7137a0d931cdf0dd4dfbff13e617a5d821020.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/a55b3738e3ee70d0a709dc593393483d27fe048f216ca876c6d7f2cf3f8ac003.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_6.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "71ecc812d7ba5e4838d8b3ab557d7d7b52550848559b6a7f62bf33d4b2aaa126",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "c307060d82847f8688898680468779988f861a4305",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4f6f23738b994d8898866d331f18f2ba4ae493a282151e24d3af05aa3fb17706.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/974e833c555f8cd610de3882f7d1a041e28567e7f0074bb70712fbc348f5b82c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/83b1d438dc4fe00191eb8992fe07a652908e0b80281660898b91dead0d997631.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/29cf5adc9f846832a46d2e7b6cf72ac491eaabde22e9b56f4aa80272d150892c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/443653c1752acbda48b062b70bf0124d7ff406afa435c51552d02d73c8116e89.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/aacc81dda6443cc536031f7fe025fdd32a53c340087de2278309fe4f65ca2e8b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c57088fafc4fe961dee11dc0ea7616fc9db747f8bfd1d0ff350bbc77382e0166.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/16a17b7d061520a209e8eed7d02e9139c310108be2e6eb685e2c998f27d32617.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_7.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "eab6d2734d1df458e4bb658136d655010452d5e725314e412f84d00c184c5f0b",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "04080605806f7389de8b55bb9ba68a87afeffdeace",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/7ba730eb8887a88de82970b559268c40278433104559852f4cb786032b8450a7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/24dae793050da7323b6a6868f22c218afcd8ba53a2ca55d2da6fd42133c48f46.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8d603858fc67f35265420d0fcdb0e8c2402a4749e4d5ea584c7869687f05a09c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/507c2d6d5adaa83716c8a7023c44bcaad210fca7dfdb28a3c4d5b8d35c6aa7f2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/ffcf686d383cb6f53dcca7f2ab56f78e0b69b69408b7e528012a71f2d8cc6ce0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ab98226cd60c54f2218d6f21de3b87af32b06bc762a96df644c97bfe18b853e9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/46f25c425288d70a4abbbe2cd083492d0cf1901eddb07022a3cec422dd236d1e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/d1569f23f09c26933f97da6ae2bd7792189bfda96807b80d83bd7600bad578d0.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_8.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "c2e03c23c2a97088e60c1fdf7226eba9de83a58733eb824e533ebfe44681a246",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "5e680e0d0484765f7678798798878788ad10f55e13",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/7345ae357e569f00ae5358c19d24447dcd19814d69a8c9538c4802e977edf9dd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/87d9af7c59f2a655d17504753b4c7008f37fb5c73d5d12b3a38835b7f80f84f5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/b1323d8aaf924655284d48fa354b51e650e07b4a1b4a12c9e7ac8328872355fb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/fdcdc794a1c8e8170b07acbc289da4f36b03ab3adc90976a32d52c1fe3fb6f21.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/8c7eb5b406e962e8216075bbee425bfa91d5e1bae9b19bd08ab0064d14d48d96.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/aa955cdcbd19ebb2857cd4d4613f19e8f3ef3fcdb89ff2a229e3c7431fd27345.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c2a4655d9f36f542a73efa981f9715068c2f6530cbeb30ac8ca19885f9686364.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/9414c9b74639a430115676c05ac5f757246e37505b9db293f507fa4bca0e8dd8.jpeg"
+      }
+    ]
+  },
+  "/img/Obsesion/obs_9.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "1c61dbfac5fa4f558821a595db6dcb9f4c4ca9e1a6dc027c6dc1ea7b26ca8a24",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "4928060d042b86806a97763a95aa879609a3e5105a",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/82845c56d96907b7c5bb0fb20e05ffd4c60767381c7eedc547690d08e1eb92d4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/d22ca1f7342854792ef931e6598ad52ad1b45e6bbb9de651f15ccc855a125c0c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/a7bd49e8e066b6fd1c9c296a4b89a5d5b35437fe78eaf051b9173984feb1710d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/8ceb7ee6065fd207dc81921a76ddf5cc97651af400ba31b3d6e4a4f523280afe.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/a734dc9621ed05e2bf84de514cea56f5b338772f9068a5ba6f7448b8022146fe.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/d821fa8b78d6ef7159621665257aff4ba93643e1611aa085f7b5267ab92845a1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/da0a201425774cf0d6038baa42ea2b82f3c276ce022c55940342361a7d6ea1b6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/08720cbf00ab23c232f334e4434706dcb418e55950e607bc8e48cc15ceeb36d2.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Diseno.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "10791a66b9513fc2d3c135b3c668f96a46545bc058a1a2860401a434beca3321",
+    "width": 3000,
+    "height": 3770,
+    "thumbhash": "70180e0602f867a968877897788a7778867828718f10e7",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/ca46c53f8e6758fb1b4832848de8538158f4600763d3d41ca905bfd16b8b7606.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/b4d2c7e27c80a249c51352ce3f65483f98fb8c29794433d014a282c94f60accc.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/6fea4b4d12aaf64102f1f3570cc0dae9bd9173802ee136a0435802587c219a08.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/9df6c16df047e09e2299fd54bbed1a29156ccd8b617f95115ff99650b07e518a.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/7ac0de97f7c38169e545507fb0a22d307a1410d59ea3279f6435cac169ad6728.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/9f9be081da341896eb960c3f9e45d672dd84a6084ba63ad7dc0b0334f88e5e88.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/41fc2c03cf41121fe0d9daf0495f66ec782e1ed7e0d004e2d8487ecd0d292658.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/f61bacc8ad111065303f2edd1eaca05dc71caefa6b858d32c50e0a04383e38d0.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Diseno_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "6f4abf6514620552e43ba271d62183e83a1b0274a6c3a76772f4b9bb85f4f0ac",
+    "width": 3000,
+    "height": 3770,
+    "thumbhash": "3808060600f74858a86798788778877da4684682707038",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/e0de39ca6776f71394fe86448e75c5bff61f311d67f493459a7538199b60bdbd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/6fc42b48a3d646bace71fb813533d9c570862ff8b2fa26bedb89faa0aa3b1f81.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/76961052104ed17e40b6f4d662b23db3e282ea3e9bb25948a5284924cc6a9497.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/2cf17eb53eb03accd4878895eb5218fcb099e576a201481decc594d24e1e2a22.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/8613e1635f05fffc7da8ca73d13f3e2c9769ab7fdee96c94a2db7c4845b5e992.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/3b1a1d1f8a4b992c70ceb9b39f8fea98616b81dbe8646b5a0b29504b6149d62e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/0526695fff9126f40795d0a6e7e7c422113ef0a471351bb87f7e723cbd629986.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/67dd2346722fe8c85cf6d8f8756714f7b0fe18639dcada2632eec81cdbba7872.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Diseno_3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "c7919277ff56ea6bda0bc964a3941a7ef151d1d171338e06aa96ee2a8f8b8f00",
+    "width": 3000,
+    "height": 3770,
+    "thumbhash": "36080a0600c778688788f858888b778559777470777408",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/62e18f06ea013641ac521a50dd48eb117d04e4f2908e7e56d4631b78975383e1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/39914a3737aae1209967ccc1776f39ec517cebe2cf182930bab8d16f63694fe5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/a186335ec91d00559a85955c9424d10c64a05248dd0b8ad4e6aad35c008a2123.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/5aceb8a292b30cce62c437029913f249f0d2c6abc5549c267bc89fb5f8ebbd45.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/44b8b70679ac54b7e94db23ebcf871829acf09495b03dbb79c719699f687d26c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/dfc6e32d8503c14a7c3a11560e6ac06cf7d3be1e48841c3e146b69505628a328.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c866f9a4424c44eaa9ac5108c63ab73c0ac535ab2254d6e8d294fea8d3e6b2cc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/4419baf7457ebbe4168f41afe7bee9538417802655915e4a225d20d27a43c73b.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Simbo.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "2d65b0f085004123b55d9ac90ced0426add21d087ef26145809d3d3371b44790",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "d1380a15044baa5b60879a1785894a46979f73f948",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/1f0de806e519d7cede30500c672d2d92f2c1701dc8f8692c3a3cc7d90b51d91f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/20a9633e7d4c2a41eaf4f43a789b9d92d16470af85a0ce9b882bc9d96a1919d5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/4b20e157fcb87e811471c2b5bda886c5a0b6a036fcee1c832f823a54c10cf7cb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/1b098469f9d12b8289af854baf4f4657853461d8276f98542732a7cb5d7bad2d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/398a258b9bf26d08a61315d115c6a0e7f01462470630ee6bf2171b5fbd18098b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ed6004702ba13a09a7d2dcd3e6f02ff1b5ae12a614b951c87e4c3e43945dc313.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/a7a23f8d4f36350aedf0cde33f4b32496450d48b6e20b5bde7df07f9503ca1b5.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/590c399393f2d878070d135ea6d65c7eeb75e9811c511a16fbb8b24aa13eb5eb.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Simbo_2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "34e80b69c6e40a03c9075579497398da1b030b0bd8a5bb0d2fa4f5c7b238f2cf",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "89e7050502a06a4b994669567b8ac6859fa8ff86d8",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/8917d346888f9386d4f587ae58618ecbe3cf251dd28f4bf7c3c4b9213a1ceaa8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/b9d5ff4e169e0ed323069e8f02e61de76d49aa71323e967640cf7d9720090dc2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8395b9ae971783ecc4d59f9389b5252b794c5cf4d8b60e0a784d62d1c18cab69.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/fcc6e316a791d84e5784224eb274927aa75f279990992126f92015cbb733ea0c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/2cc1d6c35473706603e1ae0c7f04f042181a6951c8bf1b8dbf5e1a903f9c1ff7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/88137f367ae61115cc74615d13860057dc7938b04d1c33ab53e1945ab2a7a2ab.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/e0327637db32564ea0c79935ac2575c6d4e81b9d0bc4503296f2b4ff3310e6a0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/73561d6f6ee48007dad5595b55265266dfc7d45dc890bddecfe7823ff1c671ec.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Simbolo.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "1c7ca404f67c47cf69f40ce20de38b25812e5635f4fb332e8b4ad758e8184dec",
+    "width": 6000,
+    "height": 4000,
+    "thumbhash": "0e390a058237a86a7f84886b86877789ffcca2fa49",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/6313bef810c6bb808ab49c1d84994b97cec2f279762259703c0c004d6cbeec4e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/929430208c5797111719cb16ced1ed20ecd73dac6ca692d8c9181c616db374b3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/ae2792f35bcd5f718791941cd6c81a5a528c91bab7b79fe6b98760f17f74528d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/5953670ab119c7d3c057ffe7fd5d3031e76062909d72b02560d3fc7a480a2f04.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/586c346b6c7420b852ac7df29077ff0a38fc2218135af80fabc8d142e5491b2a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ddeca81a2490df50e4518de2613336ba898601976b24bbf6db188d8e1c0ce25a.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/7c4967d7833bf980e5573adbcc15fd0b3bcc5a82909b86437727b28edd9ff34c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/5ffd05c7b4ab59151a6616939d5a78679723593c6f729f3bfe9a69f231df7a46.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Slide1.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "de65d2790bc94530eca986da8e78e43cee494218af27e50263a7206a76db526d",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "8cf7050d82c606587b5a769277596868b668bf8af4",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/0fd3c3cb1c5fa99577b2dcc14e7de46f8ff38b736704e0c050a45eb1e251ba01.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/99f50c368b8ee474a8c430c85ceb1a46c8161676c28f6c0e8a65e434fa3a3d75.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/171fbb04688f237f21e951c49a99144860bea1dc60f8443e973f6cc6b184dfcd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/bdbb457641e5d9601b2e4ae86144d514f01793eef5d1a6563a024ad57063fd4a.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/261909d4b9ae21356cc767aad212fc09744ded50c23c36de8e9a5e64b72aa986.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/03671de05b8c63a613f8e639a27734a2bffc8fa3d45a190bc2ef3cfe40ff5f0e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/dd2f6ec1f54d16d8cff01f9ca2b506dcb1d5babba1d33be60c9b274760d2f9c7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/8ea04a0d420b35f8ba316a624d2ec54440146b9b002af77d18b597933d3e6217.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Slide2.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "b33fe5a036642e43194a515504e5db8b2751137a14d4d3e4dc1ba2e7a70cab1a",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "1a08120d82a8f977bd95798868678777c065084c76",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/b9c396b26bab495c7999692f41930cec1c5edb650eb977758de9274e3351b60d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/93a7ac853bb35b069292414738c92ea80ea098dbb24da97473ac18de0bfd4025.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/cce029dfd905889bde8f538d8305f0454b787d89401919169beb07aee4a8a08d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/57c57e6c1173f7e78960c755acd43510cac6da2bea562641c8fc557141e2744f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/66ee8ec68dd09e070b7d010f8e35d12cd8899ded08bd42d9d17e12dfd0587f1d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/816b2f769b6fa6f1e81cb2dedf253257d55fb19596ae6da86ff9c101dfbb3745.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/7228f68882926f4349bd1484688a5ce7a8250957492e04f9a2aba35823cfc6c8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/0c64539d81bcf8f46d5643847d3ba93f9b9571a5f7d1e6ed8f5976e124bedfb9.jpeg"
+      }
+    ]
+  },
+  "/img/Simbolo/Slide3.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "716e775bdf1d6ab1a1f42212c04b81e8021b87e85085f25f4eea5dd8bc805b7f",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "090806058058abc8918fa87d8368987790680a8aa6",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/539bbb9a646e1a0e0ba89a33f13c1c4bec5251cf7ece81f0b10da5c73393f1ee.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/dec2cc9f5ab691ba456baba5c6d181208c7b9f38a6bb40db952080f1ce528a0a.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/2eb541ade447c835d88355c32cbd244fa908114f4b18be4d422a653794983499.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/d30389083663a70ae554181cb248d45a18f46feb7d4b19ae4dd0bd4d9d30ade3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/cb2341c898f1f3a7e9e642aa65e14f69c5e81b11917724a5ac8a9460ea8a1100.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/540aabc3d7d69dd0823fd0801244ec6bec6803af411aab979fd89025e6f9cc54.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/2b2c537278c87a975cb3f3f20fd5317e78a47a3a90c829c3a77448f212f34ec4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/0ffb52ae0ddd25f36bd1301ee6aac9e89d5c6a995aa123adddfad275613f4568.jpeg"
+      }
+    ]
+  },
+  "/img/Slide/Concierto.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "f380a9b08428cae9053b3209ad969a2c11a09c874ff927823fde5d9cc5eff2b7",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "09080a05804764978f567799578879a6499fecd0dc",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/6afbe10812211117f8e22e787a580071b65d8a3e135fc9cf81e44253f4da0097.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/76f3a5280d9c87100f5ad509799dcd7e2f8462b38431218aca9f23d9e85a3585.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/e63762236bef9c09d9eed721824dee7f1ff4ed9678c948cf8ef33ba654fdddc2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/c4087a52d6f5618ffcbf71ba07168d8bd08acc1196b1d7f256dd4bbc576ec9f9.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/fae3f42b42217a40a22390c83f06aefd2e1193d97e63a40f3a1afaeaf244ce84.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f1ccf075a4952ce16814e0aa402ff4ed21bd5509fdc37145fd3888e4a181b3ed.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/78c72ba841f80c4e3cc83b1af041f549062a927fd6ed737b07603204d47a0f67.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b11d9fa6fa29541e1e534deea8ffcbfdbf7138867191acb554666382cfa61c0e.jpeg"
+      }
+    ]
+  },
+  "/img/Slide/Dango.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "cf1d6a5079b22e0960a9a1595da7df79973b72161b4f422171c877f0df1ea210",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "a1370a0d868a47687f6787a19599988619848f9d07",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/7148d4e79ea09d00bc44b96836ef4915f107d73f33cd354509c2a399e5da41fe.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/837f09eb8e8e123c233433bf4b76dea1cb6ca68de5873c9d0a8691beb4a7f09d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/5020c3a6cbc26ee4a05723a3d9b2ea3c3bbc4caed986aabd56a459e3595cd0bc.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/4a25c8feb30f8b286b05e71e56c4fa251663fa09a4c275334d71df50a23c6607.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/4fa1a9df81fdebb55798f75de588cf68cb7dfc8648df7831e4cf8fffeadd5e72.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/e2af4995c169868db9e8d1d84ad9de00f39dca61631e1f017a45c42df43ce4b2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/297000975db51d7a41d961a91481f68c74c9364c90e1132ac76691842d7452e5.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/8995658511e593621cf1e9e20b41b9d9279aaee7775118da577e3ba976c8d568.jpeg"
+      }
+    ]
+  },
+  "/img/Slide/Insom.jpg": {
+    "pipelineVersion": 2,
+    "sourceSha256": "b775c183ea45be862f7ce9387a9f6993982121ba82776f87fce18510e390fa9f",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "da38160d846987888f78887b888677760859847045",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/136dbadb063e029a038bfebe3002ac2ba0735c895bece13296d3ec91526a16fa.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c767dcb47aad167a835bf44635d524cd6fabc52ec29a9d4938cfc8cd0ed97f0b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/6c5c4a9e4e40f4f77e9bae51c33ce1a434cfc94b9b8ade3a717b5cef50d1afd4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/fc35907b7a49b2c23d6fad7cd8a21a0aff139b0a6cf2053a3a1c1d8e580a7677.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/437db1c4353dbe4fa1e1cabbcae4fa9581b95e187f1b7a770e7dfb0d1227f334.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/b580db1fe18b1bf0f5cc8d35e9ef2e5981960d69460fc92ff99c6c3cbf8ca483.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/fd81d8c4b8cb5c14e52d90fae62ca4e5c16722fd76267fdfed34f8c1769008cd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/634b14af2b0dbb783a03fa73618aa9910e3cc6c9471aff4b940d9e14cef91a54.jpeg"
+      }
+    ]
+  },
+  "/img/about-manifiesto-2.webp": {
+    "pipelineVersion": 2,
+    "sourceSha256": "8e930159bae407fdd7b9b28b6391c2644c2d294529cf9caa8fd81de54e3bafd0",
+    "width": 1280,
+    "height": 1920,
+    "thumbhash": "050806050099469f78b587b898785866346a40a206",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/61c006b2b635811527d80a3b047ecf104e19ea5856f53d74d18a59d3a9ab68d1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/5b8c0ed7adf50561bb7dec1cfe20b355921fffff16e355ea2d1321cef67eb767.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/9c7c6df20e3f44b2254bbee134acbde0dd6a61ac53ec18f0f432163209ab0eae.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/827f6d6561e58e7a4afab1de5298dcde36f2431b675b7fdd6c53b0c295905d49.jpeg"
+      }
+    ]
+  },
+  "/img/hero.webp": {
+    "pipelineVersion": 2,
+    "sourceSha256": "c9c7bcb1eea3cb06506c672e9afbfed581a5cec99aa5c6315e24e5bfeeefd72d",
+    "width": 1280,
+    "height": 853,
+    "thumbhash": "8d280a0d8237a96a7f84886b86977789eea8c0ad0a",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/8e1113173dd143cf506f1dbda53275ce381b1f805213a40d512ef72888eed473.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/73d02b07ab92210738f6b594660d92d0eff1d0ef3d29997ab48fda436abb22f4.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/69d2c79a042d3820398e6c678f59682e1724168333c5aac7cdc88163c2703719.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/65f63adc32ca58eb12e4c5bd8451abb74e44aa528f25f8c3cc34caaae3194318.jpeg"
+      }
+    ]
+  }
+}

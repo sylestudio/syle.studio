@@ -3,6 +3,9 @@
 
 use fast_image_resize::images::Image;
 use fast_image_resize::{PixelType, ResizeOptions, Resizer};
+use image::{DynamicImage, ImageDecoder, ImageReader, Limits};
+use sha2::{Digest, Sha256};
+use std::io::Cursor;
 use syle_types::ImageFormat;
 
 const AVIF_QUALITY: f32 = 68.0;
@@ -10,6 +13,22 @@ const AVIF_SPEED: u8 = 6;
 const JPEG_QUALITY: u8 = 80;
 /// ThumbHash wants a tiny image; longest side clamped to this.
 const THUMB_MAX: u32 = 100;
+/// Guard against compressed image bombs before allocating their decoded pixel
+/// buffer. This still accommodates current high-resolution full-frame cameras.
+pub const MAX_INPUT_PIXELS: u64 = 64_000_000;
+/// A second, strict guard for pathological panoramas with a narrow pixel count.
+pub const MAX_INPUT_DIMENSION: u32 = 16_384;
+/// Upper bound passed to decoders for their own working/output allocations.
+const MAX_DECODE_ALLOC_BYTES: u64 = 384 * 1024 * 1024;
+/// Increment whenever encoding settings or pixel transformations change. Static
+/// manifests use it to invalidate otherwise unchanged source images.
+pub const INGEST_PIPELINE_VERSION: u32 = 2;
+
+/// Stable SHA-256 content key for immutable derivative names and cache busting.
+pub fn content_key(bytes: &[u8]) -> String {
+    let digest = Sha256::digest(bytes);
+    digest.iter().map(|byte| format!("{byte:02x}")).collect()
+}
 
 /// One encoded rendition ready to be written to the media store.
 #[derive(Debug, Clone)]
@@ -32,7 +51,34 @@ pub struct Ingested {
 /// Decode `input`, then for every target width that does not upscale the
 /// source, emit an AVIF and a JPEG derivative plus a ThumbHash placeholder.
 pub fn ingest(input: &[u8], target_widths: &[u32]) -> anyhow::Result<Ingested> {
-    let img = image::load_from_memory(input)?.to_rgba8();
+    let mut limits = Limits::default();
+    limits.max_image_width = Some(MAX_INPUT_DIMENSION);
+    limits.max_image_height = Some(MAX_INPUT_DIMENSION);
+    limits.max_alloc = Some(MAX_DECODE_ALLOC_BYTES);
+
+    let mut reader = ImageReader::new(Cursor::new(input)).with_guessed_format()?;
+    reader.limits(limits);
+    let mut decoder = reader.into_decoder()?;
+    let (encoded_w, encoded_h) = decoder.dimensions();
+    let pixels = u64::from(encoded_w)
+        .checked_mul(u64::from(encoded_h))
+        .ok_or_else(|| anyhow::anyhow!("image dimensions overflow"))?;
+    anyhow::ensure!(
+        pixels <= MAX_INPUT_PIXELS,
+        "image exceeds decoded pixel limit ({pixels} > {MAX_INPUT_PIXELS})"
+    );
+    anyhow::ensure!(
+        decoder.total_bytes() <= MAX_DECODE_ALLOC_BYTES,
+        "image exceeds decoded memory limit"
+    );
+
+    // Cameras commonly store landscape pixels plus an EXIF rotation. Apply it
+    // once before calculating responsive sizes; the pixel-only encoders below
+    // intentionally carry no EXIF, XMP, IPTC, or location metadata forward.
+    let orientation = decoder.orientation()?;
+    let mut decoded = DynamicImage::from_decoder(decoder)?;
+    decoded.apply_orientation(orientation);
+    let img = decoded.to_rgba8();
     let (w, h) = img.dimensions();
     let rgba = img.into_raw();
 
@@ -138,9 +184,15 @@ fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
 
 fn thumbhash_hex(rgba: &[u8], w: u32, h: u32) -> anyhow::Result<String> {
     let (tw, th) = if w >= h {
-        (THUMB_MAX.min(w), ((THUMB_MAX as u64 * h as u64) / w as u64).max(1) as u32)
+        (
+            THUMB_MAX.min(w),
+            ((THUMB_MAX as u64 * h as u64) / w as u64).max(1) as u32,
+        )
     } else {
-        (((THUMB_MAX as u64 * w as u64) / h as u64).max(1) as u32, THUMB_MAX.min(h))
+        (
+            ((THUMB_MAX as u64 * w as u64) / h as u64).max(1) as u32,
+            THUMB_MAX.min(h),
+        )
     };
     let small = resize_rgba(rgba, w, h, tw, th)?;
     let hash = thumbhash::rgba_to_thumb_hash(tw as usize, th as usize, &small);

@@ -1,10 +1,11 @@
 ---
 import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
 <ProyectoBase title="Catedral">
   <div class="hero-fixed">
-    <img src="/img/Simbolo/Simbolo.jpg" alt="Catedral" />
+    <StaticPicture src="/img/Simbolo/Simbolo.jpg" alt="Catedral" eager fill />
   </div>
 
   <div class="page-wrap">
@@ -24,13 +25,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
           <div class="intro-left">
             <h2 class="disp intro-h">Simbolo Vivo</h2>
             <p class="body-s">
-              Este fue un proyecto totalmente hecho por nosotros desde 
+              Este fue un proyecto totalmente hecho por nosotros desde
               los diseños de las prendas hasta la fotografia, la idea central
               del proyecto estubo basada en la resignificacion de las cosas
-              usamos uno de los simbolos mas importantes de la religion que en 
-              nuestra epoca actual significa fe, esperanza. Todo esto cambia cuando 
-              se remonta a los origenes de este simbolo, mediante los diseños buscamos 
-              plasmar esta idea mezclando colores y una estetica contraria a lo que 
+              usamos uno de los simbolos mas importantes de la religion que en
+              nuestra epoca actual significa fe, esperanza. Todo esto cambia cuando
+              se remonta a los origenes de este simbolo, mediante los diseños buscamos
+              plasmar esta idea mezclando colores y una estetica contraria a lo que
               se podria conocer normalmente.
             </p>
           </div>
@@ -43,8 +44,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/Simbolo/Simbo.jpg" alt="" />
-        <img src="/img/Simbolo/Simbo_2.jpg" alt="" />
+        <StaticPicture src="/img/Simbolo/Simbo.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Simbo_2.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
       </div>
 
       <!-- ── Texto de la derecha ───────────────────── -->
@@ -52,10 +53,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
         <div class="text-r">
           <h2 class="disp sub2-h">Estetica del Proyecto</h2>
           <p class="body-s">
-            Durante la elaboracion de todo este proyecto buscamos mantener 
+            Durante la elaboracion de todo este proyecto buscamos mantener
             una estetica acorde a la idea de nuestro proyecto, la idea de las
-            locaciones, los colores, y la edicion de las fotos buscaba una idea 
-            agresiva, contrastada con colores limpios donde se enfatizara la otra 
+            locaciones, los colores, y la edicion de las fotos buscaba una idea
+            agresiva, contrastada con colores limpios donde se enfatizara la otra
             contra parte del significado.
           </p>
         </div>
@@ -63,9 +64,9 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Simbolo/Diseno.jpg" alt="" />
-        <img src="/img/Simbolo/Diseno_2.jpg" alt="" />
-        <img src="/img/Simbolo/Diseno_3.jpg" alt="" />
+        <StaticPicture src="/img/Simbolo/Diseno.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Diseno_2.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Diseno_3.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -84,16 +85,16 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
       <!-- ── Slider ─────────────────────────────────────────── -->
       <div class="slider-wrap">
         <div class="slider" id="slider">
-          <div class="slide active"><img src="/img/Simbolo/Slide1.jpg" alt="Slide 1" /></div>
-          <div class="slide"><img src="/img/Simbolo/Slide2.jpg" alt="Slide 2" /></div>
-          <div class="slide"><img src="/img/Simbolo/Slide3.jpg" alt="Slide 3" /></div>
+          <div class="slide active"><StaticPicture src="/img/Simbolo/Slide1.jpg" alt="Slide 1" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Simbolo/Slide2.jpg" alt="Slide 2" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Simbolo/Slide3.jpg" alt="Slide 3" fill /></div>
         </div>
         <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
         <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
         <div class="sl-dots">
-          <span class="dot active" data-i="0"></span>
-          <span class="dot" data-i="1"></span>
-          <span class="dot" data-i="2"></span>
+          <button type="button" class="dot active" data-i="0" aria-label="Mostrar imagen 1" aria-current="true"></button>
+          <button type="button" class="dot" data-i="1" aria-label="Mostrar imagen 2" aria-current="false"></button>
+          <button type="button" class="dot" data-i="2" aria-label="Mostrar imagen 3" aria-current="false"></button>
         </div>
       </div>
 
@@ -127,7 +128,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 </ProyectoBase>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   /* ── Shell ── */
   .hero-fixed {
@@ -135,7 +136,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     inset: 0;
     z-index: 0;
   }
-  .hero-fixed img {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -203,7 +204,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     grid-template-columns: 1fr 1fr;
     gap: 3px;
   }
-  .diptych img {
+  .diptych :global(img) {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -249,7 +250,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     align-items: start;
   }
-  .triple img {
+  .triple :global(img) {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -274,7 +275,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     transition: opacity 0.6s ease;
   }
   .slide.active { opacity: 1; }
-  .slide img {
+  .slide :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -300,18 +301,29 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   .sl-dots {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.125rem;
     padding: 1rem 0;
   }
   .dot {
+    padding: 0;
+    border: 0;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    cursor: pointer;
+  }
+  .dot::before {
+    content: "";
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: rgba(22,20,15,0.25);
-    cursor: pointer;
     transition: background 0.2s;
   }
-  .dot.active { background: rgba(22,20,15,0.75); }
+  .dot.active::before { background: rgba(22,20,15,0.75); }
+  .dot:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 
   /* ── Créditos ── */
   .credits {
@@ -360,9 +372,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
-    .diptych img,
-    .triple img,
-    .triple img:nth-child(2) {
+    .diptych :global(img),
+    .triple :global(img) {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
@@ -371,13 +382,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   /* ── Hover discreto + zoom al click ── */
-  .diptych img,
-  .triple img {
+  .diptych :global(img),
+  .triple :global(img) {
     cursor: zoom-in;
     transition: filter 0.35s ease, transform 0.35s ease;
   }
-  .diptych img:hover,
-  .triple img:hover {
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
     filter: brightness(1.05);
     transform: scale(1.012);
   }
@@ -416,7 +427,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
 <script>
   const slides = document.querySelectorAll<HTMLElement>('.slide');
-  const dots   = document.querySelectorAll<HTMLElement>('.dot');
+  const dots   = document.querySelectorAll<HTMLButtonElement>('.dot');
   let cur = 0;
 
   function goTo(n: number) {
@@ -425,13 +436,16 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     cur = (n + slides.length) % slides.length;
     slides[cur].classList.add('active');
     dots[cur].classList.add('active');
+    dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === cur)));
   }
 
   document.querySelector('.sl-prev')?.addEventListener('click', () => goTo(cur - 1));
   document.querySelector('.sl-next')?.addEventListener('click', () => goTo(cur + 1));
   dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
 
-  setInterval(() => goTo(cur + 1), 4000);
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.setInterval(() => goTo(cur + 1), 4000);
+  }
 
   // ── Lightbox ──
   const lightbox  = document.getElementById('lightbox') as HTMLElement | null;

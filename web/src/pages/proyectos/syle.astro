@@ -1,15 +1,16 @@
 ---
 import Base from "../../layouts/Base.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 
 
 
 //
-// SYLE STUDIO PAGINA DE PRUEBA PARA MENU DE PROYECTOS 
+// SYLE STUDIO PAGINA DE PRUEBA PARA MENU DE PROYECTOS
 //
 //
 // Página de obras estilo "Tamaki Yoshida": una rejilla de trabajos filtrable por
 // categoría y por año. Tipografía mínima, negro sobre papel, mucho aire.
-// Cada obra usa imágenes ya presentes en /public/img.
+// Cada obra usa las fuentes del pipeline estático responsive.
 type Work = {
   title: string;
   category: "Fotografia" | "Diseño" | "Direccion";
@@ -72,7 +73,12 @@ const years = Array.from(new Set(works.map((w) => w.year))).sort((a, b) => b - a
           data-year={w.year}
         >
           <div class="work-img">
-            <img src={w.img} alt={w.title} loading="lazy" />
+            <StaticPicture
+              src={w.img}
+              alt={w.title}
+              sizes="(min-width: 1000px) 33vw, (min-width: 650px) 50vw, 100vw"
+              fill
+            />
           </div>
           <div class="work-meta">
             <h2 class="work-title">{w.title}</h2>
@@ -86,7 +92,7 @@ const years = Array.from(new Set(works.map((w) => w.year))).sort((a, b) => b - a
 </Base>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   .syle {
     max-width: 1700px;
@@ -170,13 +176,13 @@ const years = Array.from(new Set(works.map((w) => w.year))).sort((a, b) => b - a
     aspect-ratio: 4 / 5;
     background: rgba(22, 20, 15, 0.06);
   }
-  .work-img img {
+  .work-img :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 1.1s var(--e);
   }
-  .work:hover .work-img img { transform: scale(1.05); }
+  .work:hover .work-img :global(img) { transform: scale(1.05); }
   .work-meta {
     margin-top: 1rem;
     display: flex;
