@@ -7,6 +7,7 @@ artifacts.
 
 ```
 syle.studio        → Cloudflare (proxied) → nginx :443 → /opt/syle/web (static)
+                                                        ├ /api/public/* → syle-api :8080
                                                         └ /media → syle-api :8080
 admin.syle.studio  → Cloudflare (DNS-only) → nginx :443 → /opt/syle/admin (SPA)
                                                          ├ /api/*  → syle-api :8080
@@ -65,7 +66,9 @@ Configuration Rule.
 `.github/workflows/deploy.yml` runs on the `vps2` runner on every push to
 `main` (and `workflow_dispatch`): it builds the API (release), the CRM (trunk
 → wasm), and the public site (Astro, against the live API), drops the
-artifacts into `/opt/syle`, restarts the API, and reloads nginx.
+artifacts into `/opt/syle`, restarts the API, and reloads nginx. Its final
+smoke test verifies the exact site revision, the public API proxy, immutable
+responsive-media caching, and a real 404 through the public vhost.
 
 ## Passkeys cutover
 

@@ -96,4 +96,18 @@ jobs:
           sudo /usr/bin/systemctl reload nginx
           html=$(curl -fsS -H 'Host: syle.studio' http://127.0.0.1/)
           grep -Fq "name=\"syle-revision\" content=\"$GITHUB_SHA\"" <<<"$html"
+          curl -fsS -H 'Host: syle.studio' \
+            http://127.0.0.1/api/public/galleries >/dev/null
+          if [[ "$html" =~ (/project-media/[a-f0-9]+\.(avif|jpeg)) ]]; then
+            media_path="${BASH_REMATCH[1]}"
+          else
+            echo "No responsive project-media URL found in deployed HTML"
+            exit 1
+          fi
+          media_headers=$(curl -fsSI -H 'Host: syle.studio' \
+            "http://127.0.0.1$media_path")
+          grep -Eiq '^cache-control:.*immutable' <<<"$media_headers"
+          missing_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H 'Host: syle.studio' http://127.0.0.1/__deploy_missing__)
+          [ "$missing_code" = "404" ]
           echo "Deploy complete; public site serves $GITHUB_SHA."
