@@ -65,6 +65,8 @@ integridad de datos, rendimiento o despliegue.
 - [x] Ningún original fotográfico pesado se copia al `dist`.
 - [x] Los derivados viven en `/project-media/`, fuera del namespace `/media/`
   reservado por nginx/Vite para uploads dinámicos del API.
+- [x] nginx entrega `/project-media/` con cache inmutable, publica únicamente
+  `/api/public/` en el dominio principal y responde 404 real para rutas ausentes.
 - [x] Presupuesto automatizado: máximo 1,500,000 bytes por derivado y 90 MiB
   para el conjunto desplegable.
 - [x] Se añadió cache de derivados por hash del manifiesto en CI y despliegue.
@@ -87,6 +89,8 @@ integridad de datos, rendimiento o despliegue.
   presupuestos de imágenes en cada pull request.
 - [x] El despliegue rechaza una publicación cuyo HTML no exponga el SHA exacto
   de `GITHUB_SHA` en la metaetiqueta `syle-revision`.
+- [x] El smoke test de despliegue comprueba además el proxy del API público, el
+  cache inmutable de un derivado real y el comportamiento 404 del vhost.
 
 ## Evidencia reproducible
 
