@@ -19,11 +19,28 @@ struct Item {
 
 fn build_items(gs: &[Gallery], projects: &[Project], ps: &[BlogPost], q: &str) -> Vec<Item> {
     let q = q.trim().to_lowercase();
-    let mut out = vec![Item {
-        kind: "Ir a",
-        label: "Portafolio".into(),
-        href: "/".into(),
-    }];
+    let mut out = vec![
+        Item {
+            kind: "Ir a",
+            label: "Portafolio".into(),
+            href: "/".into(),
+        },
+        Item {
+            kind: "Ir a",
+            label: "Galerías".into(),
+            href: "/galleries".into(),
+        },
+        Item {
+            kind: "Ir a",
+            label: "Proyectos".into(),
+            href: "/projects".into(),
+        },
+        Item {
+            kind: "Ir a",
+            label: "Blog".into(),
+            href: "/posts".into(),
+        },
+    ];
     out.extend(gs.iter().map(|g| Item {
         kind: "Galería",
         label: g.title.clone(),

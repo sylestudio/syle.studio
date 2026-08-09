@@ -12,6 +12,8 @@ serde.workspace = true
 serde_json.workspace = true
 leptos = { version = "0.7", features = ["csr"] }
 leptos_router = "0.7"
+leptos_icons = "0.5"
+icondata = { version = "0.5", default-features = false, features = ["heroicons"] }
 console_error_panic_hook = "0.1"
 gloo-net = { version = "0.6", features = ["http"] }
 gloo-timers = { version = "0.3", features = ["futures"] }
