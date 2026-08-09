@@ -1,0 +1,37 @@
+---
+import type { UploadedImage } from "../lib/api";
+import { buildSources } from "../lib/images";
+
+interface Props {
+  image: UploadedImage;
+  alt: string;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const {
+  image,
+  alt,
+  sizes = "(min-width: 48rem) 50vw, 100vw",
+  eager = false,
+} = Astro.props;
+const sources = buildSources(image.variants);
+const fallback = sources.fallback || image.src;
+---
+
+<picture>
+  {sources.avif && <source srcset={sources.avif} sizes={sizes} type="image/avif" />}
+  {sources.jpeg && <source srcset={sources.jpeg} sizes={sizes} type="image/jpeg" />}
+  <img
+    src={fallback}
+    alt={alt}
+    width={image.width}
+    height={image.height}
+    loading={eager ? "eager" : "lazy"}
+    decoding={eager ? "sync" : "async"}
+    fetchpriority={eager ? "high" : undefined}
+    style={image.placeholder
+      ? `background-image:url(${image.placeholder});background-size:cover`
+      : undefined}
+  />
+</picture>

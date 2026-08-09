@@ -123,6 +123,7 @@ pub fn StudioShell() -> impl IntoView {
                         <div class="flex flex-col gap-0.5">
                             <NavItem href="/" label="Portafolio" matches="/" />
                             <NavItem href="/" label="Galerías" matches="/galleries" />
+                            <NavItem href="/projects" label="Proyectos" matches="/projects" />
                             <NavItem href="/" label="Blog" matches="/posts" />
                         </div>
                         <h3 class="mt-6 mb-1 px-2 text-xs/6 font-medium text-zinc-500">

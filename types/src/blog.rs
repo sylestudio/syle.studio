@@ -39,11 +39,10 @@ pub struct UpdatePost {
     pub status: Option<PostStatus>,
 }
 
-/// Result of uploading an inline post image (`POST /api/admin/blog-assets`).
-/// Runs the same ingest as gallery photos (responsive AVIF+JPEG renditions +
-/// a ThumbHash blur-up), so blog images are optimized identically — but no
-/// gallery/DB row is created. The CRM copies these fields onto the image block,
-/// which stays the sole record of the asset.
+/// Result of uploading a standalone asset (`POST /api/admin/blog-assets` or
+/// `POST /api/admin/project-assets`). Runs the same ingest as gallery photos
+/// (responsive AVIF+JPEG renditions + a ThumbHash blur-up), but creates no
+/// photo/gallery row. The caller stores this payload in its owning document.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct UploadedImage {
     /// Largest JPEG rendition: the broadly-compatible `<img>` fallback and the

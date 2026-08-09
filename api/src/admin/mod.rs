@@ -5,11 +5,13 @@ mod assets;
 mod galleries;
 mod photos;
 mod posts;
+mod projects;
 
 pub use assets::*;
 pub use galleries::*;
 pub use photos::*;
 pub use posts::*;
+pub use projects::*;
 
 use std::fs::OpenOptions;
 use std::io::{self, Write};

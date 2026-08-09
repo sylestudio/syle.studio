@@ -5,7 +5,7 @@ use common::*;
 
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
-use syle_types::{BlogPost, Gallery, GalleryDetail};
+use syle_types::{BlogPost, Gallery, GalleryDetail, Project};
 use tower::ServiceExt;
 use uuid::Uuid;
 
@@ -39,6 +39,47 @@ async fn public_galleries_lists_only_published() {
     let galleries: Vec<Gallery> = body_json(resp).await;
     assert_eq!(galleries.len(), 1);
     assert_eq!(galleries[0].slug, "shown");
+}
+
+#[tokio::test]
+#[serial_test::serial]
+async fn public_projects_lists_only_published_in_position_order() {
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
+    for (title, url, position, published) in [
+        ("Later", "/proyectos/later", 20, true),
+        ("Hidden", "/proyectos/hidden", 0, false),
+        ("First", "https://example.com/first", 10, true),
+    ] {
+        sqlx::query(
+            "INSERT INTO projects (id, title, url, position, published) \
+             VALUES ($1,$2,$3,$4,$5)",
+        )
+        .bind(Uuid::new_v4())
+        .bind(title)
+        .bind(url)
+        .bind(position)
+        .bind(published)
+        .execute(&pool)
+        .await
+        .unwrap();
+    }
+
+    let resp = app
+        .oneshot(
+            Request::get("/api/public/projects")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let projects: Vec<Project> = body_json(resp).await;
+    assert_eq!(projects.len(), 2);
+    assert_eq!(projects[0].title, "First");
+    assert_eq!(projects[0].url, "https://example.com/first");
+    assert_eq!(projects[1].title, "Later");
 }
 
 #[tokio::test]

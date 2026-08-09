@@ -1,22 +1,56 @@
 ---
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
+import UploadedPicture from "../components/UploadedPicture.astro";
 import StaticPicture from "../components/StaticPicture.astro";
 import Mark from "../components/Mark.astro";
-import { listGalleries, getGallery } from "../lib/api";
+import {
+  listGalleries,
+  getGallery,
+  listProjects,
+  type Photo as GalleryPhoto,
+  type UploadedImage,
+} from "../lib/api";
 
-// Each published gallery is a "Proyecto". The list endpoint carries no cover,
-// so we pull each detail for its first photo. Resilient: if the API is down
-// at build time everything falls back to empty and the static sections still
-// render. Title + category come straight from the list payload.
-const galleries = await listGalleries();
-const projects = await Promise.all(
+interface HomeProject {
+  id: string;
+  title: string;
+  url: string;
+  category: string;
+  position: number;
+  galleryCover: GalleryPhoto | null;
+  uploadedCover: UploadedImage | null;
+}
+
+// Published galleries and standalone project links share one ordered grid.
+// Galleries still resolve their first photo; standalone projects carry their
+// own optimized cover and navigate straight to their configured URL.
+const [galleries, standaloneProjects] = await Promise.all([
+  listGalleries(),
+  listProjects(),
+]);
+const galleryProjects: HomeProject[] = await Promise.all(
   galleries.map(async (g) => ({
-    slug: g.slug,
+    id: `gallery:${g.id}`,
     title: g.title,
+    url: `/galleries/${g.slug}`,
     category: g.category,
-    cover: (await getGallery(g.slug))?.photos?.[0] ?? null,
+    position: g.position,
+    galleryCover: (await getGallery(g.slug))?.photos?.[0] ?? null,
+    uploadedCover: null,
   })),
+);
+const linkedProjects: HomeProject[] = standaloneProjects.map((project) => ({
+  id: `project:${project.id}`,
+  title: project.title,
+  url: project.url,
+  category: project.category,
+  position: project.position,
+  galleryCover: null,
+  uploadedCover: project.cover,
+}));
+const projects = [...galleryProjects, ...linkedProjects].sort(
+  (a, b) => a.position - b.position,
 );
 
 // Slides del slider "Bleed". Cada entrada:
@@ -105,9 +139,15 @@ const clients = [
     ) : (
       <div class="grid">
         {projects.map((p) => (
-          <a href={`/galleries/${p.slug}`} class="card" data-reveal>
+          <a href={p.url} class="card" data-reveal>
             <div class="card-img">
-              {p.cover ? <Photo photo={p.cover} /> : <div class="ph" />}
+              {p.galleryCover ? (
+                <Photo photo={p.galleryCover} />
+              ) : p.uploadedCover ? (
+                <UploadedPicture image={p.uploadedCover} alt={p.title} />
+              ) : (
+                <div class="ph" />
+              )}
             </div>
             {p.category && <span class="lbl muted card-cat">{p.category}</span>}
             <h3 class="disp card-title">
@@ -302,6 +342,7 @@ const clients = [
 
   /* SECTION shell */
   .section { padding: 7rem 1.5rem; }
+  #proyectos { padding-inline: 0; }
   .section > * { max-width: 1700px; margin-left: auto; margin-right: auto; }
   .sec-head {
     display: flex;
@@ -311,15 +352,21 @@ const clients = [
     padding-top: 1.5rem;
     margin-bottom: 4rem;
   }
+  #proyectos .sec-head,
+  #proyectos .empty { width: calc(100% - 3rem); }
   .dark .sec-head { border-color: rgba(244, 241, 234, 0.15); }
   .sec-title { font-size: clamp(2.5rem, 7vw, 5rem); }
   .empty { padding: 2rem 0 4rem; }
 
-  /* asymmetric project grid */
-  .grid {
+  /* alternating project grid: two cards, then three */
+  #proyectos > .grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 6rem 2.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    gap: 0;
   }
   .card-img { overflow: hidden; aspect-ratio: 4 / 3; }
   .card-img :global(picture),
@@ -442,18 +489,16 @@ const clients = [
     .cap { padding: 0 3rem; }
     .hero-img { height: 86vh; }
     .section { padding: 11rem 3rem; }
+    #proyectos .sec-head,
+    #proyectos .empty { width: calc(100% - 6rem); }
 
-    .grid {
-      grid-template-columns: repeat(12, 1fr);
-      gap: 6rem 2.5rem;
+    #proyectos > .grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
     }
-    .card { grid-column: span 7; }
-    .card:nth-child(4n + 2) { grid-column: 9 / span 4; align-self: end; }
-    .card:nth-child(4n + 3) { grid-column: 2 / span 5; }
-    .card:nth-child(4n) { grid-column: 7 / span 6; align-self: end; }
-    .card:nth-child(4n + 2) .card-img { aspect-ratio: 4 / 5; }
-    .card:nth-child(4n + 3) .card-img { aspect-ratio: 4 / 5; }
-    .card:nth-child(4n) .card-img { aspect-ratio: 16 / 11; }
+    .card { grid-column: span 3; }
+    .card:nth-child(5n + 3),
+    .card:nth-child(5n + 4),
+    .card:nth-child(5n + 5) { grid-column: span 2; }
 
     .proc { grid-template-columns: 5fr 7fr; align-items: center; }
     .proc-fig :global(img) { height: 80vh; }

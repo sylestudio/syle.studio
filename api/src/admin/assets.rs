@@ -12,12 +12,11 @@ use syle_types::{ImageFormat, ImageVariant, UploadedImage};
 /// would upscale the source.
 const TARGET_WIDTHS: &[u32] = &[480, 960, 1440, 2400];
 
-/// Multipart `file` upload for an inline post image. Runs the exact same image
-/// pipeline as gallery photos — responsive AVIF+JPEG renditions plus a
+/// Multipart `file` upload for an inline post image or project cover. Runs the
+/// exact same pipeline as gallery photos — responsive AVIF+JPEG renditions plus a
 /// ThumbHash blur-up — and writes every derivative under `media_dir`. Unlike
-/// `upload_photo` it persists no DB row: a blog image is referenced only by the
-/// block document, so the returned renditions are copied onto the image block,
-/// which becomes the sole record of the asset.
+/// `upload_photo` it persists no DB row: the caller copies the returned asset
+/// into its block document or standalone-project row.
 pub async fn upload_blog_asset(
     _user: AuthUser,
     State(state): State<AppState>,

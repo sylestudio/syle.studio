@@ -5,7 +5,7 @@ use common::*;
 
 use axum::body::Body;
 use axum::http::{header, Request, StatusCode};
-use syle_types::{BlogPost, Gallery, ImageFormat, Photo, PostStatus, UploadedImage};
+use syle_types::{BlogPost, Gallery, ImageFormat, Photo, PostStatus, Project, UploadedImage};
 use tower::ServiceExt;
 use uuid::Uuid;
 
@@ -51,6 +51,110 @@ async fn admin_create_gallery_requires_auth_and_persists() {
         .await
         .unwrap();
     assert_eq!(count.0, 1);
+}
+
+#[tokio::test]
+#[serial_test::serial]
+async fn admin_project_crud_requires_auth_and_validates_destination() {
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
+
+    let unauth = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/projects")
+                .header(header::CONTENT_TYPE, "application/json")
+                .body(Body::from(
+                    r#"{"title":"Dango","url":"/proyectos/dango"}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(unauth.status(), StatusCode::UNAUTHORIZED);
+
+    let cookie = login_cookie(&app, &pool).await;
+    let invalid = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/projects")
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(
+                    r#"{"title":"Unsafe","url":"javascript:alert(1)"}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(invalid.status(), StatusCode::BAD_REQUEST);
+
+    let created = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/projects")
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(
+                    r#"{"title":" Dango ","url":" /proyectos/dango ","category":" Festival ","position":7}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(created.status(), StatusCode::OK);
+    let project: Project = body_json(created).await;
+    assert_eq!(project.title, "Dango");
+    assert_eq!(project.url, "/proyectos/dango");
+    assert_eq!(project.category, "Festival");
+    assert!(!project.published);
+
+    let updated = app
+        .clone()
+        .oneshot(
+            Request::patch(format!("/api/admin/projects/{}", project.id))
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(r#"{"published":true,"position":2}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(updated.status(), StatusCode::OK);
+    let updated: Project = body_json(updated).await;
+    assert!(updated.published);
+    assert_eq!(updated.position, 2);
+
+    let listed = app
+        .clone()
+        .oneshot(
+            Request::get("/api/admin/projects")
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    let projects: Vec<Project> = body_json(listed).await;
+    assert_eq!(projects.len(), 1);
+
+    let deleted = app
+        .clone()
+        .oneshot(
+            Request::delete(format!("/api/admin/projects/{}", project.id))
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(deleted.status(), StatusCode::OK);
+    let count: (i64,) = sqlx::query_as("SELECT count(*) FROM projects")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(count.0, 0);
 }
 
 #[tokio::test]
@@ -444,19 +548,22 @@ async fn admin_blog_asset_upload_ingests_and_is_served_without_a_gallery() {
 
 #[tokio::test]
 #[serial_test::serial]
-async fn admin_blog_asset_upload_requires_auth() {
+async fn standalone_asset_uploads_require_auth() {
     let Some((app, _pool, _media)) = setup().await else {
         return;
     };
-    let (ct, body) = multipart_file(&synthetic_png(64, 64));
-    let resp = app
-        .oneshot(
-            Request::post("/api/admin/blog-assets")
-                .header(header::CONTENT_TYPE, ct)
-                .body(Body::from(body))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+    for path in ["/api/admin/blog-assets", "/api/admin/project-assets"] {
+        let (ct, body) = multipart_file(&synthetic_png(64, 64));
+        let resp = app
+            .clone()
+            .oneshot(
+                Request::post(path)
+                    .header(header::CONTENT_TYPE, ct)
+                    .body(Body::from(body))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+    }
 }

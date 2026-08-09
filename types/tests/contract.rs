@@ -4,7 +4,7 @@
 use serde_json::json;
 use syle_types::{
     Block, BlogPost, Gallery, ImageFormat, ImageVariant, LoginRequest, Mark, NewPost, Photo,
-    PostStatus, SessionToken, Span,
+    PostStatus, Project, SessionToken, Span, UploadedImage,
 };
 use uuid::Uuid;
 
@@ -39,6 +39,34 @@ fn gallery_serializes_snake_case() {
             "year": 2026
         })
     );
+}
+
+#[test]
+fn standalone_project_carries_destination_and_responsive_cover() {
+    let project = Project {
+        id: fixed(4),
+        title: "Dango".into(),
+        url: "/proyectos/dango".into(),
+        category: "Festival".into(),
+        position: 2,
+        published: true,
+        cover: Some(UploadedImage {
+            src: "/media/jpeg/dango_960.jpeg".into(),
+            variants: vec![ImageVariant {
+                format: ImageFormat::Jpeg,
+                width: 960,
+                path: "/media/jpeg/dango_960.jpeg".into(),
+            }],
+            placeholder: "data:image/png;base64,AAAA".into(),
+            width: 960,
+            height: 640,
+        }),
+    };
+    let wire = serde_json::to_value(&project).unwrap();
+    assert_eq!(wire["url"], "/proyectos/dango");
+    assert_eq!(wire["cover"]["variants"][0]["format"], "jpeg");
+    let back: Project = serde_json::from_value(wire).unwrap();
+    assert_eq!(back, project);
 }
 
 #[test]

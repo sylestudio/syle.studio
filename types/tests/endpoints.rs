@@ -13,8 +13,10 @@ fn auth_paths() {
 #[test]
 fn write_paths() {
     assert_eq!(ep::ADMIN_GALLERIES, "/api/admin/galleries");
+    assert_eq!(ep::ADMIN_PROJECTS, "/api/admin/projects");
     assert_eq!(ep::ADMIN_POSTS, "/api/admin/posts");
     assert_eq!(ep::ADMIN_PHOTOS, "/api/admin/photos");
+    assert_eq!(ep::ADMIN_PROJECT_ASSETS, "/api/admin/project-assets");
 }
 
 #[test]
@@ -26,12 +28,14 @@ fn admin_resource_paths() {
         format!("/api/admin/galleries/{g}/photos/order")
     );
     assert_eq!(ep::admin_photo(g), format!("/api/admin/photos/{g}"));
+    assert_eq!(ep::admin_project(g), format!("/api/admin/projects/{g}"));
     assert_eq!(ep::admin_post(g), format!("/api/admin/posts/{g}"));
 }
 
 #[test]
 fn public_read_paths() {
     assert_eq!(ep::PUBLIC_GALLERIES, "/api/public/galleries");
+    assert_eq!(ep::PUBLIC_PROJECTS, "/api/public/projects");
     assert_eq!(ep::public_gallery("a-slug"), "/api/public/galleries/a-slug");
     assert_eq!(ep::PUBLIC_POSTS, "/api/public/posts");
     assert_eq!(ep::public_post("hello"), "/api/public/posts/hello");

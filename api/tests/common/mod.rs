@@ -20,7 +20,7 @@ pub async fn setup() -> Option<(axum::Router, sqlx::PgPool, tempfile::TempDir)> 
     let pool = syle_core::db::connect(&url).await.unwrap();
     syle_core::db::migrate(&pool).await.unwrap();
     sqlx::query(
-        "TRUNCATE galleries, photos, photo_variants, blog_posts, users, sessions, \
+        "TRUNCATE projects, galleries, photos, photo_variants, blog_posts, users, sessions, \
          webauthn_credentials, webauthn_flows, recovery_codes, access_log CASCADE",
     )
     .execute(&pool)
