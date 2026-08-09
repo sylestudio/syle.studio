@@ -19,8 +19,12 @@ fn QuickAccess(
     #[prop(into)] title: String,
     #[prop(into)] description: String,
     icon: icondata::Icon,
+    #[prop(into)] icon_class: String,
     summary: ContentSummary,
 ) -> impl IntoView {
+    let icon_class = format!(
+        "flex size-10 items-center justify-center rounded-xl border {icon_class}"
+    );
     view! {
         <a
             href=href
@@ -31,8 +35,7 @@ fn QuickAccess(
         >
             <div class="space-y-4">
                 <div class="flex items-center justify-between">
-                    <span class="flex size-10 items-center justify-center rounded-xl \
-                        border border-white/10 bg-zinc-950 text-zinc-300" aria-hidden="true">
+                    <span class=icon_class aria-hidden="true">
                         <HeroIcon icon=icon width="1.25rem" height="1.25rem" />
                     </span>
                     <span class="flex size-4 text-zinc-500 \
@@ -123,6 +126,7 @@ pub fn Dashboard() -> impl IntoView {
                         title="Galerías"
                         description="Administra colecciones y fotografías."
                         icon=HiPhotoOutlineLg
+                        icon_class="border-fuchsia-400/20 bg-fuchsia-400/10 text-fuchsia-300"
                         summary=galleries
                     />
                     <QuickAccess
@@ -130,6 +134,7 @@ pub fn Dashboard() -> impl IntoView {
                         title="Proyectos"
                         description="Administra enlaces y portadas externas."
                         icon=HiArrowTopRightOnSquareOutlineLg
+                        icon_class="border-sky-400/20 bg-sky-400/10 text-sky-300"
                         summary=projects
                     />
                     <QuickAccess
@@ -137,6 +142,7 @@ pub fn Dashboard() -> impl IntoView {
                         title="Blog"
                         description="Escribe, revisa y publica entradas."
                         icon=HiDocumentTextOutlineLg
+                        icon_class="border-amber-400/20 bg-amber-400/10 text-amber-300"
                         summary=posts
                     />
                 </div>

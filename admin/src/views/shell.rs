@@ -37,11 +37,13 @@ fn NavItem(
     #[prop(into)] href: String,
     #[prop(into)] label: String,
     icon: icondata::Icon,
+    #[prop(into)] icon_class: String,
     /// Mark current when the path starts with this prefix ("/" = exact).
     #[prop(into)]
     matches: String,
 ) -> impl IntoView {
     let loc = use_location();
+    let icon_class = format!("flex size-5 shrink-0 items-center justify-center {icon_class}");
     let current = Signal::derive(move || {
         let p = loc.pathname.get();
         if matches == "/" {
@@ -59,7 +61,7 @@ fn NavItem(
             {move || current.get().then(|| view! {
                 <span class="absolute inset-y-1.5 -left-4 w-0.5 rounded-full bg-white"></span>
             })}
-            <span class="flex size-5 shrink-0 items-center justify-center" aria-hidden="true">
+            <span class=icon_class aria-hidden="true">
                 <HeroIcon icon=icon width="1.25rem" height="1.25rem" />
             </span>
             <span class="truncate">{label}</span>
@@ -142,22 +144,22 @@ pub fn StudioShell() -> impl IntoView {
                         </h3>
                         <div class="flex flex-col gap-0.5">
                             <NavItem href="/" label="Portafolio" matches="/"
-                                icon=HiSquares2x2OutlineLg />
+                                icon=HiSquares2x2OutlineLg icon_class="text-violet-400" />
                             <NavItem href="/galleries" label="Galerías" matches="/galleries"
-                                icon=HiPhotoOutlineLg />
+                                icon=HiPhotoOutlineLg icon_class="text-fuchsia-400" />
                             <NavItem href="/projects" label="Proyectos" matches="/projects"
-                                icon=HiArrowTopRightOnSquareOutlineLg />
+                                icon=HiArrowTopRightOnSquareOutlineLg icon_class="text-sky-400" />
                             <NavItem href="/posts" label="Blog" matches="/posts"
-                                icon=HiDocumentTextOutlineLg />
+                                icon=HiDocumentTextOutlineLg icon_class="text-amber-400" />
                         </div>
                         <h3 class="mt-6 mb-1 px-2 text-xs/6 font-medium text-zinc-500">
                             "Cuenta"
                         </h3>
                         <div class="flex flex-col gap-0.5">
                             <NavItem href="/security" label="Seguridad" matches="/security"
-                                icon=HiShieldCheckOutlineLg />
+                                icon=HiShieldCheckOutlineLg icon_class="text-emerald-400" />
                             <NavItem href="/access-log" label="Accesos" matches="/access-log"
-                                icon=HiClockOutlineLg />
+                                icon=HiClockOutlineLg icon_class="text-cyan-400" />
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 border-t border-white/5 p-4">
