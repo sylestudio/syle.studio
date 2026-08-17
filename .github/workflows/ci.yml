@@ -49,6 +49,7 @@ jobs:
     runs-on: [self-hosted, Linux, X64, vps2]
     steps:
       - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
       - uses: rustsec/audit-check@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
