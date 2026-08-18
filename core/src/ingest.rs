@@ -1,7 +1,7 @@
 //! Pure-Rust ingest pipeline: decode → capped responsive derivatives
 //! (AVIF via ravif, JPEG via jpeg-encoder) + ThumbHash placeholder.
 
-use fast_image_resize::images::Image;
+use fast_image_resize::images::{Image, ImageRef};
 use fast_image_resize::{PixelType, ResizeOptions, Resizer};
 use image::{DynamicImage, ImageDecoder, ImageReader, Limits};
 use sha2::{Digest, Sha256};
@@ -9,7 +9,11 @@ use std::io::Cursor;
 use syle_types::ImageFormat;
 
 const AVIF_QUALITY: f32 = 68.0;
-const AVIF_SPEED: u8 = 6;
+// rav1e's speed scale runs from 0 (slowest) to 10 (fastest). Static-site and
+// CRM uploads are latency-sensitive and already retain a JPEG fallback, so
+// favour a much faster AVIF encode while keeping the same visual quality.
+const AVIF_SPEED: u8 = 10;
+const AVIF_THREADS: usize = 4;
 const JPEG_QUALITY: u8 = 80;
 /// ThumbHash wants a tiny image; longest side clamped to this.
 const THUMB_MAX: u32 = 100;
@@ -22,7 +26,7 @@ pub const MAX_INPUT_DIMENSION: u32 = 16_384;
 const MAX_DECODE_ALLOC_BYTES: u64 = 384 * 1024 * 1024;
 /// Increment whenever encoding settings or pixel transformations change. Static
 /// manifests use it to invalidate otherwise unchanged source images.
-pub const INGEST_PIPELINE_VERSION: u32 = 3;
+pub const INGEST_PIPELINE_VERSION: u32 = 4;
 
 /// Stable SHA-256 content key for immutable derivative names and cache busting.
 pub fn content_key(bytes: &[u8]) -> String {
@@ -121,7 +125,10 @@ pub fn ingest(input: &[u8], target_widths: &[u32]) -> anyhow::Result<Ingested> {
 
 /// Box-fit resize of an RGBA8 buffer to exactly `dw x dh`.
 fn resize_rgba(rgba: &[u8], w: u32, h: u32, dw: u32, dh: u32) -> anyhow::Result<Vec<u8>> {
-    let src = Image::from_vec_u8(w, h, rgba.to_vec(), PixelType::U8x4)?;
+    // Borrow the decoded pixels. The previous implementation cloned the full
+    // source buffer for every requested width (up to four 96 MiB copies for a
+    // 24 MP upload), increasing allocation pressure without changing pixels.
+    let src = ImageRef::new(w, h, rgba, PixelType::U8x4)?;
     let mut dst = Image::new(dw, dh, PixelType::U8x4);
     Resizer::new().resize(&src, &mut dst, &ResizeOptions::new())?;
     Ok(dst.into_vec())
@@ -135,10 +142,10 @@ fn encode_avif(rgba: &[u8], w: u32, h: u32) -> anyhow::Result<Vec<u8>> {
     let encoded = ravif::Encoder::new()
         .with_quality(AVIF_QUALITY)
         .with_speed(AVIF_SPEED)
-        // rav1e changes its tile layout with the available thread count. Pin
-        // it so content-addressed AVIF names are reproducible across developer,
-        // CI, and deployment hosts instead of depending on their CPU count.
-        .with_num_threads(Some(2))
+        // rav1e changes its tile layout with the available thread count. Keep a
+        // fixed count for reproducible content hashes while using enough of the
+        // six-core production host to keep CRM upload latency reasonable.
+        .with_num_threads(Some(AVIF_THREADS))
         .encode_rgba(ravif::Img::new(pixels.as_slice(), w as usize, h as usize))?;
     Ok(encoded.avif_file)
 }

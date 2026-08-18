@@ -5,7 +5,9 @@ use std::sync::Arc;
 use tokio::sync::Semaphore;
 use webauthn_rs::prelude::Webauthn;
 
-const MAX_CONCURRENT_IMAGE_JOBS: usize = 2;
+// One encode already uses four rav1e threads. Queue additional uploads instead
+// of letting two large images monopolize the six-core VPS and starve the API.
+const MAX_CONCURRENT_IMAGE_JOBS: usize = 1;
 
 /// Shared application state. Cheap to clone (pool, `webauthn` and the reqwest
 /// client inside `github` are all `Arc`-backed).

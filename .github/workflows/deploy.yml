@@ -27,11 +27,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Reuse this runner's Cargo build artifacts
+        run: |
+          target="/opt/syle/cache/cargo/$RUNNER_NAME"
+          mkdir -p "$target"
+          echo "CARGO_TARGET_DIR=$target" >> "$GITHUB_ENV"
+
       - name: Restore generated responsive images
+        id: responsive-image-cache
         uses: actions/cache@v4
         with:
           path: web/public/project-media
           key: static-images-${{ runner.os }}-${{ hashFiles('web/src/generated/static-images.json') }}
+
+      - name: Reuse responsive images already deployed on VPS2
+        if: steps.responsive-image-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p web/public/project-media
+          if [ -d /opt/syle/web/project-media ]; then
+            rsync -a --ignore-existing /opt/syle/web/project-media/ web/public/project-media/
+          fi
 
       - uses: actions/setup-node@v4
         with:
@@ -40,6 +56,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - name: Toolchain (rust + wasm + trunk, idempotent, no sudo)
         run: |
@@ -69,7 +86,7 @@ jobs:
       - name: Deploy API + CRM, restart API
         run: |
           set -euo pipefail
-          install -m 0755 target/release/syle-api /opt/syle/bin/syle-api.new
+          install -m 0755 "$CARGO_TARGET_DIR/release/syle-api" /opt/syle/bin/syle-api.new
           mv -f /opt/syle/bin/syle-api.new /opt/syle/bin/syle-api
           rsync -a --delete admin/dist/ /opt/syle/admin/
           sudo /usr/bin/systemctl restart syle-api
@@ -87,7 +104,13 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile --ignore-scripts
-          pnpm --dir web build
+          if pnpm --dir web images:check; then
+            echo "Responsive images are complete; skipping the Rust optimizer."
+            pnpm --dir web build:cached
+          else
+            echo "Responsive images are incomplete; generating only missing derivatives."
+            pnpm --dir web build
+          fi
 
       - name: Deploy public site, reload nginx
         run: |

@@ -33,11 +33,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore generated responsive images
-        uses: actions/cache@v4
-        with:
-          path: web/public/project-media
-          key: static-images-${{ runner.os }}-${{ hashFiles('web/src/generated/static-images.json') }}
+      - name: Reuse deployed responsive images
+        run: |
+          set -euo pipefail
+          test -d /opt/syle/web/project-media
+          mkdir -p web/public/project-media
+          rsync -a /opt/syle/web/project-media/ web/public/project-media/
 
       - uses: actions/setup-node@v4
         with:
@@ -46,15 +47,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
-
-      - name: Ensure Rust (idempotent, no sudo)
-        run: |
-          set -euo pipefail
-          if [ ! -x "$HOME/.cargo/bin/rustc" ]; then
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
-              | sh -s -- -y --default-toolchain stable --profile minimal
-          fi
-          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - name: Wait for the API to be healthy
         run: |
@@ -74,7 +67,7 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile --ignore-scripts
-          pnpm --dir web build
+          pnpm --dir web build:cached
 
       - name: Deploy public site, reload nginx, verify
         run: |
