@@ -102,7 +102,13 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile --ignore-scripts
-          pnpm --dir web build
+          if pnpm --dir web images:check; then
+            echo "Responsive images are complete; skipping the Rust optimizer."
+            pnpm --dir web build:cached
+          else
+            echo "Responsive images are incomplete; generating only missing derivatives."
+            pnpm --dir web build
+          fi
 
       - name: Deploy public site, reload nginx
         run: |
