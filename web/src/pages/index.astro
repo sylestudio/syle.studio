@@ -187,14 +187,6 @@ const clients = [
   .faint { color: rgba(22, 20, 15, 0.32); }
   .ox { color: var(--ox); }
 
-  /* Reveal ligado al scroll: el script trocea el texto de cada bloque
-     [data-scroll-text] en palabras y va subiendo su opacidad según avanza el
-     scroll. Mismo criterio fail-visible que el reveal de Base: las palabras
-     sólo se atenúan bajo `.st-ready`, clase que añade el script, así que sin
-     JS o con reduced motion el texto se lee a opacidad plena. */
-  [data-scroll-text] :global(.w) { display: inline-block; }
-  [data-scroll-text].st-ready :global(.w) { opacity: 0.12; }
-
   /* HERO */
   .hero {
     min-height: 100dvh;
@@ -552,92 +544,5 @@ const clients = [
       };
       requestAnimationFrame(tick);
     });
-  }
-
-  // Reveal por palabra atado al scroll. Cada bloque [data-scroll-text] se
-  // trocea en <span class="w"> (los nodos de espacio se conservan tal cual
-  // para no tocar el salto de línea) y la opacidad de cada palabra sale del
-  // progreso del texto al cruzar el viewport. SPREAD = cuántas palabras están
-  // encendiéndose a la vez: eso da el degradado que viaja en vez de un
-  // encendido seco.
-  //
-  // El rango NO se mide sobre el contenedor sino sobre la caja real de las
-  // palabras (primera arriba, última abajo). Así un bloque puede ser la
-  // <section> entera —con su padding de 11rem, su min-height:100dvh o un grid
-  // excluido debajo— y el reveal sigue cuadrando con dónde está el texto.
-  //
-  // Cualquier subárbol con [data-no-split] se salta: sirve para layout que no
-  // debe partirse en palabras (el grid de logos) o para controles que deben
-  // entrar de una pieza (el CTA).
-  const scrollTexts = document.querySelectorAll<HTMLElement>("[data-scroll-text]");
-
-  if (!reduce && scrollTexts.length) {
-    const SPREAD = 6;
-    const blocks: HTMLElement[][] = [];
-
-    scrollTexts.forEach((block) => {
-      const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
-        acceptNode: (n) =>
-          n.parentElement?.closest("[data-no-split]")
-            ? NodeFilter.FILTER_REJECT
-            : NodeFilter.FILTER_ACCEPT,
-      });
-      const nodes: Text[] = [];
-      while (walker.nextNode()) nodes.push(walker.currentNode as Text);
-
-      const words: HTMLElement[] = [];
-      nodes.forEach((node) => {
-        const parts = (node.textContent ?? "").split(/(\s+)/).filter(Boolean);
-        if (!parts.some((p) => p.trim())) return;
-        const frag = document.createDocumentFragment();
-        parts.forEach((p) => {
-          if (!p.trim()) {
-            frag.appendChild(document.createTextNode(p));
-            return;
-          }
-          const span = document.createElement("span");
-          span.className = "w";
-          span.textContent = p;
-          frag.appendChild(span);
-          words.push(span);
-        });
-        node.replaceWith(frag);
-      });
-
-      if (!words.length) return;
-      block.classList.add("st-ready");
-      blocks.push(words);
-    });
-
-    if (blocks.length) {
-      let queued = false;
-
-      const paint = () => {
-        queued = false;
-        const vh = window.innerHeight;
-        blocks.forEach((words) => {
-          const top = words[0].getBoundingClientRect().top;
-          const end = words[words.length - 1].getBoundingClientRect().bottom;
-          // arranca cuando la primera palabra llega al 85% del alto y termina
-          // cuando la última sube al 45%
-          const p = (vh * 0.85 - top) / (Math.max(end - top, 1) + vh * 0.4);
-          const head = Math.min(Math.max(p, 0), 1) * (words.length + SPREAD);
-          words.forEach((w, i) => {
-            const t = Math.min(Math.max((head - i) / SPREAD, 0), 1);
-            w.style.opacity = String(0.12 + t * 0.88);
-          });
-        });
-      };
-
-      const onScroll = () => {
-        if (queued) return;
-        queued = true;
-        requestAnimationFrame(paint);
-      };
-
-      addEventListener("scroll", onScroll, { passive: true });
-      addEventListener("resize", onScroll);
-      paint();
-    }
   }
 </script>
