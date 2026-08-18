@@ -13,6 +13,7 @@
     "images:check": "node scripts/verify-images.mjs",
     "budget": "node scripts/check-performance-budget.mjs",
     "build": "pnpm images:generate && pnpm images:check && astro build && pnpm budget",
+    "build:cached": "pnpm images:check && astro build && pnpm budget",
     "check": "astro check",
     "preview": "astro preview",
     "test": "vitest run"
