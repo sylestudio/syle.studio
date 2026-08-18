@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
 import Mark from "../components/Mark.astro";
+import Wordmark from "../components/Wordmark.astro";
 import { listGalleries, getGallery } from "../lib/api";
 
 // Each published gallery is a "Proyecto". The list endpoint carries no cover,
@@ -119,6 +120,7 @@ const clients = [
 
   <!-- contraste tonal · dark -->
   <section class="section dark">
+    <div class="sec-mark" aria-hidden="true"><Wordmark /></div>
     <div class="proc">
       <div class="proc-copy" data-scroll-text>
         <div class="lbl dim">Mas sobre Syle Studio</div>
@@ -160,6 +162,7 @@ const clients = [
 
   <!-- cierre · dark bookend -->
   <section id="contacto" class="section dark close" data-scroll-text>
+    <div class="sec-mark" aria-hidden="true"><Wordmark /></div>
     <div class="close-in">
       <div class="close-main">
         <div class="lbl dim">Trabaja con nosotros</div>
@@ -302,6 +305,51 @@ const clients = [
   /* SECTION shell */
   .section { padding: 7rem 1.5rem; }
   .section > * { max-width: 1700px; margin-left: auto; margin-right: auto; }
+  /* Las oscuras respiran menos que las claras: aqui el padding es negro puro,
+     no aire de papel, y a 7rem x2 pesaba de mas. Solo el eje vertical, para no
+     tocar el margen lateral. */
+  .section.dark { padding-block: 4.5rem; }
+
+  /* La misma marca de linea trazada del hero, ahora como fondo de las zonas
+     negras — pero con el logotipo (Syle_Fuente_Blanco) en vez de las estrellas.
+     Sangra por los lados y la seccion recorta lo que sobra: `clip` y no
+     `hidden`, para no crear un contenedor de scroll (mismo criterio que el
+     html/body de Base). El trazo va a baja opacidad para quedar detras de la
+     imagen y del texto sin competir con ellos. */
+  .section.dark { position: relative; overflow: clip; }
+  .sec-mark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(190vw, 1200px);
+    color: var(--paper);
+    opacity: 0.16;
+    pointer-events: none;
+    z-index: 0;
+  }
+  /* overflow visible para que los remates redondeados del trazo no se corten
+     contra el borde del viewBox */
+  .sec-mark :global(svg) { overflow: visible; width: 100%; height: auto; }
+  .sec-mark :global(path) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 12;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  /* el contenido de la seccion viaja por encima de la marca */
+  .section.dark > *:not(.sec-mark) { position: relative; z-index: 1; }
+  /* la marca sangra: hay que ganarle en especificidad al `max-width: 1700px`
+     que `.section > *` le pondria por ser hija directa */
+  .section.dark > .sec-mark { max-width: none; }
+  /* En el cierre va mas contenida: la seccion es mas corta y el "Contactanos"
+     ya ocupa casi todo el ancho, asi que a tamano completo la linea competia
+     con el titular. Se sube el grosor del trazo para compensar la escala menor
+     y que la linea no se afine respecto a la otra zona oscura. */
+  .close .sec-mark { width: min(120vw, 780px); }
+  .close .sec-mark :global(path) { stroke-width: 18; }
+
   .sec-head {
     display: flex;
     align-items: flex-end;
@@ -345,7 +393,7 @@ const clients = [
     color: rgba(244, 241, 234, 0.55);
   }
   .proc-fig { overflow: hidden; }
-  .proc-fig img { height: 55vh; object-fit: cover; }
+  .proc-fig img { height: 48vh; object-fit: cover; }
 
   /* lettering archive */
   .wrap-head { margin-bottom: 1.5rem; }
@@ -394,11 +442,11 @@ const clients = [
   .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.35); }
 
   /* closing */
-  .close { min-height: 100dvh; display: flex; align-items: center; }
+  .close { min-height: 70dvh; display: flex; align-items: center; }
   .close-in { display: grid; gap: 4rem; width: 100%; }
   .close-h {
     font-size: clamp(3rem, 12vw, 10rem);
-    margin: 2rem 0 3rem;
+    margin: 1.5rem 0 2.5rem;
   }
   .cta {
     display: inline-flex;
@@ -441,6 +489,9 @@ const clients = [
     .cap { padding: 0 3rem; }
     .hero-img { height: 86vh; }
     .section { padding: 11rem 3rem; }
+    .section.dark { padding-block: 7rem; }
+    .sec-mark { width: min(115vw, 2100px); }
+    .close .sec-mark { width: min(75vw, 1350px); }
 
     .grid {
       grid-template-columns: repeat(12, 1fr);
@@ -455,7 +506,7 @@ const clients = [
     .card:nth-child(4n) .card-img { aspect-ratio: 16 / 11; }
 
     .proc { grid-template-columns: 5fr 7fr; align-items: center; }
-    .proc-fig img { height: 80vh; }
+    .proc-fig img { height: 68vh; }
     .arch-grid { grid-template-columns: repeat(4, 1fr); }
 
     .close-in {
@@ -503,46 +554,85 @@ const clients = [
     });
   }
 
-  // Hero mark line-art: a single lit segment (~60% of the line) travels along
-  // each star forever, like headlights on a highway — its leading edge draws new
-  // line while its trailing edge erases behind it. No bounce: the dash period
-  // equals the path length, so advancing the offset in one direction loops
-  // seamlessly. Speed eases toward a fresh random target every ~0.5–1.8s for
-  // organic accel/decel; the two stars run on independent seeds. Skipped under
-  // reduced motion (CSS leaves a solid outline).
+  // Line-art marks: las estrellas del hero y el logotipo de fondo de las dos
+  // secciones oscuras. Un unico segmento encendido (~60% de la linea) recorre
+  // cada trazo para siempre, como faros en una carretera — su borde delantero
+  // dibuja linea nueva mientras el trasero borra por detras. Sin rebote: el
+  // periodo del guion equivale al largo del trazo, asi que avanzar el offset en
+  // un solo sentido cierra el bucle sin costura. La velocidad se interpola hacia
+  // un objetivo aleatorio nuevo cada ~0.5-1.8s para acelerar/frenar de forma
+  // organica; cada trazo corre con su propia semilla. Se salta bajo reduced
+  // motion (el CSS deja el contorno fijo).
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const paths = document.querySelectorAll<SVGPathElement>(".hero-mark path");
+  const marks = document.querySelectorAll<HTMLElement>(".hero-mark, .sec-mark");
 
-  if (!reduce) {
-    paths.forEach((path) => {
-      const len = path.getTotalLength();
-      const seg = len * 0.6; // lit portion of the line
-      path.style.strokeDasharray = `${seg} ${len - seg}`;
+  if (!reduce && marks.length) {
+    // Una marca fuera de pantalla aparca su cadena de rAF y la retoma donde la
+    // dejo al volver a entrar, para no quemar frames con las secciones oscuras
+    // mientras no se ven.
+    const onScreen = new WeakSet<Element>();
+    const wake = new Map<Element, () => void>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            onScreen.add(e.target);
+            wake.get(e.target)?.();
+          } else {
+            onScreen.delete(e.target);
+          }
+        });
+      },
+      { rootMargin: "20% 0px" },
+    );
 
-      let offset = Math.random() * len; // random start position
-      const dir = Math.random() < 0.5 ? 1 : -1; // fixed travel direction
-      let speed = len * 0.16; // path units / second
-      let target = speed;
-      let retargetAt = 0;
-      let last = performance.now();
+    marks.forEach((host) => {
+      const starters = Array.from(
+        host.querySelectorAll<SVGPathElement>("path"),
+      ).map((path) => {
+        const len = path.getTotalLength();
+        const seg = len * 0.6; // lit portion of the line
+        path.style.strokeDasharray = `${seg} ${len - seg}`;
 
-      const tick = (now: number) => {
-        const dt = Math.min(0.05, (now - last) / 1000);
-        last = now;
+        let offset = Math.random() * len; // random start position
+        const dir = Math.random() < 0.5 ? 1 : -1; // fixed travel direction
+        let speed = len * 0.16; // path units / second
+        let target = speed;
+        let retargetAt = 0;
+        let last = 0;
+        let running = false;
 
-        if (now >= retargetAt) {
-          target = len * (0.07 + Math.random() * 0.4); // new random cruise speed
-          retargetAt = now + 500 + Math.random() * 1300;
-        }
-        speed += (target - speed) * 0.05; // smooth approach, no jerk
+        const tick = (now: number) => {
+          if (!onScreen.has(host)) {
+            running = false; // aparcado: `wake` lo vuelve a arrancar
+            return;
+          }
+          const dt = Math.min(0.05, (now - last) / 1000);
+          last = now;
 
-        offset += dir * speed * dt;
-        offset = ((offset % len) + len) % len; // wrap one period -> seamless
+          if (now >= retargetAt) {
+            target = len * (0.07 + Math.random() * 0.4); // new random cruise speed
+            retargetAt = now + 500 + Math.random() * 1300;
+          }
+          speed += (target - speed) * 0.05; // smooth approach, no jerk
 
-        path.style.strokeDashoffset = String(offset);
-        requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
+          offset += dir * speed * dt;
+          offset = ((offset % len) + len) % len; // wrap one period -> seamless
+
+          path.style.strokeDashoffset = String(offset);
+          requestAnimationFrame(tick);
+        };
+
+        return () => {
+          if (running) return;
+          running = true;
+          last = performance.now(); // sin dt gigante tras la pausa
+          requestAnimationFrame(tick);
+        };
+      });
+
+      wake.set(host, () => starters.forEach((start) => start()));
+      io.observe(host);
     });
   }
 </script>
