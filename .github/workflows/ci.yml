@@ -89,6 +89,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
       - name: Install web dependencies
         run: pnpm --dir web install --frozen-lockfile --ignore-scripts
       - name: Type and Astro diagnostics
@@ -110,6 +111,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
       - name: Install CRM dependencies
         run: pnpm --dir admin install --frozen-lockfile --ignore-scripts
       - name: Build CRM CSS
