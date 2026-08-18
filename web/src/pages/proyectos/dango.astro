@@ -282,9 +282,16 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   /* ── Mampostería horizontal (avanza con el scroll) ──
-     Base / fallback: tira con scroll horizontal manual. Si el navegador
-     soporta scroll-driven animations (ver @supports más abajo), se convierte
-     en una sección "pineada" que avanza de izquierda a derecha al bajar. */
+     Estado base = fallback: tira con scroll horizontal manual. Es lo que queda
+     sin JS o con reduced motion, y siempre es usable (se arrastra con el dedo).
+     Con JS el script añade .is-pinned y la sección pasa a "pinearse": la tira
+     avanza de izquierda a derecha mientras bajas.
+
+     Antes el pin salía de `animation-timeline: view()` y ahí estaba el bug de
+     móvil: los navegadores sin scroll-driven animations caían al fallback,
+     pero el propio @supports ya les había puesto overflow:hidden en el pin, así
+     que la tira ni avanzaba con el scroll ni se dejaba arrastrar — estática.
+     Ahora el recorrido lo calcula el script, igual en todos los navegadores. */
   .hscroll {
     position: relative;
   }
@@ -302,7 +309,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
      - .slot--stack   → 2 imágenes horizontales apiladas en el mismo espacio */
   .slot {
     flex: 0 0 auto;
-    height: 82vh;         /* más alto → verticales más largas */
+    /* más alto → verticales más largas. dvh para que el slot quepa dentro del
+       pin (100dvh) aunque la barra de URL esté visible; vh queda de fallback */
+    height: 82vh;
+    height: 82dvh;
     width: 46vh;          /* más angosto → formato retrato más estilizado */
   }
   .slot img {
@@ -321,42 +331,40 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;              /* el gap se descuenta del alto automáticamente */
   }
 
-  /* Efecto pin + desplazamiento horizontal accionado por el scroll vertical.
-     Solo CSS — no usa JS ni interactúa con Lenis (lee el scroll nativo). */
-  @supports (animation-timeline: view()) {
-    .hscroll {
-      /* distancia de scroll: más alto = recorrido horizontal más lento */
-      height: 360vh;
-      /* línea de tiempo basada en el paso de esta sección por el viewport */
-      view-timeline-name: --hsec;
-      view-timeline-axis: block;
-    }
-    .hscroll-pin {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
-    .masonry-track {
-      will-change: transform;
-      animation: hscroll-move linear both;
-      animation-timeline: --hsec;
-      /* "contain" abarca justo el tramo en que la sección está pineada */
-      animation-range: contain 0% contain 100%;
-    }
-    @keyframes hscroll-move {
-      from { transform: translateX(0); }
-      to   { transform: translateX(calc(-100% + 100vw)); }
-    }
-  }
+  /* Pin + desplazamiento horizontal. El script mide el recorrido que le sobra
+     a la tira y lo publica en --travel; la sección reserva ese alto extra, así
+     que 1px de scroll = 1px de avance lateral y el ritmo se ajusta solo al
+     número de slots y al tamaño de pantalla (ya no hace falta el 360vh/480vh
+     a ojo, que era lo que descuadraba el final de la tira en móvil).
 
-  /* Accesibilidad: sin animación de scroll si el usuario lo pide */
+     dvh y no vh: con la barra de URL visible 100vh es MÁS alto que el área
+     realmente visible, así que el pin se salía de cuadro justo en móvil. La
+     declaración vh queda debajo como fallback para navegadores sin dvh. */
+  .hscroll.is-pinned {
+    height: calc(100vh + var(--travel, 0px));
+    height: calc(100dvh + var(--travel, 0px));
+  }
+  .hscroll.is-pinned .hscroll-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .hscroll.is-pinned .masonry-track { will-change: transform; }
+
+  /* Accesibilidad: sin pin si el usuario pide reduced motion. El script ya no
+     lo activa; esto cubre además que se cambie la preferencia tras la carga. */
   @media (prefers-reduced-motion: reduce) {
-    .hscroll { height: auto; }
-    .hscroll-pin { position: static; height: auto; overflow-x: auto; }
-    .masonry-track { animation: none; transform: none; }
+    .hscroll.is-pinned { height: auto; }
+    .hscroll.is-pinned .hscroll-pin {
+      position: static;
+      height: auto;
+      overflow-x: auto;
+    }
+    .hscroll.is-pinned .masonry-track { transform: none; }
   }
 
   /* ── Créditos ── */
@@ -405,14 +413,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
       grid-template-columns: 1fr;
     }
 
-    /* en móvil cada ESPACIO ocupa casi toda la pantalla */
+    /* en móvil cada ESPACIO ocupa casi toda la pantalla. dvh para que el slot
+       quepa dentro del pin aunque la barra de URL esté visible; el recorrido
+       total ya lo calcula el script. */
     .slot {
       height: 82vh;
+      height: 82dvh;
       width: 92vw;
-    }
-    /* recorrido más largo (más lento) en móvil, sólo si hay soporte de pin */
-    @supports (animation-timeline: view()) {
-      .hscroll { height: 480vh; }
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
@@ -471,6 +478,55 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 </style>
 
 <script>
+  // ── Mampostería horizontal ──
+  // La tira avanza en horizontal mientras la sección está pineada. Va por JS y
+  // no por `animation-timeline: view()` para que se comporte igual en todos
+  // los navegadores: ese camino no existe en Safari iOS antiguo ni en Firefox,
+  // y ahí la sección se quedaba estática.
+  //
+  // Se publica el recorrido en --travel y la sección reserva ese alto de más,
+  // de forma que el tramo pineado dura exactamente lo que mide la tira.
+  const hscroll = document.querySelector<HTMLElement>('.hscroll');
+  const track = document.getElementById('masonry');
+  const noMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (hscroll && track && !noMotion) {
+    hscroll.classList.add('is-pinned');
+
+    let travel = 0;
+    let queued = false;
+
+    const place = () => {
+      queued = false;
+      // -top va de 0 (la sección toca el borde superior y empieza el pin) a
+      // travel (se agota el recorrido y la sección se despega)
+      const p = Math.min(Math.max(-hscroll.getBoundingClientRect().top, 0), travel);
+      track.style.transform = `translate3d(${-p}px, 0, 0)`;
+    };
+
+    const measure = () => {
+      const next = Math.max(0, track.scrollWidth - hscroll.clientWidth);
+      if (next !== travel) {
+        travel = next;
+        hscroll.style.setProperty('--travel', `${travel}px`);
+      }
+      place();
+    };
+
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(place);
+    };
+
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', measure);
+    // los slots miden en vh/vw, pero el RO cubre además cambios de layout que
+    // no vienen de un resize (fuentes, imágenes que aún no habían cargado)
+    if ('ResizeObserver' in window) new ResizeObserver(measure).observe(track);
+    measure();
+  }
+
   // ── Lightbox ──
   const lightbox  = document.getElementById('lightbox') as HTMLElement | null;
   const lightImg  = lightbox?.querySelector('img') as HTMLImageElement | null;
