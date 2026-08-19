@@ -52,7 +52,7 @@ const clients = [
       <div class="hero-mark" aria-hidden="true"><Mark /></div>
       <div class="lbl muted" data-reveal>Estudio creativo — Estado de México · 2025</div>
       <h1 class="disp hero-h" data-reveal>
-        Syle Studio, <br/> Nunca dejes de crear.
+        Syle Studio, <br/> Nunca dejes de <span class="rw" id="rewrite">crear.</span>
       </h1>
       <div class="hero-foot">
         <p class="hero-lede" data-reveal>
@@ -237,6 +237,29 @@ const clients = [
     font-size: clamp(3.25rem, 15vw, 12rem);
     line-height: 0.86;
     margin-top: auto;
+  }
+  /* La ultima palabra se reescribe sola (ver script). inline-block con un
+     min-width que fija el script al ancho de la variante mas larga: el sobrante
+     cae detras del punto, al final del renglon, asi que cambiar de palabra
+     nunca recoloca la linea ni mueve el punto. */
+  .rw {
+    display: inline-block;
+    text-align: left;
+  }
+  /* El cursor solo aparece con el script vivo: sin JS o con reduced motion la
+     palabra se queda fija y una barra suelta sobraria. */
+  .rw-on::after {
+    content: "";
+    display: inline-block;
+    width: 0.05em;
+    height: 0.68em;
+    margin-left: 0.08em;
+    background: currentColor;
+    animation: rw-caret 1.05s steps(1, end) infinite;
+  }
+  @keyframes rw-caret {
+    0%, 50% { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
   }
   .hero-foot {
     margin-top: 2.5rem;
@@ -634,5 +657,64 @@ const clients = [
       wake.set(host, () => starters.forEach((start) => start()));
       io.observe(host);
     });
+  }
+
+  // Hero: la ultima palabra se reescribe sola, tipo maquina de escribir. El
+  // punto final viaja dentro de cada variante para que quede siempre pegado a
+  // la palabra en vez de saltar mientras se teclea.
+  const rw = document.getElementById("rewrite");
+  const RW_WORDS = ["crear.", "creer.", "confiar.", "soñar.", "intentar."];
+
+  if (rw && !reduce) {
+    // Se mide la variante mas ancha y se reserva ese hueco: sin esto, pasar de
+    // "soñar." a "intentar." puede empujar una linea entera del titular, que a
+    // este cuerpo (hasta 12rem) mueve medio hero.
+    const reserve = () => {
+      const keep = rw.textContent;
+      rw.style.minWidth = "0";
+      let max = 0;
+      RW_WORDS.forEach((w) => {
+        rw.textContent = w;
+        max = Math.max(max, rw.offsetWidth);
+      });
+      rw.textContent = keep; // restaurado antes de pintar: no parpadea
+      rw.style.minWidth = `${Math.ceil(max)}px`;
+    };
+    reserve();
+    addEventListener("resize", reserve); // el cuerpo es 15vw
+    document.fonts?.ready.then(reserve); // la fuente entra tras el 1er pintado
+
+    rw.classList.add("rw-on"); // enciende el cursor
+
+    // Misma cortesia que las marcas de linea: en pausa mientras no se ve.
+    let onScreen = true;
+    new IntersectionObserver(([e]) => {
+      onScreen = e.isIntersecting;
+    }).observe(rw);
+
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+    (async () => {
+      let i = 0;
+      for (;;) {
+        await wait(2200); // tiempo de lectura
+        while (!onScreen) await wait(400);
+
+        const from = RW_WORDS[i];
+        for (let n = from.length; n > 0; n--) {
+          rw.textContent = from.slice(0, n - 1);
+          await wait(55); // borrar va mas rapido que teclear
+        }
+
+        await wait(260);
+        i = (i + 1) % RW_WORDS.length;
+
+        const to = RW_WORDS[i];
+        for (let n = 1; n <= to.length; n++) {
+          rw.textContent = to.slice(0, n);
+          await wait(90);
+        }
+      }
+    })();
   }
 </script>
