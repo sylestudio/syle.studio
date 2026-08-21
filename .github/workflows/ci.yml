@@ -40,9 +40,16 @@ jobs:
           echo "CARGO_TARGET_DIR=$target" >> "$GITHUB_ENV"
       - name: Verify AVIF build dependency
         run: command -v nasm
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: wasm32-unknown-unknown
+      - name: Install stable Rust toolchain (cross-runner locked)
+        run: |
+          set -euo pipefail
+          # The VPS2 runners share RUSTUP_HOME. Serialize only rustup mutations;
+          # the expensive Cargo jobs remain parallel and keep per-runner targets.
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable \
+              --target wasm32-unknown-unknown \
+              --profile minimal \
+              --no-self-update
       - name: Check native workspace
         run: cargo check --workspace --all-targets
       - name: Check CRM wasm target
@@ -54,7 +61,11 @@ jobs:
     runs-on: [self-hosted, Linux, X64, vps2]
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install stable Rust toolchain (cross-runner locked)
+        run: |
+          set -euo pipefail
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable --profile minimal --no-self-update
       - uses: rustsec/audit-check@v2.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -84,7 +95,11 @@ jobs:
           if [ -d /opt/syle/web/project-media ]; then
             rsync -a --ignore-existing /opt/syle/web/project-media/ web/public/project-media/
           fi
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install stable Rust toolchain (cross-runner locked)
+        run: |
+          set -euo pipefail
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable --profile minimal --no-self-update
       - uses: actions/setup-node@v4
         with:
           node-version: 22

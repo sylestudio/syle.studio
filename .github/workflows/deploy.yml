@@ -61,12 +61,18 @@ jobs:
       - name: Toolchain (rust + wasm + trunk, idempotent, no sudo)
         run: |
           set -euo pipefail
-          if [ ! -x "$HOME/.cargo/bin/rustc" ]; then
+          if ! command -v rustup >/dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
-              | sh -s -- -y --default-toolchain stable --profile minimal
+              | sh -s -- -y --default-toolchain none --profile minimal
           fi
           . "$HOME/.cargo/env"
-          rustup target add wasm32-unknown-unknown
+          # CI and deploy share RUSTUP_HOME across the VPS2 runners. Lock only
+          # the toolchain mutation so concurrent Cargo builds stay parallel.
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable \
+              --target wasm32-unknown-unknown \
+              --profile minimal \
+              --no-self-update
           command -v trunk >/dev/null 2>&1 || cargo install trunk --locked
           echo "$HOME/.cargo/bin"     >> "$GITHUB_PATH"
 
