@@ -108,6 +108,16 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
         clip-path: inset(0 0 0 0);
       }
 
+      /* Reveal por palabra atado al scroll. El script trocea el texto de cada
+         bloque [data-scroll-text] en <span class="w"> y sube su opacidad segun
+         avanza el scroll. [data-no-split] excluye un subarbol: layout que no
+         debe partirse en palabras, o controles que deben entrar de una pieza.
+         Mismo criterio fail-visible que el reveal de arriba: las palabras solo
+         se atenuan bajo .st-ready, clase que anade el script, asi que sin JS o
+         con reduced motion el texto se lee a opacidad plena. */
+      [data-scroll-text] .w { display: inline-block; }
+      [data-scroll-text].st-ready .w { opacity: 0.12; }
+
       .container {
         max-width: 72rem;
         margin: 0 auto;
@@ -184,6 +194,94 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
         targets.forEach((t) => io.observe(t));
         // safety net: nothing stays hidden if IO never fires
         setTimeout(() => targets.forEach(reveal), 2500);
+      }
+
+      // Reveal por palabra atado al scroll: a diferencia de [data-reveal], que
+      // es un fade de una sola vez al entrar en viewport, aqui la opacidad de
+      // cada palabra sale del progreso del texto al cruzar la pantalla, asi que
+      // el texto se va escribiendo mientras scrolleas. SPREAD = cuantas
+      // palabras estan encendiendose a la vez: eso da el degradado que viaja
+      // en vez de un encendido seco.
+      //
+      // El rango NO se mide sobre el contenedor sino sobre la caja real de las
+      // palabras (top de la primera, bottom de la ultima). Asi un bloque puede
+      // ser una <section> entera -con su padding, su min-height:100dvh o un
+      // subarbol excluido debajo- y el reveal sigue cuadrando con donde esta
+      // el texto de verdad.
+      const scrollTexts =
+        document.querySelectorAll<HTMLElement>("[data-scroll-text]");
+
+      if (!reduce && scrollTexts.length) {
+        const SPREAD = 6;
+        const blocks: HTMLElement[][] = [];
+
+        scrollTexts.forEach((block) => {
+          const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
+            acceptNode: (n) =>
+              n.parentElement?.closest("[data-no-split]")
+                ? NodeFilter.FILTER_REJECT
+                : NodeFilter.FILTER_ACCEPT,
+          });
+          const nodes: Text[] = [];
+          while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+
+          const words: HTMLElement[] = [];
+          nodes.forEach((node) => {
+            // se conservan los nodos de espacio tal cual para no tocar el
+            // salto de linea ni el espaciado entre palabras
+            const parts = (node.textContent ?? "").split(/(\s+)/).filter(Boolean);
+            if (!parts.some((p) => p.trim())) return;
+            const frag = document.createDocumentFragment();
+            parts.forEach((p) => {
+              if (!p.trim()) {
+                frag.appendChild(document.createTextNode(p));
+                return;
+              }
+              const span = document.createElement("span");
+              span.className = "w";
+              span.textContent = p;
+              frag.appendChild(span);
+              words.push(span);
+            });
+            node.replaceWith(frag);
+          });
+
+          if (!words.length) return;
+          block.classList.add("st-ready");
+          blocks.push(words);
+        });
+
+        if (blocks.length) {
+          let queued = false;
+
+          const paint = () => {
+            queued = false;
+            const vh = window.innerHeight;
+            blocks.forEach((words) => {
+              const top = words[0].getBoundingClientRect().top;
+              const end = words[words.length - 1].getBoundingClientRect().bottom;
+              // arranca cuando la primera palabra llega al 85% del alto y
+              // termina cuando la ultima sube al 45%
+              const p = (vh * 0.85 - top) / (Math.max(end - top, 1) + vh * 0.4);
+              const head = Math.min(Math.max(p, 0), 1) * (words.length + SPREAD);
+              words.forEach((w, i) => {
+                const t = Math.min(Math.max((head - i) / SPREAD, 0), 1);
+                w.style.opacity = String(0.12 + t * 0.88);
+              });
+            });
+          };
+
+          const onScroll = () => {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(paint);
+          };
+
+          // Lenis mueve el documento real, asi que el evento nativo basta.
+          addEventListener("scroll", onScroll, { passive: true });
+          addEventListener("resize", onScroll);
+          paint();
+        }
       }
     </script>
   </body>

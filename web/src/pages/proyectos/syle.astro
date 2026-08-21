@@ -1,245 +1,695 @@
 ---
-import Base from "../../layouts/Base.astro";
+import ProyectoBase from "../../layouts/ProyectoBase.astro";
 import StaticPicture from "../../components/StaticPicture.astro";
 
+// Misma estructura que dango.astro (hero fijo → header → intro → mampostería
+// horizontal → textos → triple → díptico → comunidad → créditos + lightbox).
+// Todas las imágenes pasan por el pipeline estático responsive de main.
 
-
-//
-// SYLE STUDIO PAGINA DE PRUEBA PARA MENU DE PROYECTOS
-//
-//
-// Página de obras estilo "Tamaki Yoshida": una rejilla de trabajos filtrable por
-// categoría y por año. Tipografía mínima, negro sobre papel, mucho aire.
-// Cada obra usa las fuentes del pipeline estático responsive.
-type Work = {
-  title: string;
-  category: "Fotografia" | "Diseño" | "Direccion";
-  year: number;
-  img: string;
-  url: string;
-};
-
-const works: Work[] = [
-  { title: "Simbolo Vivo", category: "Direccion", year: 2025, img: "/img/Simbolo/Simbolo.jpg", url: "/proyectos/catedral" },
-  { title: "Insomnio Studio", category: "Fotografia", year: 2026, img: "/img/Insomnio/Main.jpg", url: "/proyectos/insomnio" },
-  { title: "Festival Dango", category: "Direccion", year: 2025, img: "/img/Dango/Main.jpg", url: "/proyectos/dango" },
-  { title: "Estado Liminal", category: "Fotografia", year: 2026, img: "/img/Insomnio/Ins_2.jpg", url: "/proyectos/insomnio" },
-  { title: "Identidad Dango", category: "Diseño", year: 2025, img: "/img/Dango/Logo_2.jpg", url: "/proyectos/dango" },
-  { title: "Ritual", category: "Diseño", year: 2025, img: "/img/Simbolo/Diseno_2.jpg", url: "/proyectos/catedral" },
-  { title: "Noche Fria", category: "Fotografia", year: 2026, img: "/img/Insomnio/Ins_4.jpg", url: "/proyectos/insomnio" },
-  { title: "Simbolo II", category: "Direccion", year: 2025, img: "/img/Simbolo/Simbo_2.jpg", url: "/proyectos/catedral" },
+// Mampostería de comunidad: fila a sangre de 6 verticales, cada una enlazando
+// a su publicación de Instagram.
+// NOTA: provisionales las tres cosas — las fotos reusan /img/Syle/Manposteria,
+// todos los `url` apuntan de momento a la cuenta del estudio (cámbialos por el
+// post concreto de cada imagen) y los `alt` son marcadores: descríbelos cuando
+// estén las fotos definitivas, que es lo que lee un lector de pantalla al
+// anunciar el enlace.
+const comunidad = [
+  { img: "/img/Syle/Manposteria/Man_6.jpg",  url: "https://www.instagram.com/p/DNHGJrZgfHE/?img_index=1", alt: "Simbolo Vivo" },
+  { img: "/img/Syle/red_1.jpeg",  url: "https://www.instagram.com/p/DbO9fm3FW0X/?img_index=1", alt: "Comunidad Syle Studio (2)" },
+  { img: "/img/Syle/red_2.jpeg",  url: "https://www.instagram.com/p/DX7hFVtlY2c/?img_index=1", alt: "Comunidad Syle Studio (3)" },
+  { img: "/img/Syle/red_3.jpeg",  url: "https://www.instagram.com/p/DRtHRa1AGce/?img_index=1", alt: "Comunidad Syle Studio (4)" },
+  { img: "/img/Syle/Manposteria/Man_10.jpg", url: "https://www.instagram.com/p/DU1kZHzFeKO/?img_index=1", alt: "Comunidad Syle Studio (5)" },
+  { img: "/img/Syle/Manposteria/Man_11.jpg", url: "https://www.instagram.com/p/DbJ1VU8kQjO/?img_index=1", alt: "Mexico" },
 ];
-
-const categories = ["Todo", ...Array.from(new Set(works.map((w) => w.category)))];
-const years = Array.from(new Set(works.map((w) => w.year))).sort((a, b) => b - a);
 ---
 
-<Base title="Obras" bare>
-  <main class="syle">
-    <!-- ── Hero ───────────────────────────────────────────── -->
-    <header class="hero">
-      <h1 class="disp name" data-reveal>SYLE STUDIO<span class="alt">— 樣 工作室</span></h1>
-      <p class="tagline" data-reveal>
-        Reexaminamos la existencia humana a traves de la imagen y el oficio.
-        Expresion creativa centrada en la fotografia y el diseño.
-      </p>
-    </header>
+<ProyectoBase title="Syle Studio">
+  <div class="hero-fixed">
+    <StaticPicture src="/img/Slide/Concierto.jpg" alt="Syle Studio" eager fill />
+  </div>
 
-    <!-- ── Filtros ────────────────────────────────────────── -->
-    <section class="filters" aria-label="Filtros de obras">
-      <div class="filter-row" data-group="cat">
-        <span class="lbl muted f-label">Categoria</span>
-        {categories.map((c, i) => (
-          <button class={`f-btn lbl${i === 0 ? " is-active" : ""}`} data-cat={c}>{c}</button>
+  <div class="page-wrap">
+    <main>
+
+      <div class="wrap" data-scroll-text>
+        <header class="pg-head">
+          <span class="lbl muted">SYLE · 005</span>
+          <h1 class="disp pg-title">Syle Studio</h1>
+          <p class="pg-meta lbl muted">Estudio Creativo - 2026</p>
+        </header>
+      </div>
+
+      <!-- ── Intro grid ──────────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="intro-grid">
+          <div class="intro-left">
+            <h2 class="disp intro-h">Estudio Creativo</h2>
+            <p class="body-s">
+              Syle Studio es un estudio creativo centrado en la fotografia y el
+              diseño. Reexaminamos la existencia humana a traves de la imagen y
+              el oficio, construyendo narrativas visuales completas que conectan
+              el concepto con la estetica final de cada proyecto.
+            </p>
+          </div>
+          <div class="intro-right">
+            <h2 class="disp intro-h">Syle Studio</h2>
+            <span class="lbl muted">2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Mampostería horizontal (avanza con el scroll) ──── -->
+      <section class="hscroll">
+        <div class="hscroll-pin">
+          <div class="masonry-track" id="masonry">
+            <!-- ESPACIO con imagen VERTICAL (retrato): una sola foto llena el slot.
+                 Cuando tengas verticales, úsalas así:
+            <div class="slot">
+              <img src="/img/Syle/Manposteria/TuVertical.jpg" alt="" />
+            </div>
+            -->
+          <div class="slot">
+              <StaticPicture src="/img/Simbolo/Simbo.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Syle/Manposteria/Man_2.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot slot--stack">
+              <StaticPicture src="/img/Syle/Manposteria/Man_3.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Syle/Manposteria/Man_4.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Syle/Manposteria/Man_5.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Syle/Manposteria/Man_6.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot slot--stack">
+              <StaticPicture src="/img/Syle/Manposteria/Man_7.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Syle/Manposteria/Man_8.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot">
+              <StaticPicture src="/img/Syle/Manposteria/Man_9.jpg" alt="" sizes="70vw" fill />
+          </div>
+          <div class="slot slot--stack">
+              <StaticPicture src="/img/Syle/Manposteria/Man_10.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Syle/Manposteria/Man_11.jpg" alt="" sizes="70vw" fill />
+          </div>
+            <!-- ESPACIO con 2 HORIZONTALES apiladas (mismo tamaño que un slot vertical) -->
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Texto de la derecha ───────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="text-r">
+          <h2 class="disp sub2-h">Estetica del Estudio</h2>
+          <p class="body-s">
+            Cada proyecto parte de una idea y se sostiene en ella: las
+            locaciones, los colores y la edicion responden siempre al concepto.
+            Buscamos una imagen agresiva, contrastada con colores limpios, donde
+            se enfatice la otra contra parte del significado.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Triple imágenes ────────────────────────────────── -->
+      <div class="triple">
+        <StaticPicture src="/img/Syle/syl_1.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Syle/syl_2.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Syle/syl_3.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+      </div>
+
+      <!-- ── Texto centrado ─────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="text-c">
+          <h2 class="disp center-h">El Proceso</h2>
+          <p class="body-s">
+            Cada prenda y cada toma nacieron de un proceso colaborativo donde
+            la experimentacion fue la constante. Llevamos la idea del simbolo
+            mas alla de la prenda, construyendo una narrativa visual completa
+            que conecta el concepto con la estetica final del proyecto.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Diptych ────────────────────────────────────────── -->
+      <div class="diptych">
+        <StaticPicture src="/img/Dango/Logo_5.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Simbolo.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+      </div>
+
+      <!-- ── Comunidad ──────────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <p class="com-note body-s">
+          Un vistazo a las historias y momentos que nuestra comunidad comparte.
+        </p>
+      </div>
+      <div class="com-grid">
+        {comunidad.map((c) => (
+          <a
+            href={c.url}
+            class="com-cell"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <StaticPicture src={c.img} alt={c.alt} sizes="(min-width: 1100px) 17vw, (min-width: 600px) 34vw, 50vw" fill />
+            {/* Mismo trazado que /img/instagram.svg (el del footer), pero inline
+                para poder darle color desde CSS. aria-hidden porque el nombre
+                accesible del enlace ya lo pone el alt de la foto. */}
+            <svg class="com-ig" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <path d="M22.3,8.4c-0.8,0-1.4,0.6-1.4,1.4c0,0.8,0.6,1.4,1.4,1.4c0.8,0,1.4-0.6,1.4-1.4C23.7,9,23.1,8.4,22.3,8.4z" />
+              <path d="M16,10.2c-3.3,0-5.9,2.7-5.9,5.9s2.7,5.9,5.9,5.9s5.9-2.7,5.9-5.9S19.3,10.2,16,10.2z M16,19.9c-2.1,0-3.8-1.7-3.8-3.8c0-2.1,1.7-3.8,3.8-3.8c2.1,0,3.8,1.7,3.8,3.8C19.8,18.2,18.1,19.9,16,19.9z" />
+              <path d="M20.8,4h-9.5C7.2,4,4,7.2,4,11.2v9.5c0,4,3.2,7.2,7.2,7.2h9.5c4,0,7.2-3.2,7.2-7.2v-9.5C28,7.2,24.8,4,20.8,4z M25.7,20.8c0,2.7-2.2,5-5,5h-9.5c-2.7,0-5-2.2-5-5v-9.5c0-2.7,2.2-5,5-5h9.5c2.7,0,5,2.2,5,5V20.8z" />
+            </svg>
+          </a>
         ))}
       </div>
-      <div class="filter-row" data-group="year">
-        <span class="lbl muted f-label">Año</span>
-        <button class="f-btn lbl is-active" data-year="Todo">Todo</button>
-        {years.map((y) => (
-          <button class="f-btn lbl" data-year={y}>{y}</button>
-        ))}
-      </div>
-    </section>
 
-    <!-- ── Rejilla de obras ───────────────────────────────── -->
-    <section class="works" id="works">
-      {works.map((w) => (
-        <a
-          href={w.url}
-          class="work"
-          data-reveal
-          data-cat={w.category}
-          data-year={w.year}
-        >
-          <div class="work-img">
-            <StaticPicture
-              src={w.img}
-              alt={w.title}
-              sizes="(min-width: 1000px) 33vw, (min-width: 650px) 50vw, 100vw"
-              fill
-            />
+      <!-- ── Créditos ───────────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="credits">
+          <div class="credit-col">
+            <span class="lbl muted">Proyecto</span>
+            <a href="/proyectos/syle" class="ln credit-val disp">Syle Studio</a>
           </div>
-          <div class="work-meta">
-            <h2 class="work-title">{w.title}</h2>
-            <span class="lbl muted">{w.category} · {w.year}</span>
+          <div class="credit-col">
+            <span class="lbl muted">Diseno</span>
+            <a href="https://www.instagram.com/dxniel.py/" class="ln credit-val">Daijin</a>
           </div>
-        </a>
-      ))}
-      <p class="empty lbl muted" id="empty" hidden>Sin obras en esta seleccion.</p>
-    </section>
-  </main>
-</Base>
+           <div class="credit-col">
+            <span class="lbl muted">Estudio</span>
+            <a href="/" class="ln credit-val">Syle Studio</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── Lightbox ── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+    <img alt="" />
+  </div>
+</ProyectoBase>
 
 <style>
   .muted { color: rgba(22, 20, 15, 0.68); }
 
-  .syle {
-    max-width: 1700px;
-    margin: 0 auto;
-    padding: 0 clamp(1.5rem, 3vw, 3rem) 8rem;
+  /* ── Shell ── */
+  .hero-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
   }
-
-  /* ── Hero ── */
-  .hero {
-    padding: 11rem 0 4rem;
-    display: grid;
-    gap: 1.75rem;
-  }
-  .name {
-    font-size: clamp(2rem, 6vw, 5rem);
-    line-height: 0.95;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.75rem;
-  }
-  .name .alt {
-    font-weight: 400;
-    font-size: clamp(1rem, 2.2vw, 1.75rem);
-    letter-spacing: 0;
-    color: rgba(22, 20, 15, 0.5);
-  }
-  .tagline {
-    max-width: 42rem;
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: rgba(22, 20, 15, 0.68);
-  }
-
-  /* ── Filtros ── */
-  .filters {
-    border-top: 1px solid rgba(22, 20, 15, 0.15);
-    border-bottom: 1px solid rgba(22, 20, 15, 0.15);
-    padding: 1.75rem 0;
-    display: grid;
-    gap: 1.25rem;
-    margin-bottom: 4rem;
-  }
-  .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 1.5rem;
-  }
-  .f-label { width: 4.5rem; }
-  .f-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem 0;
-    color: rgba(22, 20, 15, 0.45);
-    transition: color 0.3s var(--e);
-    position: relative;
-  }
-  .f-btn:hover { color: var(--ink); }
-  .f-btn.is-active { color: var(--ink); }
-  .f-btn.is-active::after {
+  .hero-fixed::after {
     content: "";
     position: absolute;
-    left: 0;
-    bottom: -2px;
-    width: 100%;
-    height: 1px;
-    background: currentColor;
+    inset: 0 0 auto;
+    height: 7rem;
+    background: linear-gradient(to bottom, rgba(244, 241, 234, 0.78), transparent);
+    pointer-events: none;
   }
-
-  /* ── Rejilla ── */
-  .works {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3rem 2rem;
-  }
-  .work { display: block; }
-  .work-img {
-    overflow: hidden;
-    aspect-ratio: 4 / 5;
-    background: rgba(22, 20, 15, 0.06);
-  }
-  .work-img :global(img) {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 1.1s var(--e);
+    object-position: center;
   }
-  .work:hover .work-img :global(img) { transform: scale(1.05); }
-  .work-meta {
-    margin-top: 1rem;
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    margin-top: 100vh;
+    margin-top: 100dvh;
+    background: var(--paper);
+  }
+
+  .wrap {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  /* ── Header ── */
+  .pg-head {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 10rem;
+    padding-bottom: 5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .pg-title {
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.88;
+  }
+
+  /* ── Intro grid ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 5rem;
+  }
+  .intro-left {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 1.5rem;
   }
-  .work-title {
-    font-size: clamp(1rem, 1.6vw, 1.35rem);
-    font-weight: 400;
-    letter-spacing: -0.01em;
+  .intro-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
   }
-  .work.is-hidden { display: none; }
-  .empty { grid-column: 1 / -1; padding: 3rem 0; }
+  .intro-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+  }
 
-  @media (min-width: 768px) {
-    .works { grid-template-columns: repeat(4, 1fr); gap: 4rem 2rem; }
+  .body-s {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    line-height: 1.65;
+    color: rgba(22, 20, 15, 0.72);
   }
+
+  /* ── Diptych ── */
+  .diptych {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-top: 8rem;
+  }
+  .diptych :global(picture),
+  .diptych :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Text right ── */
+  .text-r {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    margin-left: auto;
+    max-width: 60%;
+  }
+  .sub2-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-r .body-s { max-width: 44ch; }
+
+  /* ── Texto centrado ── */
+  .text-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .center-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-c .body-s { max-width: 52ch; }
+
+  /* ── Triple ── */
+  .triple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    align-items: start;
+  }
+  .triple :global(picture),
+  .triple :global(img) {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* ── Mampostería horizontal (avanza con el scroll) ──
+     Estado base = fallback: tira con scroll horizontal manual. Es lo que queda
+     sin JS o con reduced motion, y siempre es usable (se arrastra con el dedo).
+     Con JS el script añade .is-pinned y la sección pasa a "pinearse": la tira
+     avanza de izquierda a derecha mientras bajas.
+
+     Antes el pin salía de `animation-timeline: view()` y ahí estaba el bug de
+     móvil: los navegadores sin scroll-driven animations caían al fallback,
+     pero el propio @supports ya les había puesto overflow:hidden en el pin, así
+     que la tira ni avanzaba con el scroll ni se dejaba arrastrar — estática.
+     Ahora el recorrido lo calcula el script, igual en todos los navegadores. */
+  .hscroll {
+    position: relative;
+  }
+  .hscroll-pin {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .masonry-track {
+    display: flex;
+    gap: 3px;
+    width: max-content;
+  }
+  /* Sistema de ESPACIOS: cada slot mide exactamente lo mismo.
+     - .slot          → 1 imagen vertical (retrato) que llena el espacio
+     - .slot--stack   → 2 imágenes horizontales apiladas en el mismo espacio */
+  .slot {
+    flex: 0 0 auto;
+    height: 82vh;
+    height: 82dvh;        /* más alto → verticales más largas */
+    width: 46vh;          /* más angosto → formato retrato más estilizado */
+  }
+  .slot :global(picture),
+  .slot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* la vertical llena el espacio sin deformar */
+    display: block;
+  }
+  /* ESPACIO de 2 horizontales: mismo alto que el slot vertical, pero más ANCHO
+     (ancho fijo ~3:2 a media altura) para que la horizontal entre completa
+     sin recortarse a lo ancho y sin romper la cuadrícula. */
+  .slot--stack {
+    width: 62vh;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 3px;              /* el gap se descuenta del alto automáticamente */
+  }
+
+  /* Pin + desplazamiento horizontal. El script mide el recorrido que le sobra
+     a la tira y lo publica en --travel; la sección reserva ese alto extra, así
+     que 1px de scroll = 1px de avance lateral y el ritmo se ajusta solo al
+     número de slots y al tamaño de pantalla (ya no hace falta el 360vh/480vh
+     a ojo, que era lo que descuadraba el final de la tira en móvil).
+
+     dvh y no vh: con la barra de URL visible 100vh es MÁS alto que el área
+     realmente visible, así que el pin se salía de cuadro justo en móvil. La
+     declaración vh queda debajo como fallback para navegadores sin dvh. */
+  .hscroll.is-pinned {
+    height: calc(100vh + var(--travel, 0px));
+    height: calc(100dvh + var(--travel, 0px));
+  }
+  .hscroll.is-pinned .hscroll-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .hscroll.is-pinned .masonry-track { will-change: transform; }
+
+  /* Accesibilidad: sin pin si el usuario pide reduced motion. El script ya no
+     lo activa; esto cubre además que se cambie la preferencia tras la carga. */
+  @media (prefers-reduced-motion: reduce) {
+    .hscroll.is-pinned { height: auto; }
+    .hscroll.is-pinned .hscroll-pin {
+      position: static;
+      height: auto;
+      overflow-x: auto;
+    }
+    .hscroll.is-pinned .masonry-track { transform: none; }
+  }
+
+  /* ── Mampostería de comunidad ──
+     Fila a sangre de 6 verticales que enlazan a Instagram. El oscurecido del
+     hover NO es un overlay: la celda pinta un fondo oscuro y la foto va encima,
+     así que al bajarle la opacidad es ese fondo el que asoma. Un solo elemento
+     animado (la <img>), sin pseudo-elemento que mantener en sincronía.
+     overflow:hidden para que el zoom se recorte contra el borde de la celda. */
+  .com-note {
+    max-width: 52ch;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+  .com-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+  }
+  .com-cell {
+    display: block;
+    position: relative;   /* ancla del logo, que va centrado sobre la foto */
+    overflow: hidden;
+    background: #100e0a;
+    /* verticales estilizadas, como los slots de la mampostería horizontal */
+    aspect-ratio: 3 / 5;
+  }
+  .com-cell :global(picture),
+  .com-cell :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--e), opacity 0.6s var(--e);
+  }
+  .com-cell:hover :global(img),
+  .com-cell:focus-visible :global(img) {
+    transform: scale(1.06);
+    opacity: 0.55;
+  }
+  .com-cell:focus-visible {
+    outline: 1px solid var(--ink);
+    outline-offset: 3px;
+  }
+  /* Logo de Instagram: aparece con el mismo gesto que oscurece la foto. Va
+     fuera de la <img>, así que no le afecta la bajada de opacidad y se queda
+     nítido sobre el fondo oscuro. */
+  .com-ig {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(1.75rem, 3vw, 2.5rem);
+    height: clamp(1.75rem, 3vw, 2.5rem);
+    fill: var(--paper);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: opacity 0.5s var(--e), transform 0.5s var(--e);
+  }
+  .com-cell:hover .com-ig,
+  .com-cell:focus-visible .com-ig {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  /* 6 columnas sólo caben en pantalla ancha; por debajo se reparten en 3 y 2
+     para que la vertical no quede como una tira inservible. */
+  @media (max-width: 1100px) {
+    .com-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .com-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  /* Va aquí y no en el bloque de reduced-motion de arriba: al tener la misma
+     especificidad que el :hover, necesita ir después para ganarle. Se queda el
+     oscurecido, que no es movimiento. */
+  @media (prefers-reduced-motion: reduce) {
+    .com-cell :global(img) { transition: opacity 0.6s var(--e); }
+    .com-cell:hover :global(img),
+    .com-cell:focus-visible :global(img) { transform: none; }
+    /* el logo se queda: sólo pierde el escalado, aparece con un fundido */
+    .com-ig { transition: opacity 0.5s var(--e); }
+    .com-ig,
+    .com-cell:hover .com-ig,
+    .com-cell:focus-visible .com-ig { transform: translate(-50%, -50%); }
+  }
+
+  /* ── Créditos ── */
+  .credits {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    margin-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: space-between;
+  }
+  .credit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .credit-val {
+    width: fit-content;
+    font-size: 1rem;
+  }
+  .credit-val.disp {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+    .intro-right {
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .diptych {
+      grid-template-columns: 1fr;
+    }
+    .text-r {
+      max-width: 100%;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .triple {
+      grid-template-columns: 1fr;
+    }
+
+    /* en móvil cada ESPACIO ocupa casi toda la pantalla. dvh para que el slot
+       quepa dentro del pin aunque la barra de URL esté visible; el recorrido
+       total ya lo calcula el script. */
+    .slot {
+      height: 82dvh;
+      width: 92vw;
+    }
+
+    /* Mostrar las fotos completas en móvil, sin recorte */
+    .diptych :global(picture),
+    .diptych :global(img),
+    .triple :global(picture),
+    .triple :global(img) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
+    }
+  }
+
+  /* ── Hover discreto + zoom al click ── */
+  .diptych :global(img),
+  .triple :global(img) {
+    cursor: zoom-in;
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
+    filter: brightness(1.05);
+    transform: scale(1.012);
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    background: rgba(16, 14, 10, 0.82);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lightbox img {
+    max-width: min(90vw, 1100px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    transform: scale(0.96);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img { transform: scale(1); }
 </style>
 
 <script>
-  // Filtrado por categoría + año. Ambos grupos son single-select; un trabajo se
-  // muestra solo si pasa ambos filtros activos.
-  const worksEl = document.getElementById("works");
-  if (worksEl) {
-    const items = Array.from(worksEl.querySelectorAll<HTMLElement>(".work"));
-    const empty = document.getElementById("empty");
-    let cat = "Todo";
-    let year = "Todo";
+  // ── Mampostería horizontal ──
+  // La tira avanza en horizontal mientras la sección está pineada. Va por JS y
+  // no por `animation-timeline: view()` para que se comporte igual en todos
+  // los navegadores: ese camino no existe en Safari iOS antiguo ni en Firefox,
+  // y ahí la sección se quedaba estática.
+  //
+  // Se publica el recorrido en --travel y la sección reserva ese alto de más,
+  // de forma que el tramo pineado dura exactamente lo que mide la tira.
+  const hscroll = document.querySelector<HTMLElement>('.hscroll');
+  const track = document.getElementById('masonry');
+  const noMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function apply() {
-      let shown = 0;
-      items.forEach((el) => {
-        const okCat = cat === "Todo" || el.dataset.cat === cat;
-        const okYear = year === "Todo" || el.dataset.year === year;
-        const show = okCat && okYear;
-        el.classList.toggle("is-hidden", !show);
-        if (show) shown++;
-      });
-      if (empty) empty.hidden = shown !== 0;
-    }
+  if (hscroll && track && !noMotion) {
+    hscroll.classList.add('is-pinned');
 
-    document.querySelectorAll<HTMLElement>('[data-group="cat"] .f-btn').forEach((b) => {
-      b.addEventListener("click", () => {
-        document.querySelectorAll('[data-group="cat"] .f-btn').forEach((x) => x.classList.remove("is-active"));
-        b.classList.add("is-active");
-        cat = b.dataset.cat ?? "Todo";
-        apply();
-      });
-    });
+    let travel = 0;
+    let queued = false;
 
-    document.querySelectorAll<HTMLElement>('[data-group="year"] .f-btn').forEach((b) => {
-      b.addEventListener("click", () => {
-        document.querySelectorAll('[data-group="year"] .f-btn').forEach((x) => x.classList.remove("is-active"));
-        b.classList.add("is-active");
-        year = b.dataset.year ?? "Todo";
-        apply();
-      });
-    });
+    const place = () => {
+      queued = false;
+      // -top va de 0 (la sección toca el borde superior y empieza el pin) a
+      // travel (se agota el recorrido y la sección se despega)
+      const p = Math.min(Math.max(-hscroll.getBoundingClientRect().top, 0), travel);
+      track.style.transform = `translate3d(${-p}px, 0, 0)`;
+    };
+
+    const measure = () => {
+      const next = Math.max(0, track.scrollWidth - hscroll.clientWidth);
+      if (next !== travel) {
+        travel = next;
+        hscroll.style.setProperty('--travel', `${travel}px`);
+      }
+      place();
+    };
+
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(place);
+    };
+
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', measure);
+    // los slots miden en vh/vw, pero el RO cubre además cambios de layout que
+    // no vienen de un resize (fuentes, imágenes que aún no habían cargado)
+    if ('ResizeObserver' in window) new ResizeObserver(measure).observe(track);
+    measure();
   }
+
+  // ── Lightbox ──
+  const lightbox  = document.getElementById('lightbox') as HTMLElement | null;
+  const lightImg  = lightbox?.querySelector('img') as HTMLImageElement | null;
+  const zoomables = document.querySelectorAll<HTMLImageElement>('.diptych img, .triple img');
+
+  function openLightbox(src: string, alt: string) {
+    if (!lightbox || !lightImg) return;
+    lightImg.src = src;
+    lightImg.alt = alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightImg) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  zoomables.forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  lightbox?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
 </script>

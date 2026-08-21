@@ -3027,6 +3027,779 @@
       }
     ]
   },
+  "/img/Slide/Portada.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "b58b1eeec7b2c55506359f7483c6ec08296168d5d1342300412914b98e26d326",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "21180a0d828a96763c6e846fa7d76cab9580950764",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f007fefe58ab75cf7bb2ff522195ac811d7ed0119a8612c1e55786d97f43b0b0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/46e5f936f63f9260215865a3f758285af742216910f767d17c791c394d800f3d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/5364a15782ed195f98799d595d29e210d1db36731a1f3c53ed1e91bf6f5379cf.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/5fa8e1736dc413151bdbe6f0f658b1c3db4081a561c01f52d9df061c61760132.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/4548349a21b0e880f365324adde93041e15c66fb89d927565a210b8bd311ed8e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/40f598f19433eda097ce1df0c6741d55d25ac5817713974288b49434e0c31c09.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/b34c428b58ded64b11843c3cd0e4e966ce74fe37dc26126a755eec7ffad7f978.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b1c28a6dd0dc4dc39696dd63b7a530776294ffb5f2b5259147cf552a5d5ee173.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_10.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "b58b1eeec7b2c55506359f7483c6ec08296168d5d1342300412914b98e26d326",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "21180a0d828a96763c6e846fa7d76cab9580950764",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f007fefe58ab75cf7bb2ff522195ac811d7ed0119a8612c1e55786d97f43b0b0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/46e5f936f63f9260215865a3f758285af742216910f767d17c791c394d800f3d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/5364a15782ed195f98799d595d29e210d1db36731a1f3c53ed1e91bf6f5379cf.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/5fa8e1736dc413151bdbe6f0f658b1c3db4081a561c01f52d9df061c61760132.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/4548349a21b0e880f365324adde93041e15c66fb89d927565a210b8bd311ed8e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/40f598f19433eda097ce1df0c6741d55d25ac5817713974288b49434e0c31c09.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/b34c428b58ded64b11843c3cd0e4e966ce74fe37dc26126a755eec7ffad7f978.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b1c28a6dd0dc4dc39696dd63b7a530776294ffb5f2b5259147cf552a5d5ee173.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_11.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "0e7c2224a94d48b5aa56fa6a0ac53641c1a992e27c2bb254809a60cf4549222a",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "0dd8050d8a3f82677757767698757878d2cf0adb9b",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4f977e0c42483364fdc93d7118a4c39796198bad248a2e5fb5b34799281c41d2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/890f41f9abf46b68df9159f64b63718fe344dbc2e59f4a9f3f7bac815ae21719.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/fa73796bdd428a8264a9078fd64bba1fc4ee837eae3373e2b8f7eb33162f4657.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/8de18957ef1a9f03b8717ff0669cf1bcba5f502d634c854f69e9f36c9d30971f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b17f719ba5740deb3e0942950a39c826f4fc4902ead58cfacf95fa7baa1eac0b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/7568275a08574fe1a46ddf7f1ef82fed419bd1ef90eab1e45d6efaa8ded89d4d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/1ed5b7e1c087de5aaaa6727ba3fe9452076b9447c19d4fc46d1c002eb887c28d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/9b48f1b1076e52131318a8fc01cc90074dff6a8534fc12cfefb2731051423473.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_2.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "617720fdd11dba7ded79d2842b2b08225f40741301af18fb228e83457d8e46d1",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "ad28121d049c7a676af856a7778578986679509607",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4c41eb3e6057e6acb73d9344927c4c8b0d72f6fd9082785c7c731ef18dd05535.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/e6572847ed9646b86832ae6242c17bb4bad625614e04f132c07037667ed65c40.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/651dbb42d587ade280c69df80c5efc963f1f4c553c0b4e08b6a3191bd96ee5d1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/438566fda6c48117772b15e8c8d5c60b9e279fce6cad7d0ff74eaee59fbdaf67.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/a2fed9a16b347867d526659140fa63cab91d9c3f3b019b713038bf3ef8f9ebaa.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/d5c82753542af04f3099de1e1d6e3fd4f508c2aed28233a11b917ff10dc31020.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/a841a73b0ce3f5a56e9464a62c9435bf0867da112045444ac91973b7644cb9f2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/a8782c5eaa0920bd64f2f068a5a4d7fcdc339a1e3fbf06327d2782a25c614e44.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_3.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "1face79d6612c1c7a52c1c7a950161ab9a7a109d73d7a9c8e182a4398d3f618d",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "136a0a15828359886fa4756ba8578997a39f49fa5a",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/8e212b523fc94357eed2231a49803ec5c3b1b352c074d86dec552a94926bc77f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/2aa5a0e406443c6900706183de334afa87e4dd6d39866c61266df26039a3a091.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/65130822c89aa675aa1b5b06259ebcd1f5e03f516891eb870c040ae810d3b006.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/62ba240c6c8b35e76350a5371542d473351d4a59021e4368cdbbbd1821cc23e0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/9ad65f272f52935b0f55c736aefc985227735837a1f2d169d7176a2681f567c1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/5561d5db0c8b74dc8973306e1e976225895d90ead172687b14d41565f9be875b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/335d278edc1bc15f8acc4e824f699180d7ed4ed9ed6d60253f75b89999eca1a1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/d4f548e8b5ba02aad9cab0c96721898530566a611f7819dab70ebf3c84833962.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_4.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "607137252d91e0236f9d78f84d5215a66fdb467fa6d706f20d1da464aa705005",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "15490e1d86efbd887776887588b9889980a8029828",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/125decc694e8a2d550556de652aa7229a706f81e245efe8c9b5cf5df96fe26b8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/2dcb6dd5a21ce260395a0daec0b423aa9724a872df54b742a521a6856c866a30.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/c4df8799108c7f99a41aaf378b67c8c7f3f1d8d82faeeae2789c098e7e32ab60.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/dd909f12e830408e4d0ae326c78db25ee42e3bc027cd8b83055e8066587ca30a.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/c5eb3d4702478d2d2d25a158e021bd7e53a8b38da0a765bece5fa6df1c9b7a31.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/097fa97ac8ae65a430a969d1a617f438cc8dd6aefebc0ad740f5864f06ea27d3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/d0009d4eb814aa2445430c3b119faf923ece5f07f3b4aff63f7f78b2f762594d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/1a8c11059873931cc8572065b095ea6325c50fc86bc945b9b47977193b946f23.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_5.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "3a57deda5c5fef9852a4497301011592f3c3e3839c107dc79444aa262ed52b67",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "e5380e0d0266469f9446569669846ab8669aa03608",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/8b3084b984c96202e2b3e7ce0fe356b2785ad868f468b75b6d9afa3542d21671.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/9d3bb8797e5fd3e65c4d7e96fd851acd75913f2702c4ff2736322f08010c4741.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/39524ffa53709da239a1cadd74d27dfce1381419a23c9ef27b59e2ab296f4a84.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/577fab0f89f2af0628d60f5dbc9ca738e6d064ccd28f24826c9f37e248ce6c0f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/8ade583dd6cf5eacb942b7a249979b87ae37a7d0857750b9cba3ccdcd4ae7626.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/6838f9c189fb6fc64b33291d4b7e4da83164cd036e458c38aaa9d8fb7cfa5a6b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/00747fb6263fe41b5dc6b888beeae51df4741d7ffc36afea40e29b6ac9d95b38.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/8c6eb73623db06acfe19815cb68bd999acd62d159b3152774975d82d376bab7f.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_6.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "33e0304cf48dcbb93de80dd5ca27258cab7491ed147fb982f2c3ba712c1b3296",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "e9f7090d02626bbf4976765577697658bf21d60952",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/cb84c8fc07d9032bb10ea21637854d964ec6064c2ac5d43a19cad5c2c26e2d43.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/b3729c181c26f3e3981994119e610ca95025217ef6f273669081149d4283d5eb.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/f8369855c74cd97c4fae6e3cc7521999dcc69af7a29d9794e4fb28d4b459b82f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/75b9c1fb9a18522d66f213d20d90ad83c4f1d6bcb533f47b21376e5823c853ea.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/02c1a0363f310eb16e5c1eab4fee0ebac73b307569975d489494f133099089ae.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/a7ac32eac2ce5b0bf6561dcf67cc43d418e8a08bba482a39e75041ba6015ba26.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/f6cdb8f5d879f36e10a1ace793b16b3cbc4a80ea9f298ff1616a6b8c13a9cc55.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/7cdc68d30c90c37d796f329f4582df6fee258de4ff0267b987fdd914f82e7017.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_7.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "8e7edd42bf806577b051a2101ec9618eae231c59f147282349f2bb8bce485ea2",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "4718020d80909aba0b68734a9c88c2b73970830217",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/df6d17088c6c5a595ee9d3b74738d877ba448de9eb2de60fdc9028690dbc6554.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/b0cac013244d65cd8032de06eb20f83efb1c22435d2cd578614671270fbb6505.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/df507427145c12f6309da01e506ac85062ea8aefaed9676da7b68e02451e2e18.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/e297fbb5b2f71260cd517ab2d49a2574f0d4c8df7f5d2d13249188cd9a4ee516.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/901752e7929c980e5c49c02fff38a620bf790c6ba42437b5c9a372e80c37ac4d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f874fa77b0367009c78be41e708a96ac2e60328bcb08924df87705ab0743ee5e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/524fef14d2bd28fb5060d88f488e0b7412d71ea6a1e6739cb626ebb66a76c884.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/72ad3a141d3b2408667052094f5bd87422623f0caa022b20caf96cec7ac53c32.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_8.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "df2dc10b73ae675bf82e7566a1f64da039820c1e635dc6303cc7498ebb194fe1",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "ce28061d82df85965195a9748677896abf51f70c65",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/e4decd86de7410e1f0e89898dfd9fec6bbd823a5f2f63db9b056c46b1bac58e8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/c335aa239bd9453f1bacc6dfcf12d9f46aec220e1b97d9cebfdcb37026ed22bf.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/d61e754407d0ee110971f04c3f94b75c839be7d680845e9b12580e7fa412d0cb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/e1ec0f4e3d682549b3396097b6511e67016669f3bf196355385b808c4a76a49d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/d12eb7223748d9ce2fd640123f30f5ef957ebda5bb20fcccc18775b2f36281cd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/8650273ef9b37bb319e959f983ebe38db72b05fd8c6658c6be0c571f06d7a94c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/b31d885ac84389e759b52ac460ac9ced45c7437bffef1c4cf645353a50b39872.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/68f6e092fcf6ebc4e1ba2e1387b340c4fff2138867672b2c48b346e88bb1a300.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/Manposteria/Man_9.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "ef3c2ec4e36bbcc7e0052bec0e176900aaaee1a6eabeb46562356f254ac87111",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "96f7090d003f79506558a88698766887b3af46fe9a",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/c7cb1bd3a3a6e558831ad98aba0c91d7b4b3d9e01a2d017a05dd16c0fc35552a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/5874cd542115aceaa447a9cb051044ab63521efa0f2275744f7967fb7aaee871.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/e52e58404444af3c402bc6ba9ad5889b0a7b171dfe0d06549e7bcf0b5ad97520.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/2d4dbd061adbf157578cad98de945686cafadae00e42d953ffb3af95cdedebb7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/7d8e36b658c4bcf4923e6163cccedfb30446948370cfb2d34b8ccf08b6779ad3.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/0ca30ec26ee7787d9d4d317857312f38ae6e2955c0b52d8cba83abc7b671ed1e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/f399f195178e8ff8a5fb52e7c5cd92017b5be6eb74904d3063e01842ba15ebab.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/834174f3b94718cca681bb4c6a385a2c7c84c39a114f2b2eacfb99617ce3cc77.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/red_1.jpeg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "3488537a1a04ada3e40e6f1802359d18127f49abe18550f8a28d7a4486815a86",
+    "width": 1080,
+    "height": 1350,
+    "thumbhash": "5c180e16047f84b87687c887878787888768601b0ca5c1",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/e731105609024c26cd2665497db5d3a4b9344889349d4465dd49dcc69b7e773a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/14348122762d15ef9c8532ecd475e3e46bea74a4f9058e7eeb0559ae9ba33093.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/0158ee9b6531fc08a8972505acac8e47ed2bff85e8078c702a30f9719c8cb2db.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/bb4fe2b69cd052d5bf48b4c86c3d79faaa8fd0fbcb1c9fdf0987a9b4a6e54474.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/red_2.jpeg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "dfe9212f7c68b5c33ae4f5892a355e85be09c147e11dbe594d4fc25ca0732437",
+    "width": 1080,
+    "height": 1350,
+    "thumbhash": "10f809060074798a976a08877a4b738a26ac564f029407",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/572275ee32155cfaf0fe981cc4b68afb77d72510809e23a41fb416712b26db04.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/b1563aa4472ccf16c2ae731b70155364a58f2f9c7b0796ee2e1e735433f5edda.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/6deb4248c47c4529dcef70e7c0e72dec0fa3f4d9417bc06dd8a229e4859943d2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/fe70028226c8e8038b9aa512a45395ba27e0dc7b95a12b652e725b80aa3d26d7.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/red_3.jpeg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "ebe8419c3a0ee38a8dd523f7656db00bbd07e87de59bd2460c0fed70ef1f7e49",
+    "width": 1080,
+    "height": 1350,
+    "thumbhash": "e3070a0e00439a5a965c087666a6867ea97836df6d60bc",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/047028d179c69419b1db5b11b44e66655cdf24c33ab4052335e63e55e1348128.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/9632a361da1d3bdfc04a9bf9728c44676037e7298aa48cd8a1e1ab3bc29f0ad7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/f39f2dedc9998542ef7ed9eb809f80550551eda11e80b0bd087ebfde00d3497a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/21e52190985cf9aaf96b0e57a0201993724efa12c7857842df2146910e9a7d3a.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/syl_1.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "70d99698ef0fe140da7dd0ff4940af4db7df14795d7507b87dd0f466da8df07e",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "da070615046897538c096bf7558249b9569f65f459",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f80244dd4e63cac130c24150342cf41b230cdac68d6e7ed89e560da7cf8d8792.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/46aaa82a6dead669b750cdd2f1489b33b6ad331837333be83ba00b4abce9c80c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/9ac6c747a13d7395c1dbb4d63b353bdecf320b6c54cb05c4bc097ca8d41c78d2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/a3a0fda6520daea956cc4d77a7464f623c3257b396c0805faf17e9a86e7131ba.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/1bb60d23b6a0b24b6291d25a0cb96dce606d15f3912a5f98e2b931da08e50012.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/a82500f84c47807f5dc11dfe9297248bf7cd2f1cd635446301cac736508e87b2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/98eb81201adac1edef0ab77502d9b00ef8e201c2293f4d2d985db0337b16dd94.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/038409a3c8ad607b003a031cb416181c94872bf032831895854899acb9084a5d.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/syl_2.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "0c6cf992172ae346afa1dd25154709b897b22bea9af3ea2ed55862a279589290",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "17080e0d0207ba886637b96776795888f69d58fb59",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f83935fea60edb8a7327debc5a554a4326b1e6db0ea6450ca0e933df8a3addc1.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/05c2aac6cf2c2fdad8a3bbdc0bf52a26a3c11d91829ef3470c881e9a1553ff52.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/3a52eecc5367a641e98c2d8c83aa45beefec95e579a62bffc5ae4cd10a7e785b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/af3cbf2f742ece0929ecb5b188c3556a6d009caecf7e4652ae7e90fc8cea1248.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/3e5263ec1423021b80ea3c7b48e6b361596f3593770319254bd8ce9ea09e191e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/209f42c8e9259691aa851f91e75ac6335a7a7646c2573f5bde17b3a3fec66144.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/270ef40d08784444b34aad541c2cd5e3681d4c657bae756fdaefd54d6f998659.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/54f88c79b338f415878551fbacd59eae71f208f2fa034467bfc2f5fa87f70db1.jpeg"
+      }
+    ]
+  },
+  "/img/Syle/syl_3.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "99e7cbd527ef671204e5178cccd85dc43c8fe5db5fb26a7fa1c28f00f6c9388e",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "57080a0d00e0c1586719a988978b55b67d9f72f696",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f614a5f9cd308f82c838f165b6644f3188fed9f5a505460aa4f86649efafc9f7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/30f856a2ef9df4c42127f022bed2ef8fc6001680aa8f5ba2a28b3b0544d39dd2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/2d8051458a058d9aafe2c1ed4c0184f26ad51ea871a87e867140a636e15ae764.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/205d2769a58329c105ab59f82c385c328711e2a01fa72e11498382f2d684db4f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/cf157a32fb6b344188dafb450fb10975946dd26d19adca2748d8875bc6bcc20b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/bbedae98ec7f5c9fc3252d61552814acafee5d12b9d74c549a548697cc337e28.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/8a9ad69c791be8e04eff56424b46d4f700ac013d7ae9c5b6a842de9bb047cf40.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/66f846fe7ead519d7531e31d1ce0faabf3593702d6b1cbd9ff36eb64436a977f.jpeg"
+      }
+    ]
+  },
   "/img/about-manifiesto-2.webp": {
     "pipelineVersion": 4,
     "sourceSha256": "8e930159bae407fdd7b9b28b6391c2644c2d294529cf9caa8fd81de54e3bafd0",
