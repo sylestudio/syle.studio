@@ -6,7 +6,12 @@ const webRoot = fileURLToPath(new URL("..", import.meta.url));
 const distRoot = join(webRoot, "dist");
 const derivativeRoot = join(distRoot, "project-media");
 const maxDerivativeBytes = 1_500_000;
-const maxDerivativeSetBytes = 90 * 1024 * 1024;
+const maxDerivativeBytesPerSource = 1.5 * 1024 * 1024;
+const manifest = JSON.parse(
+  await readFile(join(webRoot, "src", "generated", "static-images.json"), "utf8"),
+);
+const sourceCount = Object.keys(manifest).length;
+const maxDerivativeSetBytes = sourceCount * maxDerivativeBytesPerSource;
 
 const walk = async (directory) => {
   const output = [];
@@ -33,7 +38,7 @@ if (derivativeBytes > maxDerivativeSetBytes) {
   );
 }
 
-const legacyPhotoRoots = ["Dango", "Insomnio", "Obsesion", "Simbolo", "Slide"];
+const legacyPhotoRoots = ["Dango", "Insomnio", "Obsesion", "Simbolo", "Slide", "Syle"];
 for (const root of legacyPhotoRoots) {
   try {
     const files = await walk(join(distRoot, "img", root));
@@ -55,7 +60,7 @@ const pagePaths = [
 for (const pagePath of pagePaths) {
   const html = await readFile(pagePath, "utf8");
   const renderedHtml = html.replace(/<!--[\s\S]*?-->/g, "");
-  if (/src=["']\/img\/(?:Dango|Insomnio|Obsesion|Simbolo|Slide)\//.test(renderedHtml)) {
+  if (/src=["']\/img\/(?:Dango|Insomnio|Obsesion|Simbolo|Slide|Syle)\//.test(renderedHtml)) {
     throw new Error(`Page still references an unoptimized project original: ${pagePath}`);
   }
   const responsiveImages =
@@ -75,5 +80,6 @@ for (const pagePath of pagePaths) {
 console.log(
   `Performance budget passed: ${derivatives.length} derivatives, ` +
     `${(derivativeBytes / 1024 / 1024).toFixed(2)} MiB total, ` +
+    `${sourceCount} sources, ` +
     `${maxDerivativeBytes} bytes max each.`,
 );
