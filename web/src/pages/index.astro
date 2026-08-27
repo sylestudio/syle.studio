@@ -12,6 +12,7 @@ import {
   type Photo as GalleryPhoto,
   type UploadedImage,
 } from "../lib/api";
+import { projectHref } from "../lib/proyectos";
 
 interface HomeProject {
   id: string;
@@ -34,7 +35,7 @@ const galleryProjects: HomeProject[] = await Promise.all(
   galleries.map(async (g) => ({
     id: `gallery:${g.id}`,
     title: g.title,
-    url: `/galleries/${g.slug}`,
+    url: projectHref(g.slug),
     category: g.category,
     position: g.position,
     galleryCover: (await getGallery(g.slug))?.photos?.[0] ?? null,
