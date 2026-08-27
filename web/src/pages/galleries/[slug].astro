@@ -2,6 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import Photo from "../../components/Photo.astro";
 import { listGalleries, getGallery } from "../../lib/api";
+import { projectHref } from "../../lib/proyectos";
 import { toRoman } from "../../lib/roman";
 
 export async function getStaticPaths() {
@@ -115,7 +116,7 @@ const categoryLabel = category?.trim();
 
     <nav class="nav-pair" aria-label="Otros proyectos">
       {prev ? (
-        <a href={`/galleries/${prev.slug}`} class="nav-card prev" data-reveal>
+        <a href={projectHref(prev.slug)} class="nav-card prev" data-reveal>
           <span class="lbl dim"><span class="arr">←</span> Anterior</span>
           <span class="disp nav-t"><span class="ln">{prev.title}</span></span>
         </a>
@@ -125,7 +126,7 @@ const categoryLabel = category?.trim();
         </span>
       )}
       {next ? (
-        <a href={`/galleries/${next.slug}`} class="nav-card next" data-reveal>
+        <a href={projectHref(next.slug)} class="nav-card next" data-reveal>
           <span class="lbl dim">Siguiente <span class="arr">→</span></span>
           <span class="disp nav-t"><span class="ln">{next.title}</span></span>
         </a>

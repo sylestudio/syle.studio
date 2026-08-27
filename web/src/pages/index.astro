@@ -4,6 +4,7 @@ import Photo from "../components/Photo.astro";
 import Mark from "../components/Mark.astro";
 import Wordmark from "../components/Wordmark.astro";
 import { listGalleries, getGallery } from "../lib/api";
+import { projectHref } from "../lib/proyectos";
 
 // Each published gallery is a "Proyecto". The list endpoint carries no cover,
 // so we pull each detail for its first photo. Resilient: if the API is down
@@ -104,7 +105,7 @@ const clients = [
     ) : (
       <div class="grid">
         {projects.map((p) => (
-          <a href={`/galleries/${p.slug}`} class="card" data-reveal>
+          <a href={projectHref(p.slug)} class="card" data-reveal>
             <div class="card-img">
               {p.cover ? <Photo photo={p.cover} /> : <div class="ph" />}
             </div>
