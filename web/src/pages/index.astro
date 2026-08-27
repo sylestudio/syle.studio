@@ -594,6 +594,9 @@ const clients = [
 </style>
 
 <script>
+  // Usado tambien mas abajo por las marcas de linea y la reescritura del hero.
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // Bleed slider
   const bleedSl = document.getElementById("bleed-sl");
   if (bleedSl) {
@@ -603,6 +606,7 @@ const clients = [
     const ctrEl    = bleedSl.querySelector<HTMLElement>(".sl-counter");
     const total    = slSlides.length;
     let cur = 0;
+    let restart = () => {}; // reasignado abajo si el autoplay esta activo
 
     function goTo(n: number) {
       slSlides[cur].classList.remove("is-active");
@@ -617,16 +621,50 @@ const clients = [
         `${String(cur + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
     }
 
-    bleedSl.querySelector(".sl-prev")?.addEventListener("click", () => goTo(cur - 1));
-    bleedSl.querySelector(".sl-next")?.addEventListener("click", () => goTo(cur + 1));
+    bleedSl.querySelector(".sl-prev")?.addEventListener("click", () => { goTo(cur - 1); restart(); });
+    bleedSl.querySelector(".sl-next")?.addEventListener("click", () => { goTo(cur + 1); restart(); });
 
     // swipe support on mobile
     let touchX = 0;
     bleedSl.addEventListener("touchstart", (e) => { touchX = e.touches[0].clientX; }, { passive: true });
     bleedSl.addEventListener("touchend", (e) => {
       const dx = e.changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > 40) goTo(cur + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 40) { goTo(cur + (dx < 0 ? 1 : -1)); restart(); }
     });
+
+    // Autoplay: avanza sola cada AUTOPLAY_MS. En pausa mientras el puntero
+    // esta encima (mismo gesto que ya revela las flechas), mientras el dedo
+    // toca en movil, y mientras el slider no esta en pantalla — asi no quema
+    // ciclos ni se le adelanta una slide al usuario al volver a hacer scroll
+    // hasta ahi. Cualquier interaccion manual (flecha o swipe) reinicia el
+    // temporizador para no cortarle el avance automatico a medio camino.
+    if (total > 1 && !reduce) {
+      const AUTOPLAY_MS = 5500;
+      let timer: ReturnType<typeof setInterval> | undefined;
+      let onScreen = true;
+
+      function stop() {
+        clearInterval(timer);
+        timer = undefined;
+      }
+      function start() {
+        if (timer || !onScreen) return;
+        timer = setInterval(() => goTo(cur + 1), AUTOPLAY_MS);
+      }
+      restart = () => { stop(); start(); };
+
+      bleedSl.addEventListener("mouseenter", stop);
+      bleedSl.addEventListener("mouseleave", start);
+      bleedSl.addEventListener("touchstart", stop, { passive: true });
+      bleedSl.addEventListener("touchend", () => setTimeout(start, AUTOPLAY_MS), { passive: true });
+
+      new IntersectionObserver(([e]) => {
+        onScreen = e.isIntersecting;
+        onScreen ? start() : stop();
+      }).observe(bleedSl);
+
+      start();
+    }
   }
 
   // Line-art marks: las estrellas del hero y el logotipo de fondo de las dos
@@ -637,8 +675,7 @@ const clients = [
   // un solo sentido cierra el bucle sin costura. La velocidad se interpola hacia
   // un objetivo aleatorio nuevo cada ~0.5-1.8s para acelerar/frenar de forma
   // organica; cada trazo corre con su propia semilla. Se salta bajo reduced
-  // motion (el CSS deja el contorno fijo).
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // motion (el CSS deja el contorno fijo). `reduce` ya viene declarado arriba.
   const marks = document.querySelectorAll<HTMLElement>(".hero-mark, .sec-mark");
 
   if (!reduce && marks.length) {
