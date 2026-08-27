@@ -113,6 +113,11 @@ const clients = [
             <h3 class="disp card-title">
               <span class="ln">{p.title}</span>
             </h3>
+            <!-- El rect no lleva viewBox: lo dimensiona el script en pixeles
+                 reales para que el guion mida igual en los cuatro lados. -->
+            <span class="card-frame" aria-hidden="true">
+              <svg><rect /></svg>
+            </span>
           </a>
         ))}
       </div>
@@ -416,6 +421,34 @@ const clients = [
   .card-cat { display: block; margin-top: 1.25rem; }
   .card-cat + .card-title { margin-top: 0.4rem; }
 
+  /* Filo que recorre el borde de la tarjeta entera — portada + texto. Va en
+     `mix-blend-mode: difference` para fundirse con la foto y el papel (invierte
+     lo que tiene detras). UNA sola linea por tarjeta, muy larga: enciende el
+     `FRAME_LIT` del perimetro (ver script) y el hueco restante es el unico
+     corte, asi se lee como una linea con cabeza y cola en vez de como un marco
+     punteado. Al hacer hover se congela; el ligero zoom de la portada sigue.
+     El guion y las medidas del rect las pone el script en pixeles reales: sin
+     JS no se pinta nada, que es preferible a un marco mal troceado. */
+  .card { position: relative; }
+  .card-frame {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    mix-blend-mode: difference;
+  }
+  .card-frame svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .card-frame rect {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 1;
+  }
+
   /* dark contrast moment */
   .proc { display: grid; gap: 3rem; }
   .proc-h { font-size: clamp(2.5rem, 7vw, 5.5rem); }
@@ -626,22 +659,59 @@ const clients = [
     }
   }
 
-  // Line-art marks: las estrellas del hero y el logotipo de fondo de las dos
-  // secciones oscuras. Un unico segmento encendido (~60% de la linea) recorre
-  // cada trazo para siempre, como faros en una carretera — su borde delantero
-  // dibuja linea nueva mientras el trasero borra por detras. Sin rebote: el
-  // periodo del guion equivale al largo del trazo, asi que avanzar el offset en
-  // un solo sentido cierra el bucle sin costura. La velocidad se interpola hacia
-  // un objetivo aleatorio nuevo cada ~0.5-1.8s para acelerar/frenar de forma
-  // organica; cada trazo corre con su propia semilla. Se salta bajo reduced
-  // motion (el CSS deja el contorno fijo). `reduce` ya viene declarado arriba.
-  const marks = document.querySelectorAll<HTMLElement>(".hero-mark, .sec-mark");
+  // Marco de cada tarjeta de proyecto. El rect se dibuja en PIXELES REALES en
+  // vez de un viewBox estirado: con `viewBox` + `preserveAspectRatio="none"` +
+  // `non-scaling-stroke` el guion se mide en pantalla mientras el largo del
+  // trazo se mide en unidades del viewBox, asi que un unico guion se repetia
+  // media docena de veces por tarjeta. Midiendo en pixeles, un solo periodo
+  // cubre el perimetro entero: UNA linea, con un unico hueco.
+  const FRAME_LIT = 0.8; // fraccion del perimetro encendida (falta el 20%)
+  const FRAME_SPEED = 0.2; // ritmo del marco respecto al de las marcas grandes
+  document.querySelectorAll<HTMLElement>(".card-frame").forEach((host) => {
+    const rect = host.querySelector("rect");
+    if (!rect) return;
+
+    const fit = () => {
+      const { width, height } = host.getBoundingClientRect();
+      if (!width || !height) return;
+      // El trazo se pinta centrado en el borde: se mete media anchura para que
+      // no lo recorte la caja de la tarjeta.
+      const sw = parseFloat(getComputedStyle(rect).strokeWidth) || 1;
+      rect.setAttribute("x", String(sw / 2));
+      rect.setAttribute("y", String(sw / 2));
+      rect.setAttribute("width", String(Math.max(0, width - sw)));
+      rect.setAttribute("height", String(Math.max(0, height - sw)));
+
+      const len = rect.getTotalLength();
+      const seg = len * FRAME_LIT;
+      rect.style.strokeDasharray = `${seg} ${len - seg}`;
+    };
+
+    fit(); // tambien bajo reduced motion: deja el arco fijo, sin animarlo
+    new ResizeObserver(fit).observe(host);
+  });
+
+  // Line-art marks: las estrellas del hero, el logotipo de fondo de las dos
+  // secciones oscuras y el filo que recorre el borde de cada tarjeta del grid de
+  // proyectos. Un unico segmento encendido lo recorre para siempre, como faros
+  // en una carretera — su borde delantero dibuja linea nueva mientras el trasero
+  // borra por detras. Sin rebote: el periodo del guion equivale al largo del
+  // trazo, asi que avanzar el offset en un solo sentido cierra el bucle sin
+  // costura. La velocidad se interpola hacia un objetivo aleatorio nuevo cada
+  // ~0.5-1.8s para acelerar/frenar de forma organica; cada trazo corre con su
+  // propia semilla. Se salta bajo reduced motion (el trazo se queda fijo).
+  // `reduce` ya viene declarado arriba.
+  const marks = document.querySelectorAll<HTMLElement>(
+    ".hero-mark, .sec-mark, .card-frame",
+  );
 
   if (!reduce && marks.length) {
     // Una marca fuera de pantalla aparca su cadena de rAF y la retoma donde la
     // dejo al volver a entrar, para no quemar frames con las secciones oscuras
-    // mientras no se ven.
+    // mientras no se ven. `paused` hace lo mismo a demanda: el borde de una
+    // tarjeta se congela mientras el puntero esta encima.
     const onScreen = new WeakSet<Element>();
+    const paused = new WeakSet<Element>();
     const wake = new Map<Element, () => void>();
     const io = new IntersectionObserver(
       (entries) => {
@@ -658,31 +728,43 @@ const clients = [
     );
 
     marks.forEach((host) => {
+      // El marco de tarjeta ya trae su guion puesto por `fit` (y re-puesto en
+      // cada resize), asi que aqui solo se le mueve el offset; el largo se
+      // vuelve a medir en cada frame porque cambia con el viewport. Las marcas
+      // de line-art, en cambio, fijan aqui su guion una sola vez.
+      const isFrame = host.classList.contains("card-frame");
       const starters = Array.from(
-        host.querySelectorAll<SVGPathElement>("path"),
+        host.querySelectorAll<SVGGeometryElement>("path, rect"),
       ).map((path) => {
-        const len = path.getTotalLength();
-        const seg = len * 0.6; // lit portion of the line
-        path.style.strokeDasharray = `${seg} ${len - seg}`;
+        let len = path.getTotalLength();
+        if (!isFrame) {
+          const seg = len * 0.6; // lit portion of the line
+          path.style.strokeDasharray = `${seg} ${len - seg}`;
+        }
 
+        // El marco va mas lento que las marcas de line-art: es un trazo mucho
+        // mas largo y a la misma cadencia relativa pasaba disparado.
+        const pace = isFrame ? FRAME_SPEED : 1;
         let offset = Math.random() * len; // random start position
         const dir = Math.random() < 0.5 ? 1 : -1; // fixed travel direction
-        let speed = len * 0.16; // path units / second
+        let speed = len * 0.16 * pace; // path units / second
         let target = speed;
         let retargetAt = 0;
         let last = 0;
         let running = false;
 
         const tick = (now: number) => {
-          if (!onScreen.has(host)) {
+          if (!onScreen.has(host) || paused.has(host)) {
             running = false; // aparcado: `wake` lo vuelve a arrancar
             return;
           }
           const dt = Math.min(0.05, (now - last) / 1000);
           last = now;
 
+          if (isFrame) len = path.getTotalLength(); // el marco cambia al redimensionar
+
           if (now >= retargetAt) {
-            target = len * (0.07 + Math.random() * 0.4); // new random cruise speed
+            target = len * (0.07 + Math.random() * 0.4) * pace; // new random cruise speed
             retargetAt = now + 500 + Math.random() * 1300;
           }
           speed += (target - speed) * 0.05; // smooth approach, no jerk
@@ -704,6 +786,17 @@ const clients = [
 
       wake.set(host, () => starters.forEach((start) => start()));
       io.observe(host);
+
+      // Hover: congela el filo de la tarjeta (el zoom de la portada, que es CSS
+      // puro, sigue su curso). Al salir, retoma donde se quedo.
+      if (isFrame) {
+        const card = host.closest<HTMLElement>(".card");
+        card?.addEventListener("mouseenter", () => paused.add(host));
+        card?.addEventListener("mouseleave", () => {
+          paused.delete(host);
+          wake.get(host)?.();
+        });
+      }
     });
   }
 
