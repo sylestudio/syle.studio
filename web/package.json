@@ -12,11 +12,12 @@
     "images:generate": "cargo run --manifest-path ../Cargo.toml --release -p syle-core --example optimize-static -- media-src/img public/project-media src/generated/static-images.json",
     "images:check": "node scripts/verify-images.mjs",
     "budget": "node scripts/check-performance-budget.mjs",
-    "build": "pnpm images:generate && pnpm images:check && astro build && pnpm budget",
-    "build:cached": "pnpm images:check && astro build && pnpm budget",
+    "build": "pnpm images:generate && pnpm images:check && astro build && pnpm seo:check && pnpm budget",
+    "build:cached": "pnpm images:check && astro build && pnpm seo:check && pnpm budget",
     "check": "astro check",
     "preview": "astro preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seo:check": "node scripts/verify-seo-build.mjs"
   },
   "dependencies": {
     "@fontsource-variable/space-grotesk": "^5.2.10",
@@ -29,10 +30,11 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "typescript": "^5.7.0",
-    "vitest": "^3.0.0"
+    "vitest": "^3.2.6"
   },
   "pnpm": {
     "overrides": {
+      "nanoid": "3.3.18",
       "sharp": "0.35.3",
       "svgo": "4.0.2"
     }

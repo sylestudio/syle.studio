@@ -75,6 +75,7 @@ jobs:
           rsync -a --delete web/dist/ /opt/syle/web/
           sudo /usr/bin/systemctl reload nginx
           # Verify nginx serves the rebuilt site (matches the public vhost by Host).
-          html=$(curl -fsS -H 'Host: syle.studio' http://127.0.0.1/)
+          html=$(curl -fsS --noproxy '*' --resolve syle.studio:443:127.0.0.1 \
+            https://syle.studio/)
           grep -Fq "name=\"syle-revision\" content=\"$GITHUB_SHA\"" <<<"$html"
           echo "Site rebuilt and serving $GITHUB_SHA."

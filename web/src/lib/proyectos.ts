@@ -13,4 +13,4 @@ export const hasBespokePage = (slug: string): boolean => bespokeSlugs.has(slug);
 
 /** Canonical URL for a project: its bespoke page when there is one. */
 export const projectHref = (slug: string): string =>
-  bespokeSlugs.has(slug) ? `/proyectos/${slug}` : `/galleries/${slug}`;
+  bespokeSlugs.has(slug) ? `/proyectos/${slug}/` : `/galleries/${slug}/`;

@@ -24,8 +24,11 @@ Provisioned out of band (the runner user is unprivileged):
 
 - `apt install nasm` (the AVIF encoder, `ravif`, needs it at build time).
 - A `syle` system user + group; `github-runner` is added to the `syle` group.
-- `/opt/syle/{bin,admin,web}` owned `github-runner:syle` (the runner deploys
-  here without sudo); `/opt/syle/media` owned `syle:syle` (the API writes here).
+- `/opt/syle/{bin,admin,web,nginx}` owned `github-runner:syle` (the runner
+  deploys here without sudo); `/opt/syle/media` owned `syle:syle` (the API
+  writes here). The two files under `/etc/nginx/sites-available/` are symlinks
+  to `/opt/syle/nginx/*.conf`, so the full deploy updates versioned vhosts
+  before its restricted nginx reload.
 - A local Postgres role + database `syle`; the API runs `sqlx` migrations on
   startup, so an empty DB is provisioned on first boot.
 - `/etc/syle/api.env` (`DATABASE_URL`, `MEDIA_DIR`, `RP_ID`, `RP_ORIGIN`),
@@ -52,14 +55,22 @@ sudo certbot --nginx -d admin.syle.studio
 After issuance, flip the public records (`syle.studio`, `www`) to **proxied**
 in Cloudflare for the CDN; leave `admin` DNS-only.
 
-This Cloudflare zone's SSL/TLS mode is **Flexible**, so Cloudflare fetches the
-origin over HTTP `:80`. The public vhost therefore serves the site on **both
-`:80` and `:443` with no http→https redirect** (a `:80` redirect makes the CDN
-loop). `admin` is DNS-only/direct and keeps certbot's `:80→:443` redirect.
-Upgrading the zone to **Full (strict)** is recommended (CF↔origin would then be
-encrypted) — but it is zone-wide, so first confirm the other proxied origins in
-the zone present a valid cert on `:443`, or scope it per-host with a
-Configuration Rule.
+The zone contains unrelated proxied origins, so its global SSL mode is not the
+control for this site. A Cloudflare **Configuration Rule** matching
+`http.host in {"syle.studio" "www.syle.studio"}` sets SSL to **Full (strict)**.
+Both names have valid Let's Encrypt certificates at the VPS. A **Single
+Redirect** matches
+`http.host in {"syle.studio" "www.syle.studio"} and (http.host eq "www.syle.studio" or not ssl)`
+and sends a `301` to
+`concat("https://syle.studio", http.request.uri.path)` with the query string
+preserved. nginx mirrors the same canonical policy for direct-origin traffic.
+
+`admin.syle.studio` stays DNS-only and returns `X-Robots-Tag: noindex` plus a
+dedicated disallowing `robots.txt`. The public API is also explicitly noindex;
+these exclusions do not change authentication or API behavior.
+`apihackaton.syle.studio` has its own hostname-scoped Configuration Rule set to
+**Full** (its origin certificate is for another hostname) and a Response Header
+Transform Rule that sets `X-Robots-Tag: noindex, nofollow, noarchive`.
 
 ## Continuous deploy
 

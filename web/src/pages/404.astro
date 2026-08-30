@@ -1,0 +1,33 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="Página no encontrada"
+  description="La página solicitada no existe en syle.studio."
+  noindex
+  canonical={null}
+>
+  <section class="not-found" aria-labelledby="not-found-title">
+    <p class="lbl code">Error 404</p>
+    <h1 id="not-found-title" class="disp">Esta página no existe.</h1>
+    <p>La dirección puede haber cambiado o estar incompleta.</p>
+    <a class="ln" href="/">Volver al inicio</a>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    min-height: 55vh;
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: 1.25rem;
+    max-width: var(--content-max);
+  }
+
+  .code { color: rgba(22, 20, 15, 0.62); }
+  h1 { font-size: var(--type-page); }
+  p:not(.code) { font-size: var(--type-body-lg); }
+  a { font-weight: 700; }
+</style>

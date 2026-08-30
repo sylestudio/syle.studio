@@ -16,7 +16,7 @@ const fmt = (s: number | null) =>
     {
       posts.map((p) => (
         <li>
-          <a href={`/blog/${p.slug}`}>
+          <a href={`/blog/${p.slug}/`}>
             <span class="post-title">{p.title}</span>
           </a>
           <div class="post-date">{fmt(p.published_at)}</div>

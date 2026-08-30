@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-Sitemap: https://syle.studio/sitemap.xml
+Sitemap: https://syle.studio/sitemap-index.xml

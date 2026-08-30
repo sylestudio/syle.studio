@@ -13,6 +13,8 @@ interface Props {
   image?: string;
   type?: "website" | "article";
   noindex?: boolean;
+  /** Set to null for error pages that must not advertise a canonical URL. */
+  canonical?: string | URL | null;
   initialNavDark?: boolean;
   /** Landing renders full-bleed sections; other pages get a readable container. */
   bare?: boolean;
@@ -23,12 +25,15 @@ const {
   image = "/img/hero.webp",
   type = "website",
   noindex = false,
+  canonical: canonicalOverride,
   initialNavDark = false,
   bare = false,
 } = Astro.props;
 const revision = import.meta.env.PUBLIC_BUILD_SHA;
 const site = Astro.site ?? new URL("https://syle.studio");
-const canonical = new URL(Astro.url.pathname, site);
+const canonical = canonicalOverride === null
+  ? null
+  : new URL(canonicalOverride ?? Astro.url.pathname, site);
 const fullTitle = `${title} · syle.studio`;
 const imageEntry = (staticImages as Record<
   string,
@@ -38,7 +43,7 @@ const socialImagePath = imageEntry?.variants
   .filter((variant) => variant.format === "jpeg")
   .sort((a, b) => b.width - a.width)[0]?.path ?? image;
 const socialImage = new URL(socialImagePath, site);
-const structuredData = JSON.stringify({
+const structuredData = canonical && JSON.stringify({
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -80,17 +85,17 @@ const structuredData = JSON.stringify({
     <meta
       name="robots"
       content={noindex
-        ? "noindex,nofollow"
+        ? "noindex,follow"
         : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"}
     />
     <meta name="theme-color" content="#f4f1ea" />
-    <link rel="canonical" href={canonical} />
+    {canonical && <link rel="canonical" href={canonical} />}
     <meta property="og:locale" content="es_MX" />
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content="syle.studio" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={socialImage} />
     <meta property="og:image:alt" content="Syle Studio" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -100,7 +105,7 @@ const structuredData = JSON.stringify({
     {revision && <meta name="syle-revision" content={revision} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{fullTitle}</title>
-    <script type="application/ld+json" set:html={structuredData} is:inline />
+    {structuredData && <script type="application/ld+json" set:html={structuredData} is:inline />}
     <style is:global>
       :root {
         --ink: #16140f;

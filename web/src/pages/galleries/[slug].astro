@@ -2,12 +2,14 @@
 import Base from "../../layouts/Base.astro";
 import Photo from "../../components/Photo.astro";
 import { listGalleries, getGallery } from "../../lib/api";
-import { projectHref } from "../../lib/proyectos";
+import { hasBespokePage, projectHref } from "../../lib/proyectos";
 import { toRoman } from "../../lib/roman";
 
 export async function getStaticPaths() {
   const galleries = await listGalleries();
-  return galleries.map((g) => ({ params: { slug: g.slug } }));
+  return galleries
+    .filter((gallery) => !hasBespokePage(gallery.slug))
+    .map((gallery) => ({ params: { slug: gallery.slug } }));
 }
 
 const { slug } = Astro.params;
