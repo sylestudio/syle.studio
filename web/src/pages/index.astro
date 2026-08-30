@@ -77,7 +77,6 @@ const clients = [
   { logo: "/img/Logos/achronyme.svg", width: 32, height: 32, href: "https://achrony.me", label: "Achronyme", inv: false },
   { logo: "/img/Logos/ataulfo.svg", width: 1024, height: 1024, href: "https://ataulfo.app", label: "Ataúlfo", inv: false },
   { logo: "/img/Logos/eddndev-wordmark.png", width: 348, height: 58, href: "https://eddndev.com", label: "edd n’ dev", inv: true },
-  { logo: "/img/Logos/vibesticker.png", width: 310, height: 303, href: "https://vibestick.com.mx", label: "VibeSticker", inv: false },
 ];
 ---
 
@@ -554,6 +553,10 @@ const clients = [
     overflow: hidden;
   }
   .arch-cell.inv { background: var(--dark); }
+  .arch-cell.next {
+    grid-column: span 2;
+    aspect-ratio: 2 / 1;
+  }
   .arch-logo {
     width: 65%;
     height: auto;
