@@ -3,7 +3,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="Dango">
+<ProyectoBase
+  title="Dango"
+  description="Dirección creativa y registro visual de la participación de Syle Studio como sponsor del Festival Dango en Teotihuacán."
+  image="/img/Dango/Main.jpg"
+>
   <div class="hero-fixed">
     <StaticPicture src="/img/Dango/Main.jpg" alt="Dango" eager fill />
   </div>
@@ -122,7 +126,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">Dango</a>
+            <span class="credit-val disp">Dango</span>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Fotografía</span>
@@ -146,8 +150,9 @@ import StaticPicture from "../../components/StaticPicture.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 

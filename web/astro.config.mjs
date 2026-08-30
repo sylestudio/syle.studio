@@ -7,6 +7,11 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   output: "static",
   site: "https://syle.studio",
+  build: {
+    // The site CSS is intentionally small. Inlining it removes two blocking
+    // round trips on mobile and lets the first headline paint immediately.
+    inlineStylesheets: "always",
+  },
   vite: {
     server: {
       proxy: {

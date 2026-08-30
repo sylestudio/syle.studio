@@ -23,7 +23,11 @@ const comunidad = [
 ];
 ---
 
-<ProyectoBase title="Syle Studio">
+<ProyectoBase
+  title="Syle Studio"
+  description="Syle Studio es un estudio creativo de fotografía y diseño que construye narrativas visuales desde el concepto hasta la estética final."
+  image="/img/Slide/Concierto.jpg"
+>
   <div class="hero-fixed">
     <StaticPicture src="/img/Slide/Concierto.jpg" alt="Syle Studio" eager fill />
   </div>
@@ -189,7 +193,8 @@ const comunidad = [
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
     <img alt="" />
   </div>
 </ProyectoBase>

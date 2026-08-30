@@ -40,7 +40,7 @@ const yearLabel = year ? toRoman(year) : "MMXXVI";
 const categoryLabel = category?.trim();
 ---
 
-<Base title={detail.gallery.title} bare>
+<Base title={detail.gallery.title} description={lede} bare>
   <!-- HERO · light -->
   <header class="hero">
     <div class="hero-in">
@@ -137,7 +137,7 @@ const categoryLabel = category?.trim();
       )}
     </nav>
 
-    <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal>
+    <a href="mailto:contacto%40sylestudio.com" class="cta" data-reveal>
       Iniciar proyecto
       <span class="cta-i" aria-hidden="true">↗</span>
     </a>

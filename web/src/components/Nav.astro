@@ -5,9 +5,14 @@
 // authoritative vector and inherits the nav's `currentColor`, so it re-tones
 // with the same toggle — no CSS filter needed.
 import Wordmark from "./Wordmark.astro";
+
+interface Props {
+  initialDark?: boolean;
+}
+const { initialDark = false } = Astro.props;
 ---
 
-<nav id="nav">
+<nav id="nav" class:list={{ "on-dark": initialDark }}>
   <div class="nav-row">
     <a href="/" class="nav-mark-link" aria-label="syle.studio — inicio">
       <Wordmark class="nav-mark" />

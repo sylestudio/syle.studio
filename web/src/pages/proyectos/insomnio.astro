@@ -3,7 +3,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="Insomnio Studio">
+<ProyectoBase
+  title="Insomnio Studio"
+  description="Sesión fotográfica de Syle Studio e Insomnio: una identidad visual construida entre la noche, el sueño y la vigilia."
+  image="/img/Insomnio/Main.jpg"
+>
   <div class="hero-fixed">
     <StaticPicture src="/img/Insomnio/Main.jpg" alt="Insomnio Studio" eager fill />
   </div>
@@ -102,7 +106,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">Insomnio Studio</a>
+            <span class="credit-val disp">Insomnio Studio</span>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Fotografia / Diseño</span>
@@ -120,8 +124,9 @@ import StaticPicture from "../../components/StaticPicture.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 

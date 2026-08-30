@@ -1,15 +1,18 @@
 ---
 import Base from "./Base.astro";
+import Wordmark from "../components/Wordmark.astro";
 
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
 }
-const { title } = Astro.props;
+const { title, description, image } = Astro.props;
 ---
 
-<Base title={title} bare>
+<Base title={title} description={description} image={image} initialNavDark bare>
   <div class="syle-watermark" aria-hidden="true">
-    <img src="/Syle_Fuente_Negro.svg" alt="" />
+    <Wordmark class="watermark-wordmark" />
     <span class="wm-t"></span>
     <span class="wm-r"></span>
     <span class="wm-b"></span>
@@ -30,8 +33,9 @@ const { title } = Astro.props;
     pointer-events: none;
     z-index: 2;
     user-select: none;
+    color: var(--ink);
   }
-  .syle-watermark img {
+  .syle-watermark :global(.watermark-wordmark) {
     width: 100%;
     height: auto;
     display: block;
@@ -63,4 +67,76 @@ const { title } = Astro.props;
 
   @keyframes grow-x { to { transform: scaleX(1); } }
   @keyframes grow-y { to { transform: scaleY(1); } }
+
+  :global(.lightbox-close) {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgba(244, 241, 234, 0.55);
+    border-radius: 999px;
+    background: rgba(12, 11, 10, 0.72);
+    color: var(--paper);
+    font: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  :global(.lightbox [role="button"]:focus-visible),
+  :global(.lightbox-close:focus-visible) {
+    outline-color: var(--paper);
+  }
 </style>
+
+<script>
+  // Existing project galleries share the same lightbox contract. Enhance it
+  // once here so every zoomable image works with keyboard and restores focus.
+  const dialog = document.getElementById("lightbox");
+  const closeButton = dialog?.querySelector<HTMLButtonElement>(".lightbox-close");
+  const zoomables = document.querySelectorAll<HTMLImageElement>(
+    ".diptych img, .triple img, .gallery img",
+  );
+  let opener: HTMLElement | null = null;
+
+  if (dialog && closeButton) {
+    dialog.setAttribute("aria-hidden", "true");
+    const projectName =
+      document.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim() ||
+      "proyecto";
+    zoomables.forEach((image, index) => {
+      const description = image.alt || `Imagen ${index + 1} de ${projectName}`;
+      image.alt = description;
+      image.tabIndex = 0;
+      image.setAttribute("role", "button");
+      image.setAttribute("aria-label", `Ampliar imagen: ${description}`);
+      image.addEventListener("click", () => {
+        opener = image;
+      });
+      image.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        image.click();
+      });
+    });
+
+    closeButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      dialog.click();
+    });
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        closeButton.focus();
+      }
+    });
+
+    new MutationObserver(() => {
+      const open = dialog.classList.contains("open");
+      dialog.setAttribute("aria-hidden", String(!open));
+      if (open) closeButton.focus();
+      else opener?.focus();
+    }).observe(dialog, { attributes: true, attributeFilter: ["class"] });
+  }
+</script>

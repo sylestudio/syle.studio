@@ -25,7 +25,11 @@ const comunidad = [
 ];
 ---
 
-<ProyectoBase title="Rupture Collection">
+<ProyectoBase
+  title="Rupture Collection"
+  description="Rupture Collection explora la fractura, la tensión entre lo clásico y lo experimental, y la reconstrucción como identidad visual."
+  image="/img/Obsesion/Main.jpg"
+>
   <div class="hero-fixed">
     <StaticPicture src="/img/Obsesion/Main.jpg" alt="Rupture Collection" eager fill />
   </div>
@@ -192,7 +196,8 @@ const comunidad = [
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
     <img alt="" />
   </div>
 </ProyectoBase>

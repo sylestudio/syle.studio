@@ -5,19 +5,70 @@ import "@fontsource/space-mono/700.css";
 import "lenis/dist/lenis.css";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import staticImages from "../generated/static-images.json";
 
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
+  initialNavDark?: boolean;
   /** Landing renders full-bleed sections; other pages get a readable container. */
   bare?: boolean;
 }
 const {
   title,
   description = "Syle Studio — estudio creativo de fotografía, dirección y diseño en México.",
+  image = "/img/hero.webp",
+  type = "website",
+  noindex = false,
+  initialNavDark = false,
   bare = false,
 } = Astro.props;
 const revision = import.meta.env.PUBLIC_BUILD_SHA;
+const site = Astro.site ?? new URL("https://syle.studio");
+const canonical = new URL(Astro.url.pathname, site);
+const fullTitle = `${title} · syle.studio`;
+const imageEntry = (staticImages as Record<
+  string,
+  { variants: Array<{ format: string; width: number; path: string }> }
+>)[image];
+const socialImagePath = imageEntry?.variants
+  .filter((variant) => variant.format === "jpeg")
+  .sort((a, b) => b.width - a.width)[0]?.path ?? image;
+const socialImage = new URL(socialImagePath, site);
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${site.href}#organization`,
+      name: "Syle Studio",
+      url: site.href,
+      sameAs: ["https://www.instagram.com/syle_studio/"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${site.href}#website`,
+      name: "syle.studio",
+      url: site.href,
+      inLanguage: "es-MX",
+      publisher: { "@id": `${site.href}#organization` },
+    },
+    {
+      "@type": type === "article" ? "Article" : "WebPage",
+      "@id": `${canonical.href}#webpage`,
+      name: fullTitle,
+      url: canonical.href,
+      description,
+      image: socialImage.href,
+      inLanguage: "es-MX",
+      isPartOf: { "@id": `${site.href}#website` },
+      about: { "@id": `${site.href}#organization` },
+    },
+  ],
+}).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -26,9 +77,30 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex,nofollow"
+        : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"}
+    />
+    <meta name="theme-color" content="#f4f1ea" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="syle.studio" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content="Syle Studio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
     {revision && <meta name="syle-revision" content={revision} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>{title} · syle.studio</title>
+    <title>{fullTitle}</title>
+    <script type="application/ld+json" set:html={structuredData} is:inline />
     <style is:global>
       :root {
         --ink: #16140f;
@@ -51,6 +123,10 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
       }
       a { color: inherit; text-decoration: none; }
       img { display: block; width: 100%; height: auto; }
+      :where(a, button, [role="button"]):focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+      }
 
       .disp {
         font-weight: 700;
@@ -109,14 +185,11 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
       }
 
       /* Reveal por palabra atado al scroll. El script trocea el texto de cada
-         bloque [data-scroll-text] en <span class="w"> y sube su opacidad segun
-         avanza el scroll. [data-no-split] excluye un subarbol: layout que no
-         debe partirse en palabras, o controles que deben entrar de una pieza.
-         Mismo criterio fail-visible que el reveal de arriba: las palabras solo
-         se atenuan bajo .st-ready, clase que anade el script, asi que sin JS o
-         con reduced motion el texto se lee a opacidad plena. */
+         bloque [data-scroll-text] en <span class="w"> y desplaza cada palabra
+         sutilmente segun avanza el scroll. Se conserva la opacidad completa:
+         asi el efecto no reduce el contraste ni la legibilidad. */
       [data-scroll-text] .w { display: inline-block; }
-      [data-scroll-text].st-ready .w { opacity: 0.12; }
+      [data-scroll-text].st-ready .w { transform: translateY(0.12em); }
 
       .container {
         max-width: 72rem;
@@ -127,7 +200,7 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
   </head>
   <body>
     <div class="grain"></div>
-    <Nav />
+    <Nav initialDark={initialNavDark} />
     {
       bare ? (
         <slot />
@@ -161,18 +234,40 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
       const nav = document.getElementById("nav");
       if (nav) {
         const onDark = new Set<Element>();
+        let projectHeroActive = Boolean(document.querySelector(".hero-fixed"));
+        const syncNavTone = () =>
+          nav.classList.toggle("on-dark", projectHeroActive || onDark.size > 0);
         const navIO = new IntersectionObserver(
           (entries) => {
             entries.forEach((e) =>
               e.isIntersecting ? onDark.add(e.target) : onDark.delete(e.target),
             );
-            nav.classList.toggle("on-dark", onDark.size > 0);
+            syncNavTone();
           },
           { rootMargin: "-30px 0px -100% 0px" },
         );
         document
           .querySelectorAll("section.dark, footer.dark")
           .forEach((d) => navIO.observe(d));
+
+        const pageWrap = document.querySelector(".page-wrap");
+        if (pageWrap) {
+          let projectToneQueued = false;
+          const paintProjectTone = () => {
+            projectToneQueued = false;
+            projectHeroActive = pageWrap.getBoundingClientRect().top > 30;
+            syncNavTone();
+          };
+          const queueProjectTone = () => {
+            if (projectToneQueued) return;
+            projectToneQueued = true;
+            requestAnimationFrame(paintProjectTone);
+          };
+          addEventListener("scroll", queueProjectTone, { passive: true });
+          addEventListener("resize", queueProjectTone);
+          paintProjectTone();
+        }
+        syncNavTone();
       }
 
       // Reveal: only gate visibility when we can actually animate.
@@ -197,11 +292,8 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
       }
 
       // Reveal por palabra atado al scroll: a diferencia de [data-reveal], que
-      // es un fade de una sola vez al entrar en viewport, aqui la opacidad de
-      // cada palabra sale del progreso del texto al cruzar la pantalla, asi que
-      // el texto se va escribiendo mientras scrolleas. SPREAD = cuantas
-      // palabras estan encendiendose a la vez: eso da el degradado que viaja
-      // en vez de un encendido seco.
+      // ocurre una sola vez, aqui cada palabra se acomoda verticalmente segun
+      // el progreso del texto. La opacidad no cambia para mantener contraste.
       //
       // El rango NO se mide sobre el contenedor sino sobre la caja real de las
       // palabras (top de la primera, bottom de la ultima). Asi un bloque puede
@@ -257,16 +349,21 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
           const paint = () => {
             queued = false;
             const vh = window.innerHeight;
-            blocks.forEach((words) => {
-              const top = words[0].getBoundingClientRect().top;
-              const end = words[words.length - 1].getBoundingClientRect().bottom;
+            // Read every geometry first, then write styles. Mixing both per
+            // block forced the browser to recalculate layout repeatedly.
+            const positions = blocks.map((words) => ({
+              words,
+              top: words[0].getBoundingClientRect().top,
+              end: words[words.length - 1].getBoundingClientRect().bottom,
+            }));
+            positions.forEach(({ words, top, end }) => {
               // arranca cuando la primera palabra llega al 85% del alto y
               // termina cuando la ultima sube al 45%
               const p = (vh * 0.85 - top) / (Math.max(end - top, 1) + vh * 0.4);
               const head = Math.min(Math.max(p, 0), 1) * (words.length + SPREAD);
               words.forEach((w, i) => {
                 const t = Math.min(Math.max((head - i) / SPREAD, 0), 1);
-                w.style.opacity = String(0.12 + t * 0.88);
+                w.style.transform = `translateY(${(1 - t) * 0.12}em)`;
               });
             });
           };
@@ -280,7 +377,7 @@ const revision = import.meta.env.PUBLIC_BUILD_SHA;
           // Lenis mueve el documento real, asi que el evento nativo basta.
           addEventListener("scroll", onScroll, { passive: true });
           addEventListener("resize", onScroll);
-          paint();
+          requestAnimationFrame(paint);
         }
       }
     </script>

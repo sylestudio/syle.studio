@@ -18,9 +18,14 @@ const fecha = post.published_at
       day: "numeric",
     })
   : "";
+const summary = post.body_html
+  .replace(/<[^>]*>/g, " ")
+  .replace(/\s+/g, " ")
+  .trim()
+  .slice(0, 160) || `Artículo de Syle Studio: ${post.title}.`;
 ---
 
-<Base title={post.title}>
+<Base title={post.title} description={summary} type="article">
   <article class="post">
     {fecha && <p class="lbl post-date">{fecha}</p>}
     <h1 class="disp post-title">{post.title}</h1>

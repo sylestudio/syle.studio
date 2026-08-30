@@ -3,7 +3,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="La Obsesion">
+<ProyectoBase
+  title="La Obsesion"
+  description="Fotografía y narrativa visual para La Obsesión Factory, sello musical enfocado en reguetón y artistas emergentes."
+  image="/img/Obsesion/Main.jpg"
+>
   <div class="hero-fixed">
     <StaticPicture src="/img/Obsesion/Main.jpg" alt="La Obsesion" eager fill />
   </div>
@@ -126,7 +130,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">La Obsesion</a>
+            <span class="credit-val disp">La Obsesion</span>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Dirección /Fotografía</span>
@@ -155,8 +159,9 @@ import StaticPicture from "../../components/StaticPicture.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 

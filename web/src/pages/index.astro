@@ -71,13 +71,13 @@ const slides = [
 //   label → texto pequeño en esquina inferior izquierda
 //   inv   → true = fondo oscuro (usa variante blanca del logo)
 const clients = [
-  { logo: "/img/Logos/logo-b.png", href: "https://sylestudio.com", label: "Syle Studio",   inv: false },
-  { logo: "/img/Logos/Dango2025.svg", href: "https://festivaldango.com", label: "Festival Dango",   inv: false },
-  { logo: "/img/Logos/DGX.png", href: "https://www.instagram.com/dgx.archive/", label: "Cliente tres",  inv: true  },
-  { logo: "/img/Logos/in.png", href: "#", label: "Cliente cuatro",inv: false },
-  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente cinco", inv: false },
-  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente seis",  inv: true  },
-  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente siete", inv: false },
+  { logo: "/img/Logos/logo-b.png", width: 640, height: 237, href: "https://sylestudio.com", label: "Syle Studio", inv: false },
+  { logo: "/img/Logos/Dango2025.svg", width: 7231, height: 1664, href: "https://festivaldango.com", label: "Festival Dango", inv: false },
+  { logo: "/img/Logos/DGX.png", width: 512, height: 512, href: "https://www.instagram.com/dgx.archive/", label: "DGX Archive", inv: true },
+  { logo: "/img/Logos/in.png", width: 512, height: 512, href: null, label: "Cliente cuatro", inv: false },
+  { logo: "/img/Logos/logo-b.png", width: 640, height: 237, href: null, label: "Cliente cinco", inv: false },
+  { logo: "/img/Logos/logo-b.png", width: 640, height: 237, href: null, label: "Cliente seis", inv: true },
+  { logo: "/img/Logos/logo-b.png", width: 640, height: 237, href: null, label: "Cliente siete", inv: false },
 ];
 ---
 
@@ -87,12 +87,12 @@ const clients = [
   <header class="hero">
     <div class="hero-in">
       <div class="hero-mark" aria-hidden="true"><Mark /></div>
-      <div class="lbl muted" data-reveal>Estudio creativo — Estado de México · 2025</div>
-      <h1 class="disp hero-h" data-reveal>
-        Syle Studio, <br/> Nunca dejes de <span class="rw" id="rewrite">crear.</span>
+      <div class="lbl muted">Estudio creativo — Estado de México · 2025</div>
+      <h1 class="disp hero-h" aria-label="Syle Studio, nunca dejes de crear.">
+        Syle Studio, <br/> Nunca dejes de <span class="rw" id="rewrite" aria-hidden="true">crear.</span>
       </h1>
       <div class="hero-foot">
-        <p class="hero-lede" data-reveal>
+        <p class="hero-lede">
           Estudio Creativo nacido en México, todos tienen una
           historia que contar, nuestra inspiracion es ayudarlos
           a contarla.
@@ -121,7 +121,10 @@ const clients = [
       </div>
       <figcaption class="lbl muted cap">
         <a class="sl-cap-text" href={slides[0].url}>{slides[0].caption}</a>
-        <span class="sl-counter">{`01 / ${String(slides.length).padStart(2, "0")}`}</span>
+        <span class="sl-status">
+          <span class="sl-counter">{`01 / ${String(slides.length).padStart(2, "0")}`}</span>
+          <button class="sl-toggle" type="button" aria-pressed="false">Pausar</button>
+        </span>
         <span class="sl-ref-text">{slides[0].ref}</span>
       </figcaption>
     </figure>
@@ -202,12 +205,17 @@ const clients = [
          layout (aspect-ratio + posicionado absoluto de la etiqueta) y partirlas
          rompería el responsive. Conserva su reveal normal. -->
     <div class="arch-grid" data-reveal data-no-split>
-      {clients.map((c) => (
-        <a href={c.href} class={`arch-cell${c.inv ? " inv" : ""}`} target="_blank" rel="noopener noreferrer">
-          <img src={c.logo} alt="" class="arch-logo" />
-          <span class="arch-label lbl">{c.label}</span>
-        </a>
-      ))}
+      {clients.map((c) => c.href ? (
+          <a href={c.href} class={`arch-cell${c.inv ? " inv" : ""}`} target="_blank" rel="noopener noreferrer">
+            <img src={c.logo} alt="" class="arch-logo" width={c.width} height={c.height} loading="lazy" decoding="async" />
+            <span class="arch-label lbl">{c.label}</span>
+          </a>
+        ) : (
+          <div class={`arch-cell${c.inv ? " inv" : ""}`}>
+            <img src={c.logo} alt="" class="arch-logo" width={c.width} height={c.height} loading="lazy" decoding="async" />
+            <span class="arch-label lbl">{c.label}</span>
+          </div>
+        ))}
       <div class="arch-cell next"><span class="lbl faint">Próximo</span></div>
     </div>
   </section>
@@ -222,7 +230,7 @@ const clients = [
         <!-- el CTA es un control, no prosa: entra de una pieza con el reveal
              normal para no dejar la píldora medio encendida ni desalinear la
              flecha, que vive en un inline-flex centrado. -->
-        <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal data-no-split>
+        <a href="mailto:contacto%40sylestudio.com" class="cta" data-reveal data-no-split>
           Iniciar proyecto
           <span class="cta-i" aria-hidden="true">↗</span>
         </a>
@@ -342,6 +350,19 @@ const clients = [
     gap: 0.75rem;
   }
   .sl-ref-text { justify-self: end; }
+  .sl-status { display: inline-flex; align-items: center; gap: 0.75rem; }
+  .sl-toggle {
+    min-height: 1.5rem;
+    border: 0;
+    border-left: 1px solid rgba(22, 20, 15, 0.25);
+    padding: 0 0 0 0.75rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
 
   /* slider */
   .sl-slide {
@@ -371,12 +392,17 @@ const clients = [
     z-index: 2;
   }
   .bleed-sl:hover .sl-arrow { opacity: 1; }
+  .sl-arrow:focus-visible { opacity: 1; }
   .sl-arrow:hover { transform: scale(1.08); }
   .sl-prev { right: 4.5rem; }
   .sl-next { right: 1.25rem; }
   .sl-cap-text { color: inherit; text-decoration: none; }
   .sl-cap-text:hover { text-decoration: underline; text-underline-offset: 3px; }
   .sl-counter { font-size: 0.7rem; letter-spacing: 0.06em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sl-toggle { display: none; }
+  }
 
   /* SECTION shell */
   .section { padding: 7rem 1.5rem; }
@@ -638,6 +664,7 @@ const clients = [
     const capEl    = bleedSl.querySelector<HTMLAnchorElement>(".sl-cap-text");
     const refEl    = bleedSl.querySelector<HTMLElement>(".sl-ref-text");
     const ctrEl    = bleedSl.querySelector<HTMLElement>(".sl-counter");
+    const toggleEl = bleedSl.querySelector<HTMLButtonElement>(".sl-toggle");
     const total    = slSlides.length;
     let cur = 0;
     let restart = () => {}; // reasignado abajo si el autoplay esta activo
@@ -666,38 +693,59 @@ const clients = [
       if (Math.abs(dx) > 40) { goTo(cur + (dx < 0 ? 1 : -1)); restart(); }
     });
 
-    // Autoplay: avanza sola cada AUTOPLAY_MS. En pausa mientras el puntero
-    // esta encima (mismo gesto que ya revela las flechas), mientras el dedo
-    // toca en movil, y mientras el slider no esta en pantalla — asi no quema
-    // ciclos ni se le adelanta una slide al usuario al volver a hacer scroll
-    // hasta ahi. Cualquier interaccion manual (flecha o swipe) reinicia el
-    // temporizador para no cortarle el avance automatico a medio camino.
+    // Autoplay: pausa por interaccion, foco, pestana oculta, salida de viewport
+    // o eleccion explicita del usuario. Cada reanudacion empieza un periodo
+    // completo para que nunca cambie una imagen inmediatamente tras interactuar.
     if (total > 1 && !reduce) {
       const AUTOPLAY_MS = 5500;
       let timer: ReturnType<typeof setInterval> | undefined;
       let onScreen = true;
+      let userPaused = false;
+      const pauseReasons = new Set<string>();
 
       function stop() {
         clearInterval(timer);
         timer = undefined;
       }
       function start() {
-        if (timer || !onScreen) return;
+        if (timer) return;
         timer = setInterval(() => goTo(cur + 1), AUTOPLAY_MS);
       }
-      restart = () => { stop(); start(); };
+      function sync() {
+        if (userPaused || !onScreen || document.hidden || pauseReasons.size > 0) stop();
+        else start();
+      }
+      function setReason(reason: string, paused: boolean) {
+        paused ? pauseReasons.add(reason) : pauseReasons.delete(reason);
+        sync();
+      }
+      restart = () => { stop(); sync(); };
 
-      bleedSl.addEventListener("mouseenter", stop);
-      bleedSl.addEventListener("mouseleave", start);
-      bleedSl.addEventListener("touchstart", stop, { passive: true });
-      bleedSl.addEventListener("touchend", () => setTimeout(start, AUTOPLAY_MS), { passive: true });
+      bleedSl.addEventListener("mouseenter", () => setReason("hover", true));
+      bleedSl.addEventListener("mouseleave", () => setReason("hover", false));
+      bleedSl.addEventListener("focusin", () => setReason("focus", true));
+      bleedSl.addEventListener("focusout", (event) => {
+        if (!bleedSl.contains(event.relatedTarget as Node | null)) setReason("focus", false);
+      });
+      bleedSl.addEventListener("touchstart", () => setReason("touch", true), { passive: true });
+      bleedSl.addEventListener("touchend", () => setReason("touch", false), { passive: true });
+      document.addEventListener("visibilitychange", sync);
+
+      toggleEl?.addEventListener("click", () => {
+        userPaused = !userPaused;
+        toggleEl.textContent = userPaused ? "Reanudar" : "Pausar";
+        toggleEl.setAttribute("aria-pressed", String(userPaused));
+        sync();
+      });
 
       new IntersectionObserver(([e]) => {
         onScreen = e.isIntersecting;
-        onScreen ? start() : stop();
+        sync();
       }).observe(bleedSl);
 
-      start();
+      sync();
+    } else if (toggleEl) {
+      toggleEl.hidden = true;
     }
   }
 

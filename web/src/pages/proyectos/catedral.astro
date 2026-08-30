@@ -3,7 +3,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="Catedral">
+<ProyectoBase
+  title="Catedral"
+  description="Símbolo Vivo: diseño de prendas y fotografía de Syle Studio alrededor de la resignificación, la fe y la esperanza."
+  image="/img/Simbolo/Simbolo.jpg"
+>
   <div class="hero-fixed">
     <StaticPicture src="/img/Simbolo/Simbolo.jpg" alt="Catedral" eager fill />
   </div>
@@ -103,7 +107,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">Simbolo Vivo</a>
+            <span class="credit-val disp">Simbolo Vivo</span>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Dirección /Fotografía</span>
@@ -129,8 +133,9 @@ import StaticPicture from "../../components/StaticPicture.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 
