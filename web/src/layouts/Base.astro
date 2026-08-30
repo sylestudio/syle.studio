@@ -108,7 +108,35 @@ const structuredData = JSON.stringify({
         --dark: #0c0b0a;
         --ox: #323030;
         --e: cubic-bezier(0.32, 0.72, 0, 1);
+
+        /* Layout tokens: one shared horizontal rhythm for every interface
+           surface. Photographic/full-bleed sections opt out locally. */
+        --layout-max: 106.25rem;
+        --shell-max: calc(var(--layout-max) + (2 * var(--page-gutter)));
+        --content-max: 72rem;
+        --reading-max: 44rem;
+        --page-gutter: 1.5rem;
+
+        /* Type tokens: semantic roles, not page-specific one-offs. */
+        --type-label: 0.625rem;
+        --type-caption: 0.75rem;
+        --type-body-sm: 0.875rem;
+        --type-body: 1rem;
+        --type-body-lg: clamp(1rem, 0.25vw + 0.95rem, 1.125rem);
+        --type-title-sm: clamp(1.75rem, 4vw, 3rem);
+        --type-heading: clamp(1.75rem, 4vw, 4.5rem);
+        --type-section: clamp(2.5rem, 7vw, 5rem);
+        --type-page: clamp(3rem, 10vw, 9rem);
+        --type-hero: clamp(3.25rem, 15vw, 12rem);
+        --type-close: clamp(3rem, 12vw, 10rem);
+        --type-prose-title: clamp(2.5rem, 6vw, 3.5rem);
+        --type-prose-h1: 1.875rem;
+        --type-prose-h2: 1.5rem;
+        --type-prose-h3: 1.25rem;
         color-scheme: light;
+      }
+      @media (min-width: 768px) {
+        :root { --page-gutter: 3rem; }
       }
       * { box-sizing: border-box; margin: 0; }
       /* clip (no "hidden"): evita scroll horizontal SIN crear un contenedor de
@@ -135,7 +163,7 @@ const structuredData = JSON.stringify({
       }
       .lbl {
         font-family: "Space Mono", ui-monospace, monospace;
-        font-size: 9px;
+        font-size: var(--type-label);
         letter-spacing: 0.22em;
         text-transform: uppercase;
       }
@@ -192,9 +220,10 @@ const structuredData = JSON.stringify({
       [data-scroll-text].st-ready .w { transform: translateY(0.12em); }
 
       .container {
-        max-width: 72rem;
+        width: 100%;
+        max-width: var(--shell-max);
         margin: 0 auto;
-        padding: 7rem 1.5rem 4rem;
+        padding: 7rem var(--page-gutter) 4rem;
       }
     </style>
   </head>

@@ -11,17 +11,33 @@ const fmt = (s: number | null) =>
   title="Blog"
   description="Notas, procesos y proyectos de fotografía, dirección creativa y diseño publicados por Syle Studio."
 >
-  {posts.length === 0 && <p style="color:#71717a">Aún no hay entradas.</p>}
-  <ul style="list-style:none;padding:0;display:grid;gap:1.5rem">
+  {posts.length === 0 && <p class="empty">Aún no hay entradas.</p>}
+  <ul class="post-list">
     {
       posts.map((p) => (
         <li>
           <a href={`/blog/${p.slug}`}>
-            <span style="font-size:1.25rem;font-weight:600">{p.title}</span>
+            <span class="post-title">{p.title}</span>
           </a>
-          <div style="color:#71717a;font-size:0.875rem">{fmt(p.published_at)}</div>
+          <div class="post-date">{fmt(p.published_at)}</div>
         </li>
       ))
     }
   </ul>
 </Base>
+
+<style>
+  .empty,
+  .post-date { color: rgba(22, 20, 15, 0.62); }
+  .post-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .post-title {
+    font-size: var(--type-prose-h3);
+    font-weight: 600;
+  }
+  .post-date { font-size: var(--type-body-sm); }
+</style>

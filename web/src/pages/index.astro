@@ -252,11 +252,11 @@ const clients = [
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    padding: 8rem 1.5rem 2.5rem;
+    padding: 8rem var(--page-gutter) 2.5rem;
   }
   .hero-in {
     position: relative;
-    max-width: 1700px;
+    max-width: var(--layout-max);
     margin: 0 auto;
     width: 100%;
     flex: 1;
@@ -291,7 +291,7 @@ const clients = [
     stroke-linecap: round;
   }
   .hero-h {
-    font-size: clamp(3.25rem, 15vw, 12rem);
+    font-size: var(--type-hero);
     line-height: 0.86;
     margin-top: auto;
   }
@@ -327,14 +327,20 @@ const clients = [
   }
   .hero-lede {
     max-width: 34rem;
-    font-size: 1.125rem;
+    font-size: var(--type-body-lg);
     line-height: 1.6;
     color: rgba(22, 20, 15, 0.65);
   }
 
   .bleed { padding: 0 0 7rem; }
   .bleed figure { overflow: hidden; }
-  .cap { padding: 0 1.5rem; }
+  .cap {
+    width: 100%;
+    max-width: var(--shell-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--page-gutter);
+  }
   .hero-img { height: 62vh; position: relative; overflow: hidden; }
   .sl-img-link { display: block; width: 100%; height: 100%; }
   .hero-img :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -381,7 +387,7 @@ const clients = [
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
+    font-size: var(--type-body-sm);
     color: rgba(22, 20, 15, 0.8);
     opacity: 0;
     transition: opacity 0.35s, transform 0.35s var(--e);
@@ -394,16 +400,16 @@ const clients = [
   .sl-next { right: 1.25rem; }
   .sl-cap-text { color: inherit; text-decoration: none; }
   .sl-cap-text:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .sl-counter { font-size: 0.7rem; letter-spacing: 0.06em; }
+  .sl-counter { font-size: var(--type-caption); letter-spacing: 0.06em; }
 
   @media (prefers-reduced-motion: reduce) {
     .sl-toggle { display: none; }
   }
 
   /* SECTION shell */
-  .section { padding: 7rem 1.5rem; }
+  .section { padding: 7rem var(--page-gutter); }
   #proyectos { padding-inline: 0; }
-  .section > * { max-width: 1700px; margin-left: auto; margin-right: auto; }
+  .section > * { max-width: var(--layout-max); margin-left: auto; margin-right: auto; }
   /* Las oscuras respiran menos que las claras: aqui el padding es negro puro,
      no aire de papel, y a 7rem x2 pesaba de mas. Solo el eje vertical, para no
      tocar el margen lateral. */
@@ -458,9 +464,9 @@ const clients = [
     margin-bottom: 4rem;
   }
   #proyectos .sec-head,
-  #proyectos .empty { width: calc(100% - 3rem); }
+  #proyectos .empty { width: calc(100% - (2 * var(--page-gutter))); }
   .dark .sec-head { border-color: rgba(244, 241, 234, 0.15); }
-  .sec-title { font-size: clamp(2.5rem, 7vw, 5rem); }
+  .sec-title { font-size: var(--type-section); }
   .empty { padding: 2rem 0 4rem; }
 
   /* alternating project grid: two cards, then three */
@@ -482,7 +488,7 @@ const clients = [
   .ph { background: rgba(22, 20, 15, 0.06); }
   .card-title {
     margin-top: 1.25rem;
-    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-size: var(--type-title-sm);
   }
   .card-cat { display: block; margin-top: 1.25rem; }
   .card-cat + .card-title { margin-top: 0.4rem; }
@@ -517,11 +523,11 @@ const clients = [
 
   /* dark contrast moment */
   .proc { display: grid; gap: 3rem; }
-  .proc-h { font-size: clamp(2.5rem, 7vw, 5.5rem); }
+  .proc-h { font-size: var(--type-section); }
   .proc-p {
     margin-top: 2rem;
     max-width: 24rem;
-    font-size: 1.125rem;
+    font-size: var(--type-body-lg);
     line-height: 1.6;
     color: rgba(244, 241, 234, 0.55);
   }
@@ -573,7 +579,7 @@ const clients = [
     bottom: 1.25rem;
     left: 1.5rem;
     color: rgba(22, 20, 15, 0.68);
-    font-size: 0.7rem;
+    font-size: var(--type-caption);
     letter-spacing: 0.04em;
   }
   .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.72); }
@@ -582,7 +588,7 @@ const clients = [
   .close { min-height: 70dvh; display: flex; align-items: center; }
   .close-in { display: grid; gap: 4rem; width: 100%; }
   .close-h {
-    font-size: clamp(3rem, 12vw, 10rem);
+    font-size: var(--type-close);
     margin: 1.5rem 0 2.5rem;
   }
   .cta {
@@ -593,7 +599,7 @@ const clients = [
     color: #fff;
     border-radius: 999px;
     padding: 1rem 1rem 1rem 2rem;
-    font-size: 0.875rem;
+    font-size: var(--type-body-sm);
     text-transform: uppercase;
     letter-spacing: 0.18em;
     transition: transform 0.5s var(--e);
@@ -610,7 +616,7 @@ const clients = [
     transition: transform 0.5s var(--e);
   }
   .cta:hover .cta-i { transform: translate(3px, -2px); }
-  .spec { display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.9rem; }
+  .spec { display: flex; flex-direction: column; gap: 1.5rem; font-size: var(--type-body-sm); }
   .spec > div {
     display: flex;
     justify-content: space-between;
@@ -621,13 +627,10 @@ const clients = [
   .spec dd { color: rgba(244, 241, 234, 0.8); }
 
   @media (min-width: 768px) {
-    .hero { padding: 8rem 3rem 2.5rem; }
+    .hero { padding-block: 8rem 2.5rem; }
     .bleed { padding: 0 0 10rem; }
-    .cap { padding: 0 3rem; }
     .hero-img { height: 86vh; }
-    .section { padding: 11rem 3rem; }
-    #proyectos .sec-head,
-    #proyectos .empty { width: calc(100% - 6rem); }
+    .section { padding-block: 11rem; }
     .section.dark { padding-block: 7rem; }
     .sec-mark { width: min(115vw, 2100px); }
     .close .sec-mark { width: min(75vw, 1350px); }
@@ -649,7 +652,7 @@ const clients = [
       align-items: end;
       gap: 4rem 6rem;
     }
-    .spec { font-size: 0.95rem; }
+    .spec { font-size: var(--type-body); }
   }
 </style>
 

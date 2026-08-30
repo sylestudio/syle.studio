@@ -180,10 +180,10 @@ import StaticPicture from "../../components/StaticPicture.astro";
   }
 
   .wrap {
-    max-width: 1700px;
+    max-width: var(--shell-max);
     margin: 0 auto;
-    padding-left: clamp(1.5rem, 3vw, 3rem);
-    padding-right: clamp(1.5rem, 3vw, 3rem);
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   /* ── Header ── */
@@ -195,7 +195,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
     gap: 1.25rem;
   }
   .pg-title {
-    font-size: clamp(3rem, 10vw, 9rem);
+    font-size: var(--type-page);
     line-height: 0.88;
   }
 
@@ -218,11 +218,11 @@ import StaticPicture from "../../components/StaticPicture.astro";
     align-items: flex-end;
   }
   .intro-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
   }
 
   .body-s {
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    font-size: var(--type-body-sm);
     line-height: 1.65;
     color: rgba(22, 20, 15, 0.72);
   }
@@ -253,7 +253,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
     max-width: 60%;
   }
   .sub2-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-r .body-s { max-width: 44ch; }
@@ -268,7 +268,7 @@ import StaticPicture from "../../components/StaticPicture.astro";
     padding-bottom: 6rem;
   }
   .center-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-c .body-s { max-width: 52ch; }
@@ -391,10 +391,10 @@ import StaticPicture from "../../components/StaticPicture.astro";
   }
   .credit-val {
     width: fit-content;
-    font-size: 1rem;
+    font-size: var(--type-body);
   }
   .credit-val.disp {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: var(--type-title-sm);
   }
 
   /* ── Mobile ── */

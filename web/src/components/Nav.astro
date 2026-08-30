@@ -37,9 +37,9 @@ const { initialDark = false } = Astro.props;
     transform: translateY(-110%);
   }
   .nav-row {
-    max-width: 1700px;
+    max-width: var(--shell-max);
     margin: 0 auto;
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem var(--page-gutter);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -70,9 +70,6 @@ const { initialDark = false } = Astro.props;
     color: var(--paper);
   }
   @media (min-width: 768px) {
-    .nav-row {
-      padding: 1.25rem 3rem;
-    }
     .nav-mark-link :global(.nav-mark) {
       height: 1.75rem;
     }
