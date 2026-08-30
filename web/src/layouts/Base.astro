@@ -205,24 +205,31 @@ const structuredData = canonical && JSON.stringify({
          A safety timeout reveals anything IO missed. No JS / JS error / reduced
          motion => everything stays visible. */
       .reveal-ready [data-reveal] {
+        opacity: 0;
         transform: translateY(20px);
         clip-path: inset(0 0 8% 0);
         transition:
+          opacity 1s var(--e),
           transform 1s var(--e),
           clip-path 1s var(--e);
-        will-change: transform, clip-path;
+        will-change: opacity, transform, clip-path;
       }
       .reveal-ready [data-reveal].in {
+        opacity: 1;
         transform: none;
         clip-path: inset(0 0 0 0);
       }
 
       /* Reveal por palabra atado al scroll. El script trocea el texto de cada
-         bloque [data-scroll-text] en <span class="w"> y desplaza cada palabra
-         sutilmente segun avanza el scroll. Se conserva la opacidad completa:
-         asi el efecto no reduce el contraste ni la legibilidad. */
+         bloque [data-scroll-text] en <span class="w">. Cada palabra recupera
+         opacidad y posicion conforme cruza el viewport. Las reglas solo se
+         activan despues de que JS prepara el bloque: sin JS o con movimiento
+         reducido, el texto permanece completamente visible. */
       [data-scroll-text] .w { display: inline-block; }
-      [data-scroll-text].st-ready .w { transform: translateY(0.12em); }
+      [data-scroll-text].st-ready .w {
+        opacity: 0.12;
+        transform: translateY(0.12em);
+      }
 
       .container {
         width: 100%;
@@ -326,8 +333,9 @@ const structuredData = canonical && JSON.stringify({
       }
 
       // Reveal por palabra atado al scroll: a diferencia de [data-reveal], que
-      // ocurre una sola vez, aqui cada palabra se acomoda verticalmente segun
-      // el progreso del texto. La opacidad no cambia para mantener contraste.
+      // ocurre una sola vez, aqui cada palabra recupera opacidad y posicion
+      // segun el progreso del texto. SPREAD controla el frente gradual para
+      // evitar que todo el bloque aparezca de golpe.
       //
       // El rango NO se mide sobre el contenedor sino sobre la caja real de las
       // palabras (top de la primera, bottom de la ultima). Asi un bloque puede
@@ -397,6 +405,7 @@ const structuredData = canonical && JSON.stringify({
               const head = Math.min(Math.max(p, 0), 1) * (words.length + SPREAD);
               words.forEach((w, i) => {
                 const t = Math.min(Math.max((head - i) / SPREAD, 0), 1);
+                w.style.opacity = String(0.12 + t * 0.88);
                 w.style.transform = `translateY(${(1 - t) * 0.12}em)`;
               });
             });
