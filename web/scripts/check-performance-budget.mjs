@@ -53,7 +53,7 @@ for (const root of legacyPhotoRoots) {
 
 const pagePaths = [
   join(distRoot, "index.html"),
-  ...["catedral", "dango", "insomnio", "laobsesion", "syle"].map((slug) =>
+  ...["catedral", "dango", "insomnio", "laobsesion", "rupture", "syle"].map((slug) =>
     join(distRoot, "proyectos", slug, "index.html"),
   ),
 ];

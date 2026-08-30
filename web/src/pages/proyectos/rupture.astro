@@ -1,5 +1,6 @@
 ---
 import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 
 // Misma estructura que syle.astro (hero fijo → header → intro → mampostería
 // horizontal → textos → triple → díptico → comunidad → créditos + lightbox).
@@ -26,7 +27,7 @@ const comunidad = [
 
 <ProyectoBase title="Rupture Collection">
   <div class="hero-fixed">
-    <img src="/img/Obsesion/Main.jpg" alt="Rupture Collection" />
+    <StaticPicture src="/img/Obsesion/Main.jpg" alt="Rupture Collection" eager fill />
   </div>
 
   <div class="page-wrap">
@@ -70,31 +71,31 @@ const comunidad = [
             </div>
             -->
           <div class="slot">
-              <img src="/img/Obsesion/obs_1.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/obs_1.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Obsesion/obs_2.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/obs_2.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Obsesion/obs_3.jpg" alt="" />
-              <img src="/img/Obsesion/obs_4.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/obs_3.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Obsesion/obs_4.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Obsesion/obs_5.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/obs_5.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Obsesion/obs_6.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/obs_6.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Obsesion/obs_7.jpg" />
-              <img src="/img/Obsesion/obs_8.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/obs_7.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Obsesion/obs_8.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Obsesion/Play.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/Play.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Obsesion/Play_1.jpg" />
-              <img src="/img/Obsesion/Play_2.jpg" alt="" />
+              <StaticPicture src="/img/Obsesion/Play_1.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Obsesion/Play_2.jpg" alt="" sizes="70vw" fill />
           </div>
             <!-- ESPACIO con 2 HORIZONTALES apiladas (mismo tamaño que un slot vertical) -->
 
@@ -117,9 +118,9 @@ const comunidad = [
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Obsesion/obs_12.jpg" alt="" />
-        <img src="/img/Obsesion/Play_3.jpg" alt="" />
-        <img src="/img/Obsesion/obs_9.jpg" alt="" />
+        <StaticPicture src="/img/Obsesion/obs_12.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Obsesion/Play_3.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Obsesion/obs_9.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -138,8 +139,8 @@ const comunidad = [
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/Obsesion/Play_4.jpg" alt="" />
-        <img src="/img/Obsesion/Play_5.jpg" alt="" />
+        <StaticPicture src="/img/Obsesion/Play_4.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Obsesion/Play_5.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
       </div>
 
       <!-- ── Comunidad ──────────────────────────────────────── -->
@@ -156,7 +157,7 @@ const comunidad = [
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src={c.img} alt={c.alt} loading="lazy" />
+            <StaticPicture src={c.img} alt={c.alt} sizes="(min-width: 1100px) 17vw, (min-width: 600px) 34vw, 50vw" fill />
             {/* Mismo trazado que /img/instagram.svg (el del footer), pero inline
                 para poder darle color desde CSS. aria-hidden porque el nombre
                 accesible del enlace ya lo pone el alt de la foto. */}
@@ -174,7 +175,7 @@ const comunidad = [
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">Rupture Collection</a>
+            <a href="/proyectos/rupture" class="ln credit-val disp">Rupture Collection</a>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Diseno</span>
@@ -182,7 +183,7 @@ const comunidad = [
           </div>
            <div class="credit-col">
             <span class="lbl muted">Estudio</span>
-            <a href="https://sylestudio.com" class="ln credit-val">Syle Studio</a>
+            <a href="/" class="ln credit-val">Syle Studio</a>
           </div>
         </div>
       </div>
@@ -192,12 +193,12 @@ const comunidad = [
 
   <!-- ── Lightbox ── -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+    <img alt="" />
   </div>
 </ProyectoBase>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   /* ── Shell ── */
   .hero-fixed {
@@ -205,7 +206,7 @@ const comunidad = [
     inset: 0;
     z-index: 0;
   }
-  .hero-fixed img {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -216,6 +217,7 @@ const comunidad = [
     position: relative;
     z-index: 1;
     margin-top: 100vh;
+    margin-top: 100dvh;
     background: var(--paper);
   }
 
@@ -274,7 +276,7 @@ const comunidad = [
     gap: 3px;
     margin-top: 8rem;
   }
-  .diptych img {
+  .diptych :global(img) {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -320,7 +322,7 @@ const comunidad = [
     gap: 3px;
     align-items: start;
   }
-  .triple img {
+  .triple :global(img) {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -358,7 +360,7 @@ const comunidad = [
     height: 82vh;         /* más alto → verticales más largas */
     width: 46vh;          /* más angosto → formato retrato más estilizado */
   }
-  .slot img {
+  .slot :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;     /* la vertical llena el espacio sin deformar */
@@ -436,15 +438,15 @@ const comunidad = [
     /* verticales estilizadas, como los slots de la mampostería horizontal */
     aspect-ratio: 3 / 5;
   }
-  .com-cell img {
+  .com-cell :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.6s var(--e), opacity 0.6s var(--e);
   }
-  .com-cell:hover img,
-  .com-cell:focus-visible img {
+  .com-cell:hover :global(img),
+  .com-cell:focus-visible :global(img) {
     transform: scale(1.06);
     opacity: 0.55;
   }
@@ -483,9 +485,9 @@ const comunidad = [
      especificidad que el :hover, necesita ir después para ganarle. Se queda el
      oscurecido, que no es movimiento. */
   @media (prefers-reduced-motion: reduce) {
-    .com-cell img { transition: opacity 0.6s var(--e); }
-    .com-cell:hover img,
-    .com-cell:focus-visible img { transform: none; }
+    .com-cell :global(img) { transition: opacity 0.6s var(--e); }
+    .com-cell:hover :global(img),
+    .com-cell:focus-visible :global(img) { transform: none; }
     /* el logo se queda: sólo pierde el escalado, aparece con un fundido */
     .com-ig { transition: opacity 0.5s var(--e); }
     .com-ig,
@@ -548,9 +550,9 @@ const comunidad = [
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
-    .diptych img,
-    .triple img,
-    .triple img:nth-child(2) {
+    .diptych :global(img),
+    .triple :global(img),
+    .triple :global(img):nth-child(2) {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
@@ -559,13 +561,13 @@ const comunidad = [
   }
 
   /* ── Hover discreto + zoom al click ── */
-  .diptych img,
-  .triple img {
+  .diptych :global(img),
+  .triple :global(img) {
     cursor: zoom-in;
     transition: filter 0.35s ease, transform 0.35s ease;
   }
-  .diptych img:hover,
-  .triple img:hover {
+  .diptych :global(img):hover,
+  .triple :global(img):hover {
     filter: brightness(1.05);
     transform: scale(1.012);
   }

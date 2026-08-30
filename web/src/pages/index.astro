@@ -709,8 +709,9 @@ const clients = [
   // cubre el perimetro entero: UNA linea, con un unico hueco.
   const FRAME_LIT = 0.8; // fraccion del perimetro encendida (falta el 20%)
   const FRAME_SPEED = 0.2; // ritmo del marco respecto al de las marcas grandes
+  const frameLengths = new WeakMap<SVGGeometryElement, number>();
   document.querySelectorAll<HTMLElement>(".card-frame").forEach((host) => {
-    const rect = host.querySelector("rect");
+    const rect = host.querySelector<SVGGeometryElement>("rect");
     if (!rect) return;
 
     const fit = () => {
@@ -725,6 +726,7 @@ const clients = [
       rect.setAttribute("height", String(Math.max(0, height - sw)));
 
       const len = rect.getTotalLength();
+      frameLengths.set(rect, len);
       const seg = len * FRAME_LIT;
       rect.style.strokeDasharray = `${seg} ${len - seg}`;
     };
@@ -771,14 +773,14 @@ const clients = [
 
     marks.forEach((host) => {
       // El marco de tarjeta ya trae su guion puesto por `fit` (y re-puesto en
-      // cada resize), asi que aqui solo se le mueve el offset; el largo se
-      // vuelve a medir en cada frame porque cambia con el viewport. Las marcas
-      // de line-art, en cambio, fijan aqui su guion una sola vez.
+      // cada resize), asi que aqui solo se le mueve el offset. Su largo queda
+      // cacheado por ResizeObserver para no forzar una medicion SVG en cada
+      // frame. Las marcas de line-art fijan aqui su guion una sola vez.
       const isFrame = host.classList.contains("card-frame");
       const starters = Array.from(
         host.querySelectorAll<SVGGeometryElement>("path, rect"),
       ).map((path) => {
-        let len = path.getTotalLength();
+        let len = frameLengths.get(path) ?? path.getTotalLength();
         if (!isFrame) {
           const seg = len * 0.6; // lit portion of the line
           path.style.strokeDasharray = `${seg} ${len - seg}`;
@@ -803,7 +805,7 @@ const clients = [
           const dt = Math.min(0.05, (now - last) / 1000);
           last = now;
 
-          if (isFrame) len = path.getTotalLength(); // el marco cambia al redimensionar
+          if (isFrame) len = frameLengths.get(path) ?? len;
 
           if (now >= retargetAt) {
             target = len * (0.07 + Math.random() * 0.4) * pace; // new random cruise speed
