@@ -1,0 +1,460 @@
+---
+import ProyectoBase from "../../layouts/ProyectoBase.astro";
+---
+
+<ProyectoBase title="DGX Archive">
+  <div class="hero-fixed">
+    <img src="/img/DGX/Main.jpg" alt="DGX Archive" />
+  </div>
+
+  <div class="page-wrap">
+    <main>
+
+      <div class="wrap" data-scroll-text>
+        <header class="pg-head">
+          <span class="lbl muted">SYLE · 008</span>
+          <h1 class="disp pg-title">DGX Archive</h1>
+          <p class="pg-meta lbl muted">Fotografía - 2026</p>
+        </header>
+      </div>
+
+      <!-- ── Intro grid ──────────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="intro-grid">
+          <div class="intro-left">
+            <h2 class="disp intro-h">DGX Archive</h2>
+            <p class="body-s">
+              DGX Archive es una marca enfocada en el streetwear, con una
+              identidad tan firme que sus piezas terminaron vistiendo a artistas
+              que están a la altura de la misma marca. Cada drop se piensa como
+              archivo: prendas que se guardan, se heredan y siguen contando algo
+              tiempo después.
+            </p>
+          </div>
+          <div class="intro-right">
+            <h2 class="disp intro-h">Sesión Fotográfica</h2>
+            <span class="lbl muted">2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Diptych ────────────────────────────────────────── -->
+      <div class="diptych">
+        <img src="/img/DGX/Dgx_1.jpg" alt="" />
+        <img src="/img/DGX/Dgx_2.jpg" alt="" />
+      </div>
+
+      <!-- ── Texto de la derecha ───────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="text-r">
+          <h2 class="disp sub2-h">Las Long Sleeve</h2>
+          <p class="body-s">
+            Nuestra participación fue la fotografía de unas long sleeve que
+            cargan una historia muy propia. Antes de disparar quisimos
+            entenderla: de dónde salía el diseño y qué debía sentir quien la
+            viera puesta.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Triple imágenes ────────────────────────────────── -->
+      <div class="triple">
+        <img src="/img/DGX/Dgx_3.jpg" alt="" />
+        <img src="/img/DGX/Dgx_4.jpg" alt="" />
+        <img src="/img/DGX/Dgx_5.jpg" alt="" />
+      </div>
+
+      <!-- ── Texto centrado ─────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="text-c">
+          <h2 class="disp center-h">El Entorno</h2>
+          <p class="body-s">
+            Buscamos el lugar exacto para que todo cerrara: texturas, luz y
+            desgaste que hablaran el mismo idioma que la prenda. El entorno no
+            fue un fondo, fue parte del proyecto — lo que terminó de darle a las
+            fotos la misma estética que la marca ya tenía.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Slider ─────────────────────────────────────────── -->
+      <div class="slider-wrap">
+        <div class="slider" id="slider">
+          <div class="slide active"><img src="/img/DGX/Slide_1.jpg" alt="Slide 1" /></div>
+          <div class="slide"><img src="/img/DGX/Slide_2.jpg" alt="Slide 2" /></div>
+          <div class="slide"><img src="/img/DGX/Slide_3.jpg" alt="Slide 3" /></div>
+          <div class="slide"><img src="/img/DGX/Slide_4.jpg" alt="Slide 4" /></div>
+        </div>
+        <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
+        <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
+        <div class="sl-dots">
+          <span class="dot active" data-i="0"></span>
+          <span class="dot" data-i="1"></span>
+          <span class="dot" data-i="2"></span>
+          <span class="dot" data-i="3"></span>
+        </div>
+      </div>
+
+      <!-- ── Créditos ───────────────────────────────────────── -->
+      <div class="wrap" data-scroll-text>
+        <div class="credits">
+          <div class="credit-col">
+            <span class="lbl muted">Proyecto</span>
+            <a href="https://www.instagram.com/dgx.archive/" class="ln credit-val disp">DGX Archive</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Fotografía / Diseño</span>
+            <a href="https://www.instagram.com/dxniel.py/" class="ln credit-val">Dxniel.py</a>
+            <a href="https://www.instagram.com/byxmmxx/" class="ln credit-val">Emma Acosta</a>
+          </div>
+          <div class="credit-col">
+            <span class="lbl muted">Colaboración</span>
+            <a href="https://www.instagram.com/dgx.archive/" class="ln credit-val">DGX Archive</a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── Lightbox ── -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+    <img src="" alt="" />
+  </div>
+</ProyectoBase>
+
+<style>
+  .muted { color: rgba(22, 20, 15, 0.42); }
+
+  /* ── Shell ── */
+  .hero-fixed {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero-fixed img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    margin-top: 100vh;
+    background: var(--paper);
+  }
+
+  .wrap {
+    max-width: 1700px;
+    margin: 0 auto;
+    padding-left: clamp(1.5rem, 3vw, 3rem);
+    padding-right: clamp(1.5rem, 3vw, 3rem);
+    background: var(--paper);
+  }
+
+  /* ── Header ── */
+  .pg-head {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    padding-top: 10rem;
+    padding-bottom: 5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+  .pg-title {
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.88;
+  }
+
+  /* ── Intro grid ── */
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 5rem;
+  }
+  .intro-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .intro-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .intro-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+  }
+
+  .body-s {
+    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    line-height: 1.65;
+    color: rgba(22, 20, 15, 0.72);
+  }
+
+  /* ── Diptych ── */
+  .diptych {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+  .diptych img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Text right ── */
+  .text-r {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    margin-left: auto;
+    max-width: 60%;
+  }
+  .sub2-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-r .body-s { max-width: 44ch; }
+
+  /* ── Texto centrado ── */
+  .text-c {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .center-h {
+    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    margin-bottom: 1.5rem;
+  }
+  .text-c .body-s { max-width: 52ch; }
+
+  /* ── Triple ── */
+  .triple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+    align-items: start;
+  }
+  .triple img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* ── Slider ── */
+  .slider-wrap {
+    position: relative;
+    margin-top: 8rem;
+  }
+  .slider {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .slide.active { opacity: 1; }
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .sl-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(22,20,15,0.45);
+    color: #fff;
+    border: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 2;
+    transition: background 0.2s;
+  }
+  .sl-btn:hover { background: rgba(22,20,15,0.75); }
+  .sl-prev { left: 1rem; }
+  .sl-next { right: 1rem; }
+  .sl-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 0;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(22,20,15,0.25);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .dot.active { background: rgba(22,20,15,0.75); }
+
+  /* ── Créditos ── */
+  .credits {
+    border-top: 1px solid rgba(22, 20, 15, 0.15);
+    margin-top: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: space-between;
+  }
+  .credit-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .credit-val {
+    width: fit-content;
+    font-size: 1rem;
+  }
+  .credit-val.disp {
+    font-size: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .intro-grid {
+      grid-template-columns: 1fr;
+    }
+    .intro-right {
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    .diptych {
+      grid-template-columns: 1fr;
+    }
+    .text-r {
+      max-width: 100%;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .triple {
+      grid-template-columns: 1fr;
+    }
+
+    .diptych img,
+    .triple img,
+    .triple img:nth-child(2) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: auto;
+      object-fit: contain;
+    }
+  }
+
+  /* ── Hover discreto + zoom al click ── */
+  .diptych img,
+  .triple img {
+    cursor: zoom-in;
+    transition: filter 0.35s ease, transform 0.35s ease;
+  }
+  .diptych img:hover,
+  .triple img:hover {
+    filter: brightness(1.05);
+    transform: scale(1.012);
+  }
+
+  /* ── Lightbox ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    background: rgba(16, 14, 10, 0.82);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: zoom-out;
+  }
+  .lightbox.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lightbox img {
+    max-width: min(90vw, 1100px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    transform: scale(0.96);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img { transform: scale(1); }
+</style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>('.slide');
+  const dots   = document.querySelectorAll<HTMLElement>('.dot');
+  let cur = 0;
+
+  function goTo(n: number) {
+    slides[cur].classList.remove('active');
+    dots[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dots[cur].classList.add('active');
+  }
+
+  document.querySelector('.sl-prev')?.addEventListener('click', () => goTo(cur - 1));
+  document.querySelector('.sl-next')?.addEventListener('click', () => goTo(cur + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+
+  setInterval(() => goTo(cur + 1), 4000);
+
+  // ── Lightbox ──
+  const lightbox  = document.getElementById('lightbox') as HTMLElement | null;
+  const lightImg  = lightbox?.querySelector('img') as HTMLImageElement | null;
+  const zoomables = document.querySelectorAll<HTMLImageElement>('.diptych img, .triple img');
+
+  function openLightbox(src: string, alt: string) {
+    if (!lightbox || !lightImg) return;
+    lightImg.src = src;
+    lightImg.alt = alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightImg) return;
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  zoomables.forEach(img => {
+    img.addEventListener('click', () => openLightbox(img.src, img.alt));
+  });
+
+  lightbox?.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
