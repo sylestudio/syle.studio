@@ -1,5 +1,6 @@
 ---
 import Base from "./Base.astro";
+import Wordmark from "../components/Wordmark.astro";
 
 interface Props {
   title: string;
@@ -8,13 +9,12 @@ const { title } = Astro.props;
 ---
 
 <Base title={title} bare>
-  <div class="syle-watermark" aria-hidden="true">
-    <img src="/Syle_Fuente_Negro.svg" alt="" />
-    <span class="wm-t"></span>
-    <span class="wm-r"></span>
-    <span class="wm-b"></span>
-    <span class="wm-l"></span>
-  </div>
+  <!-- El logotipo va INLINE, no como <img src="/Syle_Fuente_Negro.svg">: dentro
+       de una imagen el navegador no expone los paths, asi que no habia nada que
+       trazar y la marca se quedaba en un relleno a baja opacidad. Con el SVG en
+       el documento (y `fill:none` + stroke, ver estilos) el script de abajo le
+       recorre el contorno igual que las marcas de la home. -->
+  <div class="syle-watermark" aria-hidden="true"><Wordmark /></div>
   <slot />
 </Base>
 
@@ -26,41 +26,83 @@ const { title } = Astro.props;
     transform: translate(-50%, -50%);
     width: 70vw;
     max-width: 1100px;
-    opacity: 0.035;
+    color: var(--ink);
     pointer-events: none;
     z-index: 2;
     user-select: none;
   }
-  .syle-watermark img {
+
+  /* Trazo, no mancha: una silueta rellena no se puede "dibujar", asi que el
+     logotipo se pinta como contorno para que el guion del script tenga por
+     donde correr. `overflow: visible` para que los remates redondeados no se
+     corten contra el borde del viewBox.
+     La opacidad va baja a proposito: la marca vive por encima del contenido
+     (z-index 2), no de fondo como las de la home — subir este valor la vuelve
+     protagonista. */
+  .syle-watermark :global(svg) {
+    display: block;
     width: 100%;
     height: auto;
-    display: block;
+    overflow: visible;
+    opacity: 0.09;
   }
-
-  /* Four sides drawn clockwise: top → right → bottom → left */
-  .wm-t, .wm-r, .wm-b, .wm-l { position: absolute; background: #16140f; }
-
-  .wm-t {
-    top: -10px; left: -10px; right: -10px; height: 1px;
-    transform: scaleX(0); transform-origin: left center;
-    animation: grow-x 0.45s cubic-bezier(0.32, 0.72, 0, 1) 0.4s forwards;
+  .syle-watermark :global(path) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 12;
+    stroke-linejoin: round;
+    stroke-linecap: round;
   }
-  .wm-r {
-    top: -10px; bottom: -10px; right: -10px; width: 1px;
-    transform: scaleY(0); transform-origin: top center;
-    animation: grow-y 0.45s cubic-bezier(0.32, 0.72, 0, 1) 0.8s forwards;
-  }
-  .wm-b {
-    bottom: -10px; left: -10px; right: -10px; height: 1px;
-    transform: scaleX(0); transform-origin: right center;
-    animation: grow-x 0.45s cubic-bezier(0.32, 0.72, 0, 1) 1.2s forwards;
-  }
-  .wm-l {
-    top: -10px; bottom: -10px; left: -10px; width: 1px;
-    transform: scaleY(0); transform-origin: bottom center;
-    animation: grow-y 0.45s cubic-bezier(0.32, 0.72, 0, 1) 1.6s forwards;
-  }
-
-  @keyframes grow-x { to { transform: scaleX(1); } }
-  @keyframes grow-y { to { transform: scaleY(1); } }
 </style>
+
+<script>
+  // Misma mecanica que las marcas de line-art de la home: un unico segmento
+  // encendido recorre cada trazo para siempre — su borde delantero dibuja
+  // linea nueva mientras el trasero borra por detras. Sin rebote: el periodo
+  // del guion equivale al largo del path, asi que avanzar el offset en un solo
+  // sentido cierra el bucle sin costura. La velocidad se interpola hacia un
+  // objetivo aleatorio nuevo cada ~0.5-1.8s para acelerar y frenar de forma
+  // organica, y cada uno de los cuatro trazos corre con su propia semilla para
+  // que no vayan en formacion.
+  // Aqui no hace falta el IntersectionObserver de la home: la marca es `fixed`,
+  // no se sale de pantalla nunca (y con la pestana en segundo plano el propio
+  // rAF deja de disparar).
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const paths = document.querySelectorAll<SVGGeometryElement>(
+    ".syle-watermark path",
+  );
+
+  if (!reduce) {
+    paths.forEach((path) => {
+      const len = path.getTotalLength();
+      const seg = len * 0.6; // fraccion encendida del trazo
+      path.style.strokeDasharray = `${seg} ${len - seg}`;
+
+      let offset = Math.random() * len; // arranque en un punto cualquiera
+      const dir = Math.random() < 0.5 ? 1 : -1; // sentido fijo de viaje
+      let speed = len * 0.16; // unidades de path / segundo
+      let target = speed;
+      let retargetAt = 0;
+      let last = performance.now();
+
+      const tick = (now: number) => {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+
+        if (now >= retargetAt) {
+          target = len * (0.07 + Math.random() * 0.4); // nueva velocidad crucero
+          retargetAt = now + 500 + Math.random() * 1300;
+        }
+        speed += (target - speed) * 0.05; // aproximacion suave, sin tirones
+
+        offset += dir * speed * dt;
+        offset = ((offset % len) + len) % len; // un periodo -> sin costura
+
+        path.style.strokeDashoffset = String(offset);
+        requestAnimationFrame(tick);
+      };
+
+      requestAnimationFrame(tick);
+    });
+  }
+</script>
