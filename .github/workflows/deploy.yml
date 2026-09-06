@@ -127,6 +127,10 @@ jobs:
           origin=(--noproxy '*' --resolve syle.studio:443:127.0.0.1)
           html=$(curl -fsS "${origin[@]}" https://syle.studio/)
           grep -Fq "name=\"syle-revision\" content=\"$GITHUB_SHA\"" <<<"$html"
+          compact_html=$(tr -d '\n\r' <<<"$html")
+          grep -Fq 'href="mailto:contacto@sylestudio.com"' <<<"$html"
+          grep -Eq '>[[:space:]]*contacto@sylestudio\.com[[:space:]]*<span' <<<"$compact_html"
+          ! grep -Fq '/cdn-cgi/l/email-protection' <<<"$html"
           curl -fsS "${origin[@]}" \
             https://syle.studio/api/public/galleries >/dev/null
           if [[ "$html" =~ (/project-media/[a-f0-9]+\.(avif|jpeg)) ]]; then

@@ -52,6 +52,20 @@ expect(
   "robots.txt does not advertise the canonical sitemap index",
 );
 
+const home = await read("index.html");
+const contactLink = home.match(
+  /<a\b[^>]*href="mailto:contacto@sylestudio\.com"[^>]*>([^]*?)<\/a>/,
+);
+expect(Boolean(contactLink), "home page has no clickable contact email");
+expect(
+  /contacto@sylestudio\.com/.test(contactLink[1]),
+  "home page contact link does not show the email address",
+);
+expect(
+  /<!--email_off-->[^]*href="mailto:contacto@sylestudio\.com"[^]*<!--\/email_off-->/.test(home),
+  "home page contact email is not excluded from Cloudflare obfuscation",
+);
+
 const sitemapIndex = await read("sitemap-index.xml");
 expect(/<sitemapindex\b/.test(sitemapIndex), "sitemap-index.xml is not a sitemap index");
 expect(
@@ -80,7 +94,7 @@ for (const value of pageUrls) {
   const htmlPath = url.pathname === "/"
     ? "index.html"
     : path.join(url.pathname.slice(1), "index.html");
-  const html = await read(htmlPath);
+  const html = htmlPath === "index.html" ? home : await read(htmlPath);
   const canonicals = [...html.matchAll(/<link\b[^>]*rel="canonical"[^>]*href="([^"]+)"[^>]*>/g)];
   expect(canonicals.length === 1, `${htmlPath} must contain exactly one canonical link`);
   expect(canonicals[0][1] === value, `${htmlPath} canonical differs from its sitemap URL`);

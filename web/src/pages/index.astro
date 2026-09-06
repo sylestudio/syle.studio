@@ -219,13 +219,13 @@ const clients = [
     <div class="close-in">
       <div class="close-main">
         <div class="lbl dim">Trabaja con nosotros</div>
-        <h2 class="disp close-h">Contactanos</h2>
+        <h2 class="disp close-h">Contáctanos</h2>
         <!-- el CTA es un control, no prosa: entra de una pieza con el reveal
              normal para no dejar la píldora medio encendida ni desalinear la
              flecha, que vive en un inline-flex centrado. -->
         <!--email_off-->
         <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal data-no-split>
-          Iniciar proyecto
+          contacto@sylestudio.com
           <span class="cta-i" aria-hidden="true">↗</span>
         </a>
         <!--/email_off-->
@@ -593,18 +593,21 @@ const clients = [
   .cta {
     display: inline-flex;
     align-items: center;
-    gap: 1.25rem;
+    box-sizing: border-box;
+    max-width: 100%;
+    gap: clamp(0.75rem, 4vw, 1.25rem);
     background: var(--ox);
     color: #fff;
     border-radius: 999px;
-    padding: 1rem 1rem 1rem 2rem;
-    font-size: var(--type-body-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
+    padding: 1rem 1rem 1rem clamp(1.15rem, 5vw, 2rem);
+    font-size: clamp(0.7rem, 3.2vw, var(--type-body-sm));
+    letter-spacing: 0.06em;
+    white-space: nowrap;
     transition: transform 0.5s var(--e);
   }
   .cta:active { transform: scale(0.98); }
   .cta-i {
+    flex: 0 0 auto;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
