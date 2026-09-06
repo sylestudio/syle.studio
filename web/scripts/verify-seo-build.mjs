@@ -42,6 +42,10 @@ await access(dist);
 
 const robots = await read("robots.txt");
 expect(/^User-agent: \*$/m.test(robots), "robots.txt has no wildcard user-agent");
+expect(
+  /^Disallow: \/cdn-cgi\/$/m.test(robots),
+  "robots.txt does not exclude Cloudflare's internal crawler endpoints",
+);
 expect(/^Disallow: \/api\/$/m.test(robots), "robots.txt does not exclude API routes");
 expect(
   /^Sitemap: https:\/\/syle\.studio\/sitemap-index\.xml$/m.test(robots),
@@ -126,8 +130,6 @@ for (const required of [
   "error_page 404 /404.html;",
   "location = /sitemap.xml",
   "return 301 https://syle.studio/sitemap-index.xml$is_args$args;",
-  "location = /cdn-cgi/l/email-protection",
-  "return 301 https://syle.studio/#contacto;",
   'add_header X-Robots-Tag "noindex, follow" always;',
 ]) {
   expect(publicNginx.includes(required), `public nginx config is missing: ${required}`);

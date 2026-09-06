@@ -149,6 +149,7 @@ jobs:
           ! grep -Fq 'rel="canonical"' <<<"$missing_html"
 
           robots=$(curl -fsS "${origin[@]}" https://syle.studio/robots.txt)
+          grep -Fq 'Disallow: /cdn-cgi/' <<<"$robots"
           grep -Fq 'Sitemap: https://syle.studio/sitemap-index.xml' <<<"$robots"
           sitemap_index=$(curl -fsS "${origin[@]}" https://syle.studio/sitemap-index.xml)
           grep -Fq '<sitemapindex' <<<"$sitemap_index"
@@ -162,8 +163,4 @@ jobs:
           www_redirect=$(curl -sSI https://www.syle.studio/__deploy_redirect__?source=smoke)
           grep -Eq '^HTTP/[^ ]+ 301' <<<"$www_redirect"
           grep -Eiq '^location: https://syle\.studio/__deploy_redirect__\?source=smoke' <<<"$www_redirect"
-          legacy_email_redirect=$(curl -sSI "${origin[@]}" \
-            https://syle.studio/cdn-cgi/l/email-protection)
-          grep -Eq '^HTTP/[^ ]+ 301' <<<"$legacy_email_redirect"
-          grep -Eiq '^location: https://syle\.studio/#contacto' <<<"$legacy_email_redirect"
           echo "Deploy complete; public site serves $GITHUB_SHA."
