@@ -126,6 +126,8 @@ for (const required of [
   "error_page 404 /404.html;",
   "location = /sitemap.xml",
   "return 301 https://syle.studio/sitemap-index.xml$is_args$args;",
+  "location = /cdn-cgi/l/email-protection",
+  "return 301 https://syle.studio/#contacto;",
   'add_header X-Robots-Tag "noindex, follow" always;',
 ]) {
   expect(publicNginx.includes(required), `public nginx config is missing: ${required}`);
