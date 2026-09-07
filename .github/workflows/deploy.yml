@@ -131,6 +131,11 @@ jobs:
           grep -Fq 'href="mailto:contacto@sylestudio.com"' <<<"$html"
           grep -Eq '>[[:space:]]*contacto@sylestudio\.com[[:space:]]*<span' <<<"$compact_html"
           ! grep -Fq '/cdn-cgi/l/email-protection' <<<"$html"
+          for favicon in favicon.ico favicon-dark.ico favicon-light.ico; do
+            grep -Fq "href=\"/$favicon\"" <<<"$html"
+            curl -fsS "${origin[@]}" "https://syle.studio/$favicon" >/dev/null
+          done
+          ! grep -Fq '/favicon.svg' <<<"$html"
           curl -fsS "${origin[@]}" \
             https://syle.studio/api/public/galleries >/dev/null
           if [[ "$html" =~ (/project-media/[a-f0-9]+\.(avif|jpeg)) ]]; then

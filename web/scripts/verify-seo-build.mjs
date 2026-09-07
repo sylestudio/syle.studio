@@ -65,6 +65,11 @@ expect(
   /<!--email_off-->[^]*href="mailto:contacto@sylestudio\.com"[^]*<!--\/email_off-->/.test(home),
   "home page contact email is not excluded from Cloudflare obfuscation",
 );
+for (const favicon of ["favicon.ico", "favicon-dark.ico", "favicon-light.ico"]) {
+  await access(path.join(dist, favicon));
+  expect(home.includes(`href="/${favicon}"`), `home page does not advertise ${favicon}`);
+}
+expect(!home.includes("/favicon.svg"), "home page still advertises the legacy favicon");
 
 const sitemapIndex = await read("sitemap-index.xml");
 expect(/<sitemapindex\b/.test(sitemapIndex), "sitemap-index.xml is not a sitemap index");

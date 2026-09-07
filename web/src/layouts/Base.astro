@@ -103,7 +103,9 @@ const structuredData = canonical && JSON.stringify({
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
     {revision && <meta name="syle-revision" content={revision} />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-dark.ico" media="(prefers-color-scheme: light)" sizes="any" />
+    <link rel="icon" href="/favicon-light.ico" media="(prefers-color-scheme: dark)" sizes="any" />
     <title>{fullTitle}</title>
     {structuredData && <script type="application/ld+json" set:html={structuredData} is:inline />}
     <style is:global>
