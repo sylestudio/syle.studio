@@ -6,8 +6,10 @@ import { buildUrlSet, normalizeRoute, xmlResponse } from "../lib/seo";
 const projectRoutes = [
   "/proyectos/catedral/",
   "/proyectos/dango/",
+  "/proyectos/dgxarchive/",
   "/proyectos/insomnio/",
   "/proyectos/laobsesion/",
+  "/proyectos/melted/",
   "/proyectos/rupture/",
   "/proyectos/syle/",
 ];

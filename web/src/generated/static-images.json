@@ -1,4 +1,494 @@
 {
+  "/img/DGX/DGX_1.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "ead5b1e5eb34488f0b60ed908641d32fc0b5fd111b785f67510b7d4b9e20f6c7",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "9d380a0d02afa839813684e3979784676a6fc2f422",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/b4de716ec88a786d3a9e70ec6d3df372e8bb7c380ce462f3e6f6d5fc182a9593.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/82882d65ca25a671144f1c7eeebcaabeb695a42b9341afdee640bd9ba86bbbca.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/c197b5f2064642c3870e100786a1540886437e0e82e621e6c7ef513caeae4f13.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/5d51b5a4a50b5de6ae327b26b910b9967f9f51a79ceb87ace528ca10975c7c0c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/1f8c5fcb22b70100f94b54883697fe24dbc1a8a538686967835f6e6e2e8193fb.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/f44d99560ded70afdcad8304a22905db20c8b4d36aa45d488e06503f55dae6c0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/b08a7b52797846f85f1fe4799a21a2bf9f507e74f80822b85927e11cf26e0e34.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/4c4f4a5193450dd853ab344846afc38b90776cf13e7e8fdcf00910dc04fd1944.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_2.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "0277dda0789b1fa809fcf2273c7b4d85c697aa96b81a96e7a2cae5f23aac9b13",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "4318020d02046faa5a8769089873898506a86a70bb",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/23603213c568a713a397e37ef71ee86a2b4a75f30c92498efc43bb2d19a0caab.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/bfd958b38527d46bdf0bf034e0753dfec76505299282493242556b02bc669472.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/81342a2502001ac54856c4c5911a4015f92b2f6ec5ef642b4600242277c6b09b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/29dc57228d97b2d51ed3e33e453f1660dbe62d5496e256fce08167f6dda76b53.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/4435bf7654889a86e67b33df7ef3732d38484ab15ba7ad5991b62aff77e8e03a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/8b593a94bdc986fc055d4ebd2e01869065a64648630eedbf837c4442f292d3ad.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/079960415ea09ac28c42315c1f080d6e69fe966b44509c71b0ebbab620c9d10f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/6fede1c93d49e7ff968a81c38490f3df041084f693765e292f639a6308d2480d.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_3.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "0d005ab1ed55ed165abb1bc7c9927e0af3b8ac1dc6a246f8f090f6155dc64926",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "99080e0d0284788b76a778f75779a988b087066768",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/132663769394126dbfb68e4edcda800bbecf1a9ae98bea0a6b1e62d671fb42b5.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/239deaae5aa8350ea4fcf035f169090dece9f754c57e756afa2b5538126ae4f3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/dbaec2c1809454dd84909280a677a5cf09aca556936281a75a68b285175d4416.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/789c4e84698e62578b3f1272ede34d533229229e13fbb1adce307ee59fc99c9b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/123e760cc238330958d7750840796f7fcc28ca5ba29aa3cb842aa3eaf4c28b09.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/41edb14816c06631542770b39a73bfe11b9cc0e8e23b498ac413d49e2686ce3f.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/bfd179c873a174bf896b8ee3000755974bb6ad224450cc83c7bccabedd0cd356.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/bfed8aade8532663872db869e3e3f529da695615d828ae4fda46364d7f5698c3.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_4.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "6fb4ebbaf14b8e7bd912801d857199118bba2a3b8b40a68d794f4e1f89426ef2",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "50490a0d029f579976b88a68878667675edffdd7bc",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/657a1bd4a12404fc3ac4f1d6e512dc3c27270e9f7fa77cc5004649d065956265.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/4717a09d0429b1a4b3ecff8e6c9f050a5035c5d2957eabe85d8a786a402793db.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/bcba7d0be456b2f3323a87a49ffc0627ab8526675a2d1f685e5df4bb16f25eac.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/6a8e9e9994f77d530b5f8d936df227a1f49ed3370541398fd3bdf5b27211ccb5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/c63ea755aadcff673bc63072e4de9a80bd41550768ef5f6c97c4dc42bba86564.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/490767c3af9a85c9f498befcad1cc26f6311b245fcfa3b4ca39dbc2cd59cf6d2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/808c4aad98227e70582d7dfbcf59f48b35e7698c77a4707041d638f5425b41b4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/d22bba7dbf41763293b3e968ad0bdbcbe5c0d565fdf569970d620a0a0cb3940a.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_5.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "372279d665716014317a8872f3241c979226b007e39aa5c4fd9381dce47ee4c2",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "8a180e1d043b84af54a86877877678777bbfc9f79b",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4a222f1296c150cabf123e8b85c29fb87dfac5e383146a4f5ebce19999bdffe4.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/487667c5508c428b0c7a6fdb92a20ba0d6b832bb85e0f51f11730a91914b2fb2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/d7d682c65fd1db38f028db201a30091ba6f8527feb98a3569a3a82ad98f3513a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/09f17e19a9b403c913ee9a3ba5ff853210051c00a43bcdce6ecadcdcab4ad5d1.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b2e1c82bae5cfc3769c3738eb7c289dce426616f15b7dc69a458f51fdc07d82b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/79978de1b8c3b9675d49222cb1232e0160483b92c2be5aa6a8a1430e0761d4c2.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/2f594b388de823d21c6227b1e56c5cfeb83369e660a69197a8af8531d8354c49.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/ba6e2cb1d3419e1dc60a284f6ad2e6f23811c9ed2d91ca310e56e48414ef0676.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_6.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "702b10d470f5dc72fa82b8638bcedf967956636df86e8824f393f8e71900a1a5",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "4418060d829fb89a685577998a9899992f6ef4a565",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/d3c09ed0aa0688095601b44e4c57cc20107776f4777f7008bc508d54f3b27495.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/bcae96334e8460cf834a00527da669582f51a7fde533e88188bec04b0913175b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/34884ec1b3c83ed98cb394476399459d05b0c1d18c04cbc72f04caa08f4fb11a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/a167edbdfcfec8a2980dedbd0f2b1e46e83ef2243732a8c02422f46efd23b710.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/61d635c2b62078d52d18340fd150e7138684549d67f5a9b19730e76c8a0cc045.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/b8c9dfe6e3a3b92ff7fce081e390d8951c2e1595654222ecf530c2901c37cb71.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/7dd3ed4c38964b31de51ea4d0c9fa5927017c8fabf69d844ca7dcdbc8d42a4f9.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/3b780fb296144af02d9f504aa0c1dc4e9dc37b3abfc321327c5257442d2770c3.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_7.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "ead4632b6e9c28345ccf79bec5747b6065b494182710f7449d85b0f6d61141f8",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "88180a1582bd7665cf7b57a989767877ccafb5fb59",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/dff7d9532fdd5634acf73e1512c87cb399b01d1c973be2e171292977c41cbda2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/77ba160e8b406a4e53e6a2d8d03f6503d2b9ab10586e16b4ef606145475eac57.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8607ef98356587499bd51e614d329c34d2be86c29c65087a837d1580bae659b2.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/4a920a328ba23a8a3291c89cdd3caf63c65020a15970520b4c876517d726a17b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/a47e0374b8c8beb3b0c966ee9e6c925c75c2c9d41031322785ce02fbcd26982d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ece094db7362279f1497cca8cf46c26c5c0d10fe0033415a66e8bdc274bd2bdb.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/71168a39f5f2d0a939abccbf3e983092f11869763035fb93752c14571b844621.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/1bac5ee4f8dee85953d91b4b1a47a2d624b094d1fb7020a18c824e6937a30266.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_8.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "2893d0de8f8147979dee6b9ed199fd26dfb80878a884e654086151b9f63fe13e",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "0418020d800b77a468b77bba68b87a79094bbb80e1",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/5bb9667de8ef039946d5db9fad30b1b284e8ae370381fadd845ccfc6b4171d57.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/a0e3504e2209517566589c4d5f67d914076e8ed851300b2172e89fbf4d1a2359.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/cac9f9b48b6c029281e0f836b2c07dd741c87c8796a7822db934b42118b8a790.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/31903b54a598fe801a7c84caf7d7b86e1ab5901664ddc234abb6b992034992fe.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/02363b4fca64c2a627d70cd2bf7db341cf2f599da96132aa640cadf6dbc3fd10.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/7aa7606f77bd9b5b52665fe7278423cfd930c33c8ae433519b3df58f0eaeb89e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/e1c9e7d8fdeff164cc4c17d154ec035b35745028fa2825b203f70767953a53f9.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/15611114ffaeef9b3d33f7732ca94c9561b462ca674aa642e346a2a20e7420cf.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/DGX_9.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "9271341dc447696b7323df6d16da85852b3a1052210dbc133f14c2fd76988327",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "1508060580f3dc58dc2497c950e87897b4fe3bcbaf",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4c7c2d0a5a7a9a246f6812e75b586356d582656f6a4c8f119520f2465392b2fd.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/993d264fe6a541c483008756b444909b42acf262be8ffa8329a17803b82a5473.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/91ad0b8a8132353a4f7d854bd868db1e4456a9b919a43c40e6c33a60d214285e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/7bbc2f0c8d2a4d0cbaed40f6d15d702d330e09ef6682c8ca2e2a271510fb9931.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/da1a8e0db2951a523f19fd503ec60265747fefd165a632cc724bd5533214bd44.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/814cd08e6b21bff04b2abdb2dec269bf94ebc54172641f9d3989b1d67cacad28.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/61d7734de4c36a43110cc76229010950afb3353de4a8bf33c39c346f65f1f77e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/6d0167dfb2db2aec67fc7252e01654aa2a0858b1426571bf3c7444e9541d862a.jpeg"
+      }
+    ]
+  },
+  "/img/DGX/Portada.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "21f431eae32344b3a44fa29e4c058232fec298d14ea726a80fd5c4867c6f0d24",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "0f080a0580a9a6a88b877663a6f7887db9af95f948",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/4276ddb9365bf257dd5b2a43d8a677b710a90ffb113dd37fc90ebc8b34d3c16e.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/8e13841243cf5add4a0fa813e470f769c4aa660e9ebe49576625c8550ea34b32.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/55c375eff031f8c351f5ef981a914115314e56137adbbf9a54c8bae425be2f99.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/1869277e70a347e45b2730dd6f0d3e599b788e83be60436d77c59bc0a45133f3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/013154afffe7ef590e4f437ea5456b83ca441e668c48fa6479a52923fe43b9d8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/e46f669f20e7221f385b1d80d1db41d397c5fa6c13d0aa3b34e4fd1c31860e0c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/b2a28125e456a613fd63f10aa68e0bb8414ca26d7457fc8634cb6886e31ae873.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/5896cfd6d88fd67add73e614240425be14983cd2cceb2d0a5c8564a119e006d5.jpeg"
+      }
+    ]
+  },
   "/img/Dango/Logo_1.jpg": {
     "pipelineVersion": 4,
     "sourceSha256": "0e30039dd273fb5c315405a0b608460a508966f71384ef01cf3c544dd6df169c",
@@ -1466,6 +1956,496 @@
         "format": "jpeg",
         "width": 2400,
         "path": "/project-media/56b0fbdaa3766eb3a1430fa3f195d4d50e0a78e57432a5c307bf904355b97fbc.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/Portada.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "4e6718df54ee7a968b5002e6c2220b433bc0624c6dac26dc5b0bf4c068348952",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "d3280a0d822699778f88588a76487877705c0de6e5",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/0c58307ab24b3b6e7b17315f980bde7cfe1e9440f535632d13c69e8af6ee15e6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/7a0af1776f338bb1f3fd36140ae3e89bbb3b98c06311df05f4790d62da27a95c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/495a95d0cbc75b03e549c715e532699835f6d53516a96f8fe29fb6c2a399c143.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/c83ee8177becd477b5e4d9fbfa7c0f3154c19c6577470ccde8800f7e524d2e5e.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/73458276451bf07fa47c7bc906e2704930464e5a52467db2c65d00ba7a0b4743.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/e2521e5c4c417c2e75b526a853785388fb5d81a863cb0dfe8c5e6c39069fb78c.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/71b0cf25332495fff63fe7a60ede6d8f65baf625ffb1a1d04b1d492a89712146.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/ec2110c5af60affb6ec9d09acf86eec79bd4b919afe4e58c6503c66e592ee544.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/mel.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "cb7864474126ec2796f4c89a7257387e2c78e54922723d48a6ad8cbcbc516296",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "58390e0d029a54d3869998f87895877818e085402c",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/84edfc9c1534d4f55d590a6a623af14d9e0d50e95035b78d7219ffb39fedcad0.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/98406991f50ddf4ef85c26ef9fc968985b70a22bf936b5968d9cf540fdfd1e67.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/fe57c96291561d2277b382692a43b2a6e7fa3b8507fd38db09bbb9ad21b1d0c8.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/53c07a5891ca2022a6ffda1f1eccbcc07fee591c5973b79148eb43da112eed88.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/a90555747f757230c71d77fb62372154bbfb0fa979c8b19d2eb39cf84a47e990.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/ccf36039d4a68235b1fd529183433832dc487efa2729fb283187f2de361d3dca.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/5f0c034d8fd297aa9ff1dec11d5de1ba6444cd02e22306e037bbb9f88bc0fd02.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/afef8358d3627d34295bfcbf5be00a2fe0a447a9711e58f02a646cbc9cfc6141.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/mel_2.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "97468771b1129df0aa505f84623864557e9f846d7fabf12f59b34638ccb85669",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "52180a0d02797a5686f79995987ec6e875997f68f9",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/db14fba028a241785a190f9b66aff70ee3001bf661d176c01a8906c0b937aa1f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/dbf98482957cd9c7ba46965e738017f840728588e8c372a35edc751994ab43ac.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/fdb0d4f1fdd76667c4c1cb315ed24413f44955aab2da832a6e6d14bc0fb47f34.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/87c4708e856720207202976c25706ec8268d73a98dca4694beb1a9ba6a847997.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/a3703f06707be56d1379b95e8d677c7bc0d721cc88f5bd139b33c053ccba5f0d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/6b857ba43b3a696cf18a73ce4db4e54913b5bfa09d1396f8d85c0d4fcea64741.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/97e5813b4d79c0ceb4fa956541a83a2ab374024d42b19428b209e23e4220e92d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/b2e295b41cc47246bb893a57ae238eecda1143147078ed020ba669462efc9a76.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/mel_3.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "90c7d2b043bf498f088c62a3eb3ba27db68fad7f560cbb75b57db04ca1e75c95",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "050806050088784a974869088c93b8b6aa46c03c02",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/7dc9f6c98816134cafcce33e3a6a1a67fd2e8a56accf89b18ab2971ad6bdd725.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/023cfedb5ce67bd5afaba193e8087158a0c7b552270263ee597301c07a79a963.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/12e5f9004da608df8879359f53c4e99d31ed1bf4ae29835b53ff1a345f7ea25d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/df88542fee2604b37b4059924e118551f67ecbb8cbf12d9db847fbcb617e5ebb.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b94a3a42a6c4f1f9e56ad0f1dcbfd6d764a129e82b77de4adc13b41df001547d.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/673989fc91573c0cbcfc29f726badd5141b29d7283e4c7e314037410c99c44b0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/56185134ea9dbb8fc5af8f5f99f4a869b47ce4d482c62e41490315ea95ee4ff7.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/1d6290cc3ea1cc6b2b5ea5ba9a83946cd9600a5a3391f6e48c1fff25c2a268a9.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/mel_5.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "7453e872f89be4670bbbb5b50768ef253d23bd5335e8a78cab2892379df1e182",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "d02806150252848a78fac236a867b30b57af66f57a",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/34508a3bca26c06f42ee931c1d702f990f6673298e8e1fd7671a207eb390009c.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/0b5d42d260281e05426785fd9d22132d30ebd18c4bc7858e94f887f1f87319b8.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/c2710b8ecfdde83cf9cbb1d32c2b856f0c6cb560b4cb081bfe1b7d66c7a9ae9f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/13cd73e683d58fb4ae556dba2cf90ef2f2bc258459f6a8b5578fd601188a34a5.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/b8f3ef556fa82bd4e03485a5faade3ef05e74541d73922efe6647275d3ae4365.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/6b6146d144b39d5902b3971a5d59c0a7692e5f0773d417ca105ffc6d02c4bfc4.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/0dae383e1b397bbe83c46498d7a8fce1306e1d60a74072139d399b53e8ec4440.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/56c69e029a9e17ee16a9ac036cf3703ef859dd67d427309d4e4aeed3f01dfec1.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/mel_8.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "79e75b74e3d16f416846735bd8b9f3764eabcf9b0a25f64f32fa0bf31558606b",
+    "width": 3000,
+    "height": 4500,
+    "thumbhash": "4d08060500a6596eb6b6703c657b7769ca8bbfcdf9",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/a0c44714a9aab3066b553a8f4a9035ea0eae961e4340ae6bc511a8e346980b1a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/9606d7bfa1c7498754ca229061684f82fe7cb77ce3b4e885cc367b3e53b089a7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/451d27b741931660a310a90f98f90554e335a84d96e60e70e795210587205646.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/4151cb5ad2111f8cda2459ed80d5de9deba279240462e33203580f56dd6bef57.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/1e0b9ff602fde1bc819cdfe67b804d500cde169fd393f59fac2bf2d8784ed80f.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/bf61df093ba31afeae404c09d5f37f56e87baa60fbda8674126c9c47ee9a5ee7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c9a7b331bf5fa6a6960f770efde00d1b2b21018a60ea8b889606460b42271a1b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/319911a01e2cf114e8225517520784ffff6b1616e968b164be5f3f4458189969.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/slide_1.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "8cb4313ed5a1654fcbdcd7e954b76a07181caa0e82429bca758da9898bb5745c",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "1639161d846865897f98888b87888787786f8bf7a7",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/f8f71771953bf51233094b23b3242fc347909fce4fe58e6c9b4a933e32ad7c95.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/7e96471820bc690184af8c30963320a498035f13e74a92d08b7e2d1307449ce7.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/0bfabd7d9c332e755988f307cdbff73cde82a27d76f09b4da23b165d3502c787.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/87ed8053b18748e6365dde26b56d970b8bc62e34ab4f3c41b291467e6bd5a80b.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/5b810a71fd278a0ce1ed638596ca6c49b9e8d81b9d706b6b0926d7aa4e590c99.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/1312c95474287c366714f40eb75b00025213a05ceeda61b65a4ea8695aa7f6f8.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/ea87f7c23caa133e5f9510ffa50f1d8ba258133abf63384184b4d6b6f2b53ce6.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/a233be2e6f05b3493abb98fa808f336f390041eac9aa5678c1e9682435f1d8b2.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/slide_2.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "fb4a8c407f7de03591977ec6949df8034821efec258df8662fc8971ac4df400f",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "d3280a0d821699778f87588b77487977805c0cd7d6",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/b4306b574cc5289d3784927c3281aa0812b2c4e65a8a7b502065e0de9ade84e3.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/461ba889ed0f408dd84649cb5042002d02ac81af47a624def221c5057f35a117.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/eb38b351547d798c9fe4f5bdb95203f0b201a9a184e2b5b7e747b334a8767b81.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/3c032269c2f4dbc03b4b13b6fc69c87fe25a8d839d63a6c3288801131e4967e0.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/955248540d9c95af8499558848a51f61f717552dff2d489aa475007bf40674ab.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/1b9f6f9f72e144634f533fb3e8ee29a1afd8f8a30fecd6b08b719f3e96b6c843.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/21d779fe7fe572b2bd04a48f1b0cbd87cf163eb05f898480849bfdff3386be08.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/520132fc3a092b65605f75957ce9034590910ea8aa000caab287c66736f6a4ea.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/slide_3.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "8b52e6ea16123c70a42322e6fbfd9d947bae1f733699dabb3c14f818e7abd359",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "92180a0d82a9ca97af87789988278874f5776a7f96",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/22739ed6982692598ddac218d79e618a3970e892f0b91cde71404444d6c7ba3a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/02dbbffd84426d0220a4c856a5ec51273a4748ed9d706aaf7257071dcc967c89.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/59f19cc6ddb49b690da07c51080c0132c7b366dcc3a1ad8f3e1ca5b870ece091.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/a7278fa5a324090ad5e63e87f5f368d7c97adca8027846012fde568d25cd4691.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/4405e2247cfb856a2450d08554016e235f7527040d4e1114abdcecd61612951b.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/0ad3d89273009f5baf0d64f34d81bb99ae8ee36e0c691b48771bbf774582f521.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/c7b67317accfaaf461c5034ba39b27f9025a0f9b8c3a10a22ff6229de856be54.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/14ffdbf85b1aecffbedde224706e4ba8e58ffa8322acf3d7252296fd9e714f37.jpeg"
+      }
+    ]
+  },
+  "/img/Melted/slide_4.jpg": {
+    "pipelineVersion": 4,
+    "sourceSha256": "c94657c685c1973d1837e4aec6bda0f9dfebdf535737149a4ac01afbec2ffede",
+    "width": 4500,
+    "height": 3000,
+    "thumbhash": "8618060d829545557a6689925888888ff155214f14",
+    "variants": [
+      {
+        "format": "avif",
+        "width": 480,
+        "path": "/project-media/e58a42e0828aea7a30a6484fb217b027b1bca0d8af92f4b4a5573f74f33a9158.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 480,
+        "path": "/project-media/3e4622d7d1dc38cb23e3ee0a4373061460aa2ffed9cabdd1af692cd1954947d3.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 960,
+        "path": "/project-media/8666d761752990b7e5e310ada44cd31d8a7d6c863e146ad788f61916c6b18b16.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 960,
+        "path": "/project-media/22753e547d68076191d908a17bda5fa72fafa6f67702191ee0096f7a1ebb7e0d.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 1440,
+        "path": "/project-media/afcec99cba274da75b5c0925b473b178e62ea036fe122f0809c131d19ad25f8a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 1440,
+        "path": "/project-media/68fdf22159ede779e78a58c4aed32dc6751a52d3018c81a5a31fc4cb6f783163.jpeg"
+      },
+      {
+        "format": "avif",
+        "width": 2400,
+        "path": "/project-media/89ed8ea7b7d664434f4549147c72f8119b0b787fe4d5c6da379f1843af12eb4a.avif"
+      },
+      {
+        "format": "jpeg",
+        "width": 2400,
+        "path": "/project-media/cafc5fd5948742bf6833c402ba7bd3c8bcc6b85d1ed2c379b2bc3795c8922d10.jpeg"
       }
     ]
   },

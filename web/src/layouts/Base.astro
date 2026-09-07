@@ -393,17 +393,30 @@ const structuredData = canonical && JSON.stringify({
           const paint = () => {
             queued = false;
             const vh = window.innerHeight;
+            const y = window.scrollY;
+            // Tope real de scroll: pasado esto la pagina ya no se mueve, asi
+            // que ningun bloque puede seguir avanzando su rango.
+            const maxY = Math.max(0, root.scrollHeight - vh);
             // Read every geometry first, then write styles. Mixing both per
             // block forced the browser to recalculate layout repeatedly.
+            // Document coordinates keep the range comparable with maxY.
             const positions = blocks.map((words) => ({
               words,
-              top: words[0].getBoundingClientRect().top,
-              end: words[words.length - 1].getBoundingClientRect().bottom,
+              top: words[0].getBoundingClientRect().top + y,
+              end: words[words.length - 1].getBoundingClientRect().bottom + y,
             }));
             positions.forEach(({ words, top, end }) => {
               // arranca cuando la primera palabra llega al 85% del alto y
-              // termina cuando la ultima sube al 45%
-              const p = (vh * 0.85 - top) / (Math.max(end - top, 1) + vh * 0.4);
+              // termina cuando la ultima sube al 45%...
+              const from = top - vh * 0.85;
+              // ...salvo que la pagina se acabe antes: al ultimo bloque, con el
+              // footer como unico colchon por debajo, no le queda scroll para
+              // subir hasta ese 45% y sus ultimas palabras se quedaban a media
+              // luz para siempre. Recortando el final al ultimo scroll posible,
+              // el bloque termina de encenderse justo al tocar fondo.
+              const to = Math.min(end - vh * 0.45, maxY);
+              // Si no hay recorrido disponible, revelar al alcanzar el final.
+              const p = to <= from ? (y >= to ? 1 : 0) : (y - from) / (to - from);
               const head = Math.min(Math.max(p, 0), 1) * (words.length + SPREAD);
               words.forEach((w, i) => {
                 const t = Math.min(Math.max((head - i) / SPREAD, 0), 1);
@@ -422,7 +435,11 @@ const structuredData = canonical && JSON.stringify({
           // Lenis mueve el documento real, asi que el evento nativo basta.
           addEventListener("scroll", onScroll, { passive: true });
           addEventListener("resize", onScroll);
-          requestAnimationFrame(paint);
+          // El alto del documento tambien se mueve sin que haya scroll ni
+          // resize: una foto que termina de cargar, la fuente que entra. Como
+          // el rango del ultimo bloque depende de `maxY`, hay que repintar.
+          new ResizeObserver(onScroll).observe(document.body);
+          onScroll();
         }
       }
     </script>

@@ -23,3 +23,6 @@
 
 # media store (originals + derivatives live on the VPS, not in git)
 /media
+
+# lanzador de dev local del API (rutas propias de cada maquina)
+/run-api.ps1

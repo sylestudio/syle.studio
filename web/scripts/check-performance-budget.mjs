@@ -38,7 +38,7 @@ if (derivativeBytes > maxDerivativeSetBytes) {
   );
 }
 
-const legacyPhotoRoots = ["Dango", "Insomnio", "Obsesion", "Simbolo", "Slide", "Syle"];
+const legacyPhotoRoots = ["Dango", "DGX", "Insomnio", "Melted", "Obsesion", "Simbolo", "Slide", "Syle"];
 for (const root of legacyPhotoRoots) {
   try {
     const files = await walk(join(distRoot, "img", root));
@@ -53,14 +53,14 @@ for (const root of legacyPhotoRoots) {
 
 const pagePaths = [
   join(distRoot, "index.html"),
-  ...["catedral", "dango", "insomnio", "laobsesion", "rupture", "syle"].map((slug) =>
+  ...["catedral", "dango", "dgxarchive", "insomnio", "laobsesion", "melted", "rupture", "syle"].map((slug) =>
     join(distRoot, "proyectos", slug, "index.html"),
   ),
 ];
 for (const pagePath of pagePaths) {
   const html = await readFile(pagePath, "utf8");
   const renderedHtml = html.replace(/<!--[\s\S]*?-->/g, "");
-  if (/src=["']\/img\/(?:Dango|Insomnio|Obsesion|Simbolo|Slide|Syle)\//.test(renderedHtml)) {
+  if (/src=["']\/img\/(?:Dango|DGX|Insomnio|Melted|Obsesion|Simbolo|Slide|Syle)\//.test(renderedHtml)) {
     throw new Error(`Page still references an unoptimized project original: ${pagePath}`);
   }
   const responsiveImages =
