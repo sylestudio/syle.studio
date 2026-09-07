@@ -111,7 +111,7 @@ pub fn GalleryView() -> impl IntoView {
             let navigate = navigate.clone();
             spawn_local(async move {
                 if api::delete_gallery(&id).await.is_ok() {
-                    navigate("/", Default::default());
+                    navigate("/galleries", Default::default());
                 } else {
                     toast.err("No se pudo borrar la galería");
                 }
@@ -242,7 +242,7 @@ pub fn GalleryView() -> impl IntoView {
             <div class="sticky top-0 max-lg:top-14 z-20 -mx-6 -mt-6 flex flex-wrap items-center gap-4 \
                 border-b border-white/10 bg-zinc-900/80 px-6 py-4 backdrop-blur \
                 lg:-mx-10 lg:-mt-10 lg:px-10">
-                <a href="/" class="rounded-lg p-1.5 text-zinc-400 hover:bg-white/10 \
+                <a href="/galleries" class="rounded-lg p-1.5 text-zinc-400 hover:bg-white/10 \
                     hover:text-white transition-colors" aria-label="Volver">"←"</a>
                 <input
                     class="min-w-40 flex-1 bg-transparent text-xl font-semibold \

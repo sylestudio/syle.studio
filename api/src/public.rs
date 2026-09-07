@@ -3,11 +3,12 @@
 
 use crate::error::ApiError;
 use crate::gallery_row::{into_gallery, GalleryRow, GALLERY_COLS};
+use crate::project_row::{into_project, ProjectRow, PROJECT_COLS};
 use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::Json;
 use syle_types::{
-    Block, BlogPost, Gallery, GalleryDetail, ImageFormat, ImageVariant, Photo, PostStatus,
+    Block, BlogPost, Gallery, GalleryDetail, ImageFormat, ImageVariant, Photo, PostStatus, Project,
 };
 use uuid::Uuid;
 
@@ -58,6 +59,19 @@ pub async fn list_galleries(
 
     let galleries = rows.into_iter().map(into_gallery).collect();
     Ok(Json(galleries))
+}
+
+/// Published standalone projects, ordered for the shared homepage grid.
+pub async fn list_projects(
+    State(state): State<AppState>,
+) -> Result<Json<Vec<Project>>, ApiError> {
+    let rows: Vec<ProjectRow> = sqlx::query_as(&format!(
+        "SELECT {PROJECT_COLS} FROM projects \
+         WHERE published = TRUE ORDER BY position, title, id"
+    ))
+    .fetch_all(&state.pool)
+    .await?;
+    Ok(Json(rows.into_iter().map(into_project).collect()))
 }
 
 /// One published gallery with its ordered photos and their variants.

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /cdn-cgi/
+Disallow: /api/
+
+Sitemap: https://syle.studio/sitemap-index.xml

@@ -7,7 +7,7 @@ use leptos::ev;
 use leptos::leptos_dom::helpers::window_event_listener;
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
-use syle_types::{BlogPost, Gallery, PostStatus};
+use syle_types::{BlogPost, Gallery, PostStatus, Project};
 use wasm_bindgen_futures::spawn_local;
 
 #[derive(Clone, PartialEq)]
@@ -17,17 +17,39 @@ struct Item {
     href: String,
 }
 
-fn build_items(gs: &[Gallery], ps: &[BlogPost], q: &str) -> Vec<Item> {
+fn build_items(gs: &[Gallery], projects: &[Project], ps: &[BlogPost], q: &str) -> Vec<Item> {
     let q = q.trim().to_lowercase();
-    let mut out = vec![Item {
-        kind: "Ir a",
-        label: "Portafolio".into(),
-        href: "/".into(),
-    }];
+    let mut out = vec![
+        Item {
+            kind: "Ir a",
+            label: "Portafolio".into(),
+            href: "/".into(),
+        },
+        Item {
+            kind: "Ir a",
+            label: "Galerías".into(),
+            href: "/galleries".into(),
+        },
+        Item {
+            kind: "Ir a",
+            label: "Proyectos".into(),
+            href: "/projects".into(),
+        },
+        Item {
+            kind: "Ir a",
+            label: "Blog".into(),
+            href: "/posts".into(),
+        },
+    ];
     out.extend(gs.iter().map(|g| Item {
         kind: "Galería",
         label: g.title.clone(),
         href: format!("/galleries/{}", g.id),
+    }));
+    out.extend(projects.iter().map(|project| Item {
+        kind: "Proyecto",
+        label: project.title.clone(),
+        href: format!("/projects/{}", project.id),
     }));
     out.extend(ps.iter().map(|p| Item {
         kind: if p.status == PostStatus::Published {
@@ -52,6 +74,7 @@ pub fn CommandPalette(open: RwSignal<bool>) -> impl IntoView {
     let query = RwSignal::new(String::new());
     let sel = RwSignal::new(0usize);
     let galleries = RwSignal::new(Vec::<Gallery>::new());
+    let projects = RwSignal::new(Vec::<Project>::new());
     let posts = RwSignal::new(Vec::<BlogPost>::new());
     let input_ref = NodeRef::<leptos::html::Input>::new();
     let navigate = use_navigate();
@@ -77,6 +100,9 @@ pub fn CommandPalette(open: RwSignal<bool>) -> impl IntoView {
                 if let Ok(v) = api::list_posts().await {
                     posts.set(v);
                 }
+                if let Ok(v) = api::list_projects().await {
+                    projects.set(v);
+                }
             });
             if let Some(el) = input_ref.get() {
                 let _ = el.focus();
@@ -85,7 +111,12 @@ pub fn CommandPalette(open: RwSignal<bool>) -> impl IntoView {
     });
 
     let results = Memo::new(move |_| {
-        build_items(&galleries.get(), &posts.get(), &query.get())
+        build_items(
+            &galleries.get(),
+            &projects.get(),
+            &posts.get(),
+            &query.get(),
+        )
     });
 
     let go = {
@@ -138,7 +169,7 @@ pub fn CommandPalette(open: RwSignal<bool>) -> impl IntoView {
                             node_ref=input_ref
                             class="w-full border-b border-white/10 bg-transparent px-5 \
                                 py-4 text-base text-white outline-none placeholder:text-zinc-500"
-                            placeholder="Buscar galerías y entradas…"
+                            placeholder="Buscar galerías, proyectos y entradas…"
                             prop:value=query
                             on:input=move |e| { query.set(event_target_value(&e)); sel.set(0); }
                             on:keydown=on_key.clone()

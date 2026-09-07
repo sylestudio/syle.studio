@@ -1,25 +1,22 @@
-use super::ext;
+use super::{ext, MediaBatch};
 use crate::auth::AuthUser;
 use crate::error::ApiError;
 use crate::state::AppState;
 use axum::extract::{Multipart, State};
 use axum::Json;
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
 use std::sync::Arc;
-use syle_core::ingest::{ingest, thumbhash_data_url};
+use syle_core::ingest::{content_key, ingest, thumbhash_data_url};
 use syle_types::{ImageFormat, ImageVariant, UploadedImage};
 
 /// The same responsive widths as gallery photos; the pipeline drops any that
 /// would upscale the source.
 const TARGET_WIDTHS: &[u32] = &[480, 960, 1440, 2400];
 
-/// Multipart `file` upload for an inline post image. Runs the exact same image
-/// pipeline as gallery photos — responsive AVIF+JPEG renditions plus a
+/// Multipart `file` upload for an inline post image or project cover. Runs the
+/// exact same pipeline as gallery photos — responsive AVIF+JPEG renditions plus a
 /// ThumbHash blur-up — and writes every derivative under `media_dir`. Unlike
-/// `upload_photo` it persists no DB row: a blog image is referenced only by the
-/// block document, so the returned renditions are copied onto the image block,
-/// which becomes the sole record of the asset.
+/// `upload_photo` it persists no DB row: the caller copies the returned asset
+/// into its block document or standalone-project row.
 pub async fn upload_blog_asset(
     _user: AuthUser,
     State(state): State<AppState>,
@@ -42,6 +39,12 @@ pub async fn upload_blog_asset(
     }
 
     let src = Arc::new(bytes.ok_or(ApiError::BadRequest)?);
+    let _image_permit = state
+        .image_jobs
+        .clone()
+        .acquire_owned()
+        .await
+        .map_err(|_| ApiError::ServiceUnavailable)?;
     let src_for_ingest = src.clone();
     // CPU-bound decode/resize/encode → blocking pool, like the photo route.
     let out = tokio::task::spawn_blocking(move || ingest(&src_for_ingest, TARGET_WIDTHS))
@@ -49,27 +52,35 @@ pub async fn upload_blog_asset(
         .map_err(|_| ApiError::Internal)?
         .map_err(|_| ApiError::BadRequest)?;
 
-    let mut hasher = DefaultHasher::new();
-    src.as_slice().hash(&mut hasher);
-    let key = format!("{:016x}", hasher.finish());
+    let asset_id = uuid::Uuid::new_v4();
+    let key = format!("{}-{}", content_key(src.as_slice()), asset_id.simple());
 
-    // Write every responsive derivative (AVIF + JPEG), exactly like a gallery
-    // photo — only the DB INSERTs are omitted.
     let mut variants = Vec::with_capacity(out.derivatives.len());
-    for d in &out.derivatives {
+    let mut staged = Vec::with_capacity(out.derivatives.len());
+    for d in out.derivatives {
         let e = ext(d.format);
         let rel = format!("media/{e}/{key}_{}.{e}", d.width);
-        let abs = state.media_dir.join(&rel);
-        if let Some(parent) = abs.parent() {
-            std::fs::create_dir_all(parent).map_err(|_| ApiError::Internal)?;
-        }
-        std::fs::write(&abs, &d.bytes).map_err(|_| ApiError::Internal)?;
         variants.push(ImageVariant {
             format: d.format,
             width: d.width,
             path: format!("/{rel}"),
         });
+        staged.push((rel, d.bytes));
     }
+    let media_dir = state.media_dir.clone();
+    let mut media = tokio::task::spawn_blocking(move || {
+        MediaBatch::stage(
+            &media_dir,
+            staged
+                .iter()
+                .map(|(rel, bytes)| (rel.as_str(), bytes.as_slice())),
+        )
+    })
+    .await
+    .map_err(|_| ApiError::Internal)?
+    .map_err(|_| ApiError::Internal)?;
+    media.publish().map_err(|_| ApiError::Internal)?;
+    media.keep();
 
     // The widest JPEG is the broadly-compatible `<img>` fallback / preview src.
     let src_path = variants

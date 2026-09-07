@@ -1,10 +1,15 @@
 ---
 import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="Catedral">
+<ProyectoBase
+  title="Catedral"
+  description="Símbolo Vivo: diseño de prendas y fotografía de Syle Studio alrededor de la resignificación, la fe y la esperanza."
+  image="/img/Simbolo/Simbolo.jpg"
+>
   <div class="hero-fixed">
-    <img src="/img/Simbolo/Simbolo.jpg" alt="Catedral" />
+    <StaticPicture src="/img/Simbolo/Simbolo.jpg" alt="Catedral" eager fill />
   </div>
 
   <div class="page-wrap">
@@ -43,8 +48,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/Simbolo/Simbo.jpg" alt="" />
-        <img src="/img/Simbolo/Simbo_2.jpg" alt="" />
+        <StaticPicture src="/img/Simbolo/Simbo.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Simbo_2.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
       </div>
 
       <!-- ── Texto de la derecha ───────────────────── -->
@@ -62,9 +67,9 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Simbolo/Diseno.jpg" alt="" />
-        <img src="/img/Simbolo/Diseno_2.jpg" alt="" />
-        <img src="/img/Simbolo/Diseno_3.jpg" alt="" />
+        <StaticPicture src="/img/Simbolo/Diseno.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Diseno_2.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Simbolo/Diseno_3.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -83,16 +88,16 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
       <!-- ── Slider ─────────────────────────────────────────── -->
       <div class="slider-wrap">
         <div class="slider" id="slider">
-          <div class="slide active"><img src="/img/Simbolo/Slide1.jpg" alt="Slide 1" /></div>
-          <div class="slide"><img src="/img/Simbolo/Slide2.jpg" alt="Slide 2" /></div>
-          <div class="slide"><img src="/img/Simbolo/Slide3.jpg" alt="Slide 3" /></div>
+          <div class="slide active"><StaticPicture src="/img/Simbolo/Slide1.jpg" alt="Slide 1" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Simbolo/Slide2.jpg" alt="Slide 2" fill /></div>
+          <div class="slide"><StaticPicture src="/img/Simbolo/Slide3.jpg" alt="Slide 3" fill /></div>
         </div>
         <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
         <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
         <div class="sl-dots">
-          <span class="dot active" data-i="0"></span>
-          <span class="dot" data-i="1"></span>
-          <span class="dot" data-i="2"></span>
+          <button type="button" class="dot active" data-i="0" aria-label="Mostrar imagen 1" aria-current="true"></button>
+          <button type="button" class="dot" data-i="1" aria-label="Mostrar imagen 2" aria-current="false"></button>
+          <button type="button" class="dot" data-i="2" aria-label="Mostrar imagen 3" aria-current="false"></button>
         </div>
       </div>
 
@@ -101,7 +106,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">Símbolo Vivo</a>
+            <span class="credit-val disp">Símbolo Vivo</span>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Dirección / Fotografía</span>
@@ -127,13 +132,14 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   /* ── Shell ── */
   .hero-fixed {
@@ -141,7 +147,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     inset: 0;
     z-index: 0;
   }
-  .hero-fixed img {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -156,10 +162,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   .wrap {
-    max-width: 1700px;
+    max-width: var(--shell-max);
     margin: 0 auto;
-    padding-left: clamp(1.5rem, 3vw, 3rem);
-    padding-right: clamp(1.5rem, 3vw, 3rem);
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   /* ── Header ── */
@@ -171,7 +177,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 1.25rem;
   }
   .pg-title {
-    font-size: clamp(3rem, 10vw, 9rem);
+    font-size: var(--type-page);
     line-height: 0.88;
   }
 
@@ -194,11 +200,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     align-items: flex-end;
   }
   .intro-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
   }
 
   .body-s {
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    font-size: var(--type-body-sm);
     line-height: 1.65;
     color: rgba(22, 20, 15, 0.72);
   }
@@ -209,7 +215,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     grid-template-columns: 1fr 1fr;
     gap: 3px;
   }
-  .diptych img {
+  .diptych :global(img) {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -228,7 +234,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     max-width: 60%;
   }
   .sub2-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-r .body-s { max-width: 44ch; }
@@ -243,7 +249,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     padding-bottom: 6rem;
   }
   .center-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-c .body-s { max-width: 52ch; }
@@ -255,7 +261,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     align-items: start;
   }
-  .triple img {
+  .triple :global(img) {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -280,7 +286,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     transition: opacity 0.6s ease;
   }
   .slide.active { opacity: 1; }
-  .slide img {
+  .slide :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -306,18 +312,29 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   .sl-dots {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.125rem;
     padding: 1rem 0;
   }
   .dot {
+    padding: 0;
+    border: 0;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    cursor: pointer;
+  }
+  .dot::before {
+    content: "";
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: rgba(22,20,15,0.25);
-    cursor: pointer;
     transition: background 0.2s;
   }
-  .dot.active { background: rgba(22,20,15,0.75); }
+  .dot.active::before { background: rgba(22,20,15,0.75); }
+  .dot:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 
   /* ── Créditos ── */
   .credits {
@@ -337,10 +354,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
   .credit-val {
     width: fit-content;
-    font-size: 1rem;
+    font-size: var(--type-body);
   }
   .credit-val.disp {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: var(--type-title-sm);
   }
 
   /* ── Mobile ── */
@@ -366,9 +383,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
-    .diptych img,
-    .triple img,
-    .triple img:nth-child(2) {
+    .diptych :global(img),
+    .triple :global(img) {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
@@ -377,13 +393,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   /* ── Hover discreto + zoom al click ── */
-  .diptych img,
-  .triple img {
+  .diptych :global(img),
+  .triple :global(img) {
     cursor: zoom-in;
     transition: filter 0.35s ease, transform 0.35s ease;
   }
-  .diptych img:hover,
-  .triple img:hover {
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
     filter: brightness(1.05);
     transform: scale(1.012);
   }
@@ -422,7 +438,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
 <script>
   const slides = document.querySelectorAll<HTMLElement>('.slide');
-  const dots   = document.querySelectorAll<HTMLElement>('.dot');
+  const dots   = document.querySelectorAll<HTMLButtonElement>('.dot');
   let cur = 0;
 
   function goTo(n: number) {
@@ -431,13 +447,16 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     cur = (n + slides.length) % slides.length;
     slides[cur].classList.add('active');
     dots[cur].classList.add('active');
+    dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === cur)));
   }
 
   document.querySelector('.sl-prev')?.addEventListener('click', () => goTo(cur - 1));
   document.querySelector('.sl-next')?.addEventListener('click', () => goTo(cur + 1));
   dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
 
-  setInterval(() => goTo(cur + 1), 4000);
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.setInterval(() => goTo(cur + 1), 4000);
+  }
 
   // ── Lightbox ──
   const lightbox  = document.getElementById('lightbox') as HTMLElement | null;

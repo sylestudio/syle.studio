@@ -6,9 +6,11 @@ pub const LOGOUT: &str = "/api/admin/logout";
 pub const ME: &str = "/api/admin/me";
 
 pub const ADMIN_GALLERIES: &str = "/api/admin/galleries";
+pub const ADMIN_PROJECTS: &str = "/api/admin/projects";
 pub const ADMIN_POSTS: &str = "/api/admin/posts";
 pub const ADMIN_PHOTOS: &str = "/api/admin/photos";
 pub const ADMIN_BLOG_ASSETS: &str = "/api/admin/blog-assets";
+pub const ADMIN_PROJECT_ASSETS: &str = "/api/admin/project-assets";
 
 // Passkeys (WebAuthn). login/* and recovery/redeem are pre-session; the rest
 // require an authenticated operator.
@@ -29,6 +31,7 @@ pub const ADMIN_SITE_REBUILD: &str = "/api/admin/site/rebuild";
 pub const ADMIN_SITE_STATUS: &str = "/api/admin/site/status";
 
 pub const PUBLIC_GALLERIES: &str = "/api/public/galleries";
+pub const PUBLIC_PROJECTS: &str = "/api/public/projects";
 pub const PUBLIC_POSTS: &str = "/api/public/posts";
 
 pub fn admin_gallery(id: &str) -> String {
@@ -37,6 +40,10 @@ pub fn admin_gallery(id: &str) -> String {
 
 pub fn admin_gallery_order(id: &str) -> String {
     format!("{ADMIN_GALLERIES}/{id}/photos/order")
+}
+
+pub fn admin_project(id: &str) -> String {
+    format!("{ADMIN_PROJECTS}/{id}")
 }
 
 pub fn admin_photo(id: &str) -> String {

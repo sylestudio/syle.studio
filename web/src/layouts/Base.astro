@@ -5,13 +5,75 @@ import "@fontsource/space-mono/700.css";
 import "lenis/dist/lenis.css";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
+import staticImages from "../generated/static-images.json";
 
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
+  /** Set to null for error pages that must not advertise a canonical URL. */
+  canonical?: string | URL | null;
+  initialNavDark?: boolean;
   /** Landing renders full-bleed sections; other pages get a readable container. */
   bare?: boolean;
 }
-const { title, bare = false } = Astro.props;
+const {
+  title,
+  description = "Syle Studio — estudio creativo de fotografía, dirección y diseño en México.",
+  image = "/img/hero.webp",
+  type = "website",
+  noindex = false,
+  canonical: canonicalOverride,
+  initialNavDark = false,
+  bare = false,
+} = Astro.props;
+const revision = import.meta.env.PUBLIC_BUILD_SHA;
+const site = Astro.site ?? new URL("https://syle.studio");
+const canonical = canonicalOverride === null
+  ? null
+  : new URL(canonicalOverride ?? Astro.url.pathname, site);
+const fullTitle = `${title} · syle.studio`;
+const imageEntry = (staticImages as Record<
+  string,
+  { variants: Array<{ format: string; width: number; path: string }> }
+>)[image];
+const socialImagePath = imageEntry?.variants
+  .filter((variant) => variant.format === "jpeg")
+  .sort((a, b) => b.width - a.width)[0]?.path ?? image;
+const socialImage = new URL(socialImagePath, site);
+const structuredData = canonical && JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${site.href}#organization`,
+      name: "Syle Studio",
+      url: site.href,
+      sameAs: ["https://www.instagram.com/syle_studio/"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${site.href}#website`,
+      name: "syle.studio",
+      url: site.href,
+      inLanguage: "es-MX",
+      publisher: { "@id": `${site.href}#organization` },
+    },
+    {
+      "@type": type === "article" ? "Article" : "WebPage",
+      "@id": `${canonical.href}#webpage`,
+      name: fullTitle,
+      url: canonical.href,
+      description,
+      image: socialImage.href,
+      inLanguage: "es-MX",
+      isPartOf: { "@id": `${site.href}#website` },
+      about: { "@id": `${site.href}#organization` },
+    },
+  ],
+}).replace(/</g, "\\u003c");
 ---
 
 <!doctype html>
@@ -19,8 +81,33 @@ const { title, bare = false } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>{title} · syle.studio</title>
+    <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={noindex
+        ? "noindex,follow"
+        : "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1"}
+    />
+    <meta name="theme-color" content="#f4f1ea" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:locale" content="es_MX" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="syle.studio" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content="Syle Studio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    {revision && <meta name="syle-revision" content={revision} />}
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon-dark.ico" media="(prefers-color-scheme: light)" sizes="any" />
+    <link rel="icon" href="/favicon-light.ico" media="(prefers-color-scheme: dark)" sizes="any" />
+    <title>{fullTitle}</title>
+    {structuredData && <script type="application/ld+json" set:html={structuredData} is:inline />}
     <style is:global>
       :root {
         --ink: #16140f;
@@ -28,7 +115,35 @@ const { title, bare = false } = Astro.props;
         --dark: #0c0b0a;
         --ox: #323030;
         --e: cubic-bezier(0.32, 0.72, 0, 1);
+
+        /* Layout tokens: one shared horizontal rhythm for every interface
+           surface. Photographic/full-bleed sections opt out locally. */
+        --layout-max: 106.25rem;
+        --shell-max: calc(var(--layout-max) + (2 * var(--page-gutter)));
+        --content-max: 72rem;
+        --reading-max: 44rem;
+        --page-gutter: 1.5rem;
+
+        /* Type tokens: semantic roles, not page-specific one-offs. */
+        --type-label: 0.625rem;
+        --type-caption: 0.75rem;
+        --type-body-sm: 0.875rem;
+        --type-body: 1rem;
+        --type-body-lg: clamp(1rem, 0.25vw + 0.95rem, 1.125rem);
+        --type-title-sm: clamp(1.75rem, 4vw, 3rem);
+        --type-heading: clamp(1.75rem, 4vw, 4.5rem);
+        --type-section: clamp(2.5rem, 7vw, 5rem);
+        --type-page: clamp(3rem, 10vw, 9rem);
+        --type-hero: clamp(3.25rem, 15vw, 12rem);
+        --type-close: clamp(3rem, 12vw, 10rem);
+        --type-prose-title: clamp(2.5rem, 6vw, 3.5rem);
+        --type-prose-h1: 1.875rem;
+        --type-prose-h2: 1.5rem;
+        --type-prose-h3: 1.25rem;
         color-scheme: light;
+      }
+      @media (min-width: 768px) {
+        :root { --page-gutter: 3rem; }
       }
       * { box-sizing: border-box; margin: 0; }
       /* clip (no "hidden"): evita scroll horizontal SIN crear un contenedor de
@@ -43,6 +158,10 @@ const { title, bare = false } = Astro.props;
       }
       a { color: inherit; text-decoration: none; }
       img { display: block; width: 100%; height: auto; }
+      :where(a, button, [role="button"]):focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 4px;
+      }
 
       .disp {
         font-weight: 700;
@@ -51,7 +170,7 @@ const { title, bare = false } = Astro.props;
       }
       .lbl {
         font-family: "Space Mono", ui-monospace, monospace;
-        font-size: 9px;
+        font-size: var(--type-label);
         letter-spacing: 0.22em;
         text-transform: uppercase;
       }
@@ -95,7 +214,7 @@ const { title, bare = false } = Astro.props;
           opacity 1s var(--e),
           transform 1s var(--e),
           clip-path 1s var(--e);
-        will-change: opacity, transform;
+        will-change: opacity, transform, clip-path;
       }
       .reveal-ready [data-reveal].in {
         opacity: 1;
@@ -104,25 +223,27 @@ const { title, bare = false } = Astro.props;
       }
 
       /* Reveal por palabra atado al scroll. El script trocea el texto de cada
-         bloque [data-scroll-text] en <span class="w"> y sube su opacidad segun
-         avanza el scroll. [data-no-split] excluye un subarbol: layout que no
-         debe partirse en palabras, o controles que deben entrar de una pieza.
-         Mismo criterio fail-visible que el reveal de arriba: las palabras solo
-         se atenuan bajo .st-ready, clase que anade el script, asi que sin JS o
-         con reduced motion el texto se lee a opacidad plena. */
+         bloque [data-scroll-text] en <span class="w">. Cada palabra recupera
+         opacidad y posicion conforme cruza el viewport. Las reglas solo se
+         activan despues de que JS prepara el bloque: sin JS o con movimiento
+         reducido, el texto permanece completamente visible. */
       [data-scroll-text] .w { display: inline-block; }
-      [data-scroll-text].st-ready .w { opacity: 0.12; }
+      [data-scroll-text].st-ready .w {
+        opacity: 0.12;
+        transform: translateY(0.12em);
+      }
 
       .container {
-        max-width: 72rem;
+        width: 100%;
+        max-width: var(--shell-max);
         margin: 0 auto;
-        padding: 7rem 1.5rem 4rem;
+        padding: 7rem var(--page-gutter) 4rem;
       }
     </style>
   </head>
   <body>
     <div class="grain"></div>
-    <Nav />
+    <Nav initialDark={initialNavDark} />
     {
       bare ? (
         <slot />
@@ -156,18 +277,40 @@ const { title, bare = false } = Astro.props;
       const nav = document.getElementById("nav");
       if (nav) {
         const onDark = new Set<Element>();
+        let projectHeroActive = Boolean(document.querySelector(".hero-fixed"));
+        const syncNavTone = () =>
+          nav.classList.toggle("on-dark", projectHeroActive || onDark.size > 0);
         const navIO = new IntersectionObserver(
           (entries) => {
             entries.forEach((e) =>
               e.isIntersecting ? onDark.add(e.target) : onDark.delete(e.target),
             );
-            nav.classList.toggle("on-dark", onDark.size > 0);
+            syncNavTone();
           },
           { rootMargin: "-30px 0px -100% 0px" },
         );
         document
           .querySelectorAll("section.dark, footer.dark")
           .forEach((d) => navIO.observe(d));
+
+        const pageWrap = document.querySelector(".page-wrap");
+        if (pageWrap) {
+          let projectToneQueued = false;
+          const paintProjectTone = () => {
+            projectToneQueued = false;
+            projectHeroActive = pageWrap.getBoundingClientRect().top > 30;
+            syncNavTone();
+          };
+          const queueProjectTone = () => {
+            if (projectToneQueued) return;
+            projectToneQueued = true;
+            requestAnimationFrame(paintProjectTone);
+          };
+          addEventListener("scroll", queueProjectTone, { passive: true });
+          addEventListener("resize", queueProjectTone);
+          paintProjectTone();
+        }
+        syncNavTone();
       }
 
       // Reveal: only gate visibility when we can actually animate.
@@ -192,11 +335,9 @@ const { title, bare = false } = Astro.props;
       }
 
       // Reveal por palabra atado al scroll: a diferencia de [data-reveal], que
-      // es un fade de una sola vez al entrar en viewport, aqui la opacidad de
-      // cada palabra sale del progreso del texto al cruzar la pantalla, asi que
-      // el texto se va escribiendo mientras scrolleas. SPREAD = cuantas
-      // palabras estan encendiendose a la vez: eso da el degradado que viaja
-      // en vez de un encendido seco.
+      // ocurre una sola vez, aqui cada palabra recupera opacidad y posicion
+      // segun el progreso del texto. SPREAD controla el frente gradual para
+      // evitar que todo el bloque aparezca de golpe.
       //
       // El rango NO se mide sobre el contenedor sino sobre la caja real de las
       // palabras (top de la primera, bottom de la ultima). Asi un bloque puede
@@ -256,11 +397,15 @@ const { title, bare = false } = Astro.props;
             // Tope real de scroll: pasado esto la pagina ya no se mueve, asi
             // que ningun bloque puede seguir avanzando su rango.
             const maxY = Math.max(0, root.scrollHeight - vh);
-            blocks.forEach((words) => {
-              // El rango se calcula en coordenadas de documento, no de
-              // viewport: hace falta compararlo contra `maxY`.
-              const top = words[0].getBoundingClientRect().top + y;
-              const end = words[words.length - 1].getBoundingClientRect().bottom + y;
+            // Read every geometry first, then write styles. Mixing both per
+            // block forced the browser to recalculate layout repeatedly.
+            // Document coordinates keep the range comparable with maxY.
+            const positions = blocks.map((words) => ({
+              words,
+              top: words[0].getBoundingClientRect().top + y,
+              end: words[words.length - 1].getBoundingClientRect().bottom + y,
+            }));
+            positions.forEach(({ words, top, end }) => {
               // arranca cuando la primera palabra llega al 85% del alto y
               // termina cuando la ultima sube al 45%...
               const from = top - vh * 0.85;
@@ -270,15 +415,13 @@ const { title, bare = false } = Astro.props;
               // luz para siempre. Recortando el final al ultimo scroll posible,
               // el bloque termina de encenderse justo al tocar fondo.
               const to = Math.min(end - vh * 0.45, maxY);
-              // El minimo de 1px cubre el caso degenerado (`to` <= `from`): una
-              // pagina que no da scroll suficiente ni para arrancar el rango.
-              // Ahi `p` se dispara y el bloque sale entero encendido, que es lo
-              // correcto — no hay recorrido con el que revelarlo.
-              const p = (y - from) / Math.max(to - from, 1);
+              // Si no hay recorrido disponible, revelar al alcanzar el final.
+              const p = to <= from ? (y >= to ? 1 : 0) : (y - from) / (to - from);
               const head = Math.min(Math.max(p, 0), 1) * (words.length + SPREAD);
               words.forEach((w, i) => {
                 const t = Math.min(Math.max((head - i) / SPREAD, 0), 1);
                 w.style.opacity = String(0.12 + t * 0.88);
+                w.style.transform = `translateY(${(1 - t) * 0.12}em)`;
               });
             });
           };
@@ -296,7 +439,7 @@ const { title, bare = false } = Astro.props;
           // resize: una foto que termina de cargar, la fuente que entra. Como
           // el rango del ultimo bloque depende de `maxY`, hay que repintar.
           new ResizeObserver(onScroll).observe(document.body);
-          paint();
+          onScroll();
         }
       }
     </script>

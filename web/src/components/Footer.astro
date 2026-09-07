@@ -1,12 +1,11 @@
 ---
-const year = "2025";
 ---
 
 <footer class="site-footer">
   <div class="foot-inner">
     <!-- Wordmark -->
     <a href="/" class="foot-brand" aria-label="syle.studio">
-      <img class="foot-fuente" src="/img/Syle_Fuente_Negro%20(1).svg" alt="SYLE" />
+      <img class="foot-fuente" src="/img/Syle_Fuente_Negro%20(1).svg" alt="SYLE" width="7872" height="2851" decoding="async" />
     </a>
 
     <!-- Sitio -->
@@ -20,12 +19,12 @@ const year = "2025";
       aria-label="Instagram"
       class="foot-ig"
     >
-      <img src="/img/instagram.svg" alt="Instagram" />
+      <img src="/img/instagram.svg" alt="Instagram" width="32" height="32" decoding="async" />
     </a>
 
     <!-- Símbolo -->
     <a href="/" class="foot-mark" aria-label="syle.studio">
-      <img src="/img/Syle_Logo_Negro%20(1).svg" alt="Syle" />
+      <img src="/img/Syle_Logo_Negro%20(1).svg" alt="Syle" width="5383" height="5059" decoding="async" />
     </a>
   </div>
 </footer>
@@ -36,11 +35,11 @@ const year = "2025";
     z-index: 1;
     background: var(--paper);
     color: var(--ink);
-    padding: 2.5rem 1.5rem;
+    padding: 2.5rem var(--page-gutter);
   }
 
   .foot-inner {
-    max-width: 1820px;
+    max-width: var(--layout-max);
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -66,7 +65,7 @@ const year = "2025";
   /* Sitio */
   .foot-site {
     font-family: "Space Mono", ui-monospace, monospace;
-    font-size: 0.72rem;
+    font-size: var(--type-caption);
     letter-spacing: 0.12em;
     color: rgba(22, 20, 15, 0.65);
     transition: color 0.25s var(--e);
@@ -103,18 +102,12 @@ const year = "2025";
     height: 1.4rem;
   }
 
-  @media (min-width: 768px) {
-    .site-footer {
-      padding: 2rem 3rem;
-    }
-  }
-
   @media (max-width: 640px) {
     .foot-inner {
       gap: 1rem;
     }
     .foot-fuente { height: 1.1rem; }
-    .foot-site { font-size: 0.62rem; letter-spacing: 0.08em; }
+    .foot-site { font-size: var(--type-label); letter-spacing: 0.08em; }
     .foot-ig img { height: 1rem; }
     .foot-mark img { height: 1.1rem; }
   }

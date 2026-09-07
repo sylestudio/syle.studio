@@ -6,9 +6,9 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use syle_types::{
     endpoints as ep, AccessLogEntry, BlogPost, CredentialInfo, FlowChallenge, Gallery,
-    GalleryDetail, LoginRequest, NewGallery, NewPost, Photo, RecoveryCodes, RecoveryRedeem,
-    RenameCredential, Reorder, SiteBuildStatus, UpdateGallery, UpdatePhoto, UpdatePost,
-    UploadedImage, User, WebauthnFinish, WebauthnStart,
+    GalleryDetail, LoginRequest, NewGallery, NewPost, NewProject, Photo, Project, RecoveryCodes,
+    RecoveryRedeem, RenameCredential, Reorder, SiteBuildStatus, UpdateGallery, UpdatePhoto,
+    UpdatePost, UpdateProject, UploadedImage, User, WebauthnFinish, WebauthnStart,
 };
 use web_sys::{FormData, RequestCredentials};
 
@@ -150,6 +150,26 @@ pub async fn delete_gallery(id: &str) -> Result<(), ApiError> {
     send_empty(Request::delete(&ep::admin_gallery(id))).await
 }
 
+pub async fn list_projects() -> Result<Vec<Project>, ApiError> {
+    get_json(ep::ADMIN_PROJECTS).await
+}
+
+pub async fn create_project(project: &NewProject) -> Result<Project, ApiError> {
+    post_json(ep::ADMIN_PROJECTS, project).await
+}
+
+pub async fn get_project(id: &str) -> Result<Project, ApiError> {
+    get_json(&ep::admin_project(id)).await
+}
+
+pub async fn update_project(id: &str, body: &UpdateProject) -> Result<Project, ApiError> {
+    patch_json(&ep::admin_project(id), body).await
+}
+
+pub async fn delete_project(id: &str) -> Result<(), ApiError> {
+    send_empty(Request::delete(&ep::admin_project(id))).await
+}
+
 pub async fn reorder_photos(
     gallery_id: &str,
     body: &Reorder,
@@ -198,8 +218,8 @@ pub async fn delete_post(id: &str) -> Result<(), ApiError> {
 /// Upload an inline post image (multipart `file`); returns the public `/media`
 /// path to set as the image block's `src`. Plain fetch — these are small and
 /// quick, so no upload-progress plumbing (unlike `upload_photo`).
-pub async fn upload_blog_asset(form: FormData) -> Result<UploadedImage, ApiError> {
-    let resp = Request::post(ep::ADMIN_BLOG_ASSETS)
+async fn upload_asset(url: &str, form: FormData) -> Result<UploadedImage, ApiError> {
+    let resp = Request::post(url)
         .credentials(RequestCredentials::Include)
         .body(form)
         .map_err(|_| ApiError::Network)?
@@ -211,6 +231,14 @@ pub async fn upload_blog_asset(form: FormData) -> Result<UploadedImage, ApiError
     } else {
         Err(classify(resp.status()))
     }
+}
+
+pub async fn upload_blog_asset(form: FormData) -> Result<UploadedImage, ApiError> {
+    upload_asset(ep::ADMIN_BLOG_ASSETS, form).await
+}
+
+pub async fn upload_project_asset(form: FormData) -> Result<UploadedImage, ApiError> {
+    upload_asset(ep::ADMIN_PROJECT_ASSETS, form).await
 }
 
 /// Multipart upload over raw `XMLHttpRequest` so `upload.onprogress` can drive

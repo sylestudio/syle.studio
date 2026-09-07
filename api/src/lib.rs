@@ -6,6 +6,7 @@ mod admin;
 pub mod auth;
 mod error;
 mod gallery_row;
+mod project_row;
 mod public;
 mod site;
 mod state;
@@ -31,6 +32,7 @@ pub fn app(state: AppState) -> Router {
         .nest_service("/media", media)
         .route("/api/public/galleries", get(public::list_galleries))
         .route("/api/public/galleries/{slug}", get(public::get_gallery))
+        .route("/api/public/projects", get(public::list_projects))
         .route("/api/public/posts", get(public::list_posts))
         .route("/api/public/posts/{slug}", get(public::get_post))
         .route(
@@ -46,6 +48,16 @@ pub fn app(state: AppState) -> Router {
         .route(
             "/api/admin/galleries/{id}/photos/order",
             patch(admin::reorder_photos),
+        )
+        .route(
+            "/api/admin/projects",
+            get(admin::list_projects).post(admin::create_project),
+        )
+        .route(
+            "/api/admin/projects/{id}",
+            get(admin::get_project)
+                .patch(admin::update_project)
+                .delete(admin::delete_project),
         )
         .route(
             "/api/admin/photos/{id}",
@@ -67,6 +79,10 @@ pub fn app(state: AppState) -> Router {
         )
         .route(
             "/api/admin/blog-assets",
+            post(admin::upload_blog_asset).layer(DefaultBodyLimit::max(MAX_UPLOAD_BYTES)),
+        )
+        .route(
+            "/api/admin/project-assets",
             post(admin::upload_blog_asset).layer(DefaultBodyLimit::max(MAX_UPLOAD_BYTES)),
         )
         .route("/api/admin/login", post(auth::login))

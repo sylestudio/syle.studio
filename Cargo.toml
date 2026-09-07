@@ -13,7 +13,8 @@ authors = ["Eduardo Alonso <eddndev@gmail.com>"]
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+url = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync"] }
 anyhow = "1"
 thiserror = "2"
 syle-types = { path = "types" }

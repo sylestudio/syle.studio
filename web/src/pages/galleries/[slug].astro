@@ -2,12 +2,14 @@
 import Base from "../../layouts/Base.astro";
 import Photo from "../../components/Photo.astro";
 import { listGalleries, getGallery } from "../../lib/api";
-import { projectHref } from "../../lib/proyectos";
+import { hasBespokePage, projectHref } from "../../lib/proyectos";
 import { toRoman } from "../../lib/roman";
 
 export async function getStaticPaths() {
   const galleries = await listGalleries();
-  return galleries.map((g) => ({ params: { slug: g.slug } }));
+  return galleries
+    .filter((gallery) => !hasBespokePage(gallery.slug))
+    .map((gallery) => ({ params: { slug: gallery.slug } }));
 }
 
 const { slug } = Astro.params;
@@ -40,7 +42,7 @@ const yearLabel = year ? toRoman(year) : "MMXXVI";
 const categoryLabel = category?.trim();
 ---
 
-<Base title={detail.gallery.title} bare>
+<Base title={detail.gallery.title} description={lede} bare>
   <!-- HERO · light -->
   <header class="hero">
     <div class="hero-in">
@@ -137,10 +139,12 @@ const categoryLabel = category?.trim();
       )}
     </nav>
 
+    <!--email_off-->
     <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal>
-      Iniciar proyecto
+      contacto@sylestudio.com
       <span class="cta-i" aria-hidden="true">↗</span>
     </a>
+    <!--/email_off-->
   </section>
 </Base>
 
@@ -153,10 +157,10 @@ const categoryLabel = category?.trim();
     min-height: 92dvh;
     display: flex;
     flex-direction: column;
-    padding: 7rem 1.5rem 2.5rem;
+    padding: 7rem var(--page-gutter) 2.5rem;
   }
   .hero-in {
-    max-width: 1700px;
+    max-width: var(--layout-max);
     margin: 0 auto;
     width: 100%;
     flex: 1;
@@ -187,7 +191,7 @@ const categoryLabel = category?.trim();
   }
 
   .hero-h {
-    font-size: clamp(2.75rem, 11vw, 9rem);
+    font-size: var(--type-page);
     margin-top: auto;
     line-height: 0.88;
     padding-top: 3rem;
@@ -201,14 +205,14 @@ const categoryLabel = category?.trim();
   }
   .hero-lede {
     max-width: 34rem;
-    font-size: 1.125rem;
+    font-size: var(--type-body-lg);
     line-height: 1.6;
     color: rgba(22, 20, 15, 0.65);
   }
 
   /* COVER ----------------------------------------------------------- */
-  .bleed { padding: 0 1.5rem 7rem; }
-  .bleed figure { max-width: 1700px; margin: 0 auto; }
+  .bleed { padding: 0 var(--page-gutter) 7rem; }
+  .bleed figure { max-width: var(--layout-max); margin: 0 auto; }
   .cover {
     overflow: hidden;
     height: 70vh;
@@ -225,8 +229,8 @@ const categoryLabel = category?.trim();
   }
 
   /* BODY GRID ------------------------------------------------------- */
-  .section { padding: 7rem 1.5rem; }
-  .section > * { max-width: 1700px; margin-left: auto; margin-right: auto; }
+  .section { padding: 7rem var(--page-gutter); }
+  .section > * { max-width: var(--layout-max); margin-left: auto; margin-right: auto; }
   .sec-head {
     display: flex;
     align-items: flex-end;
@@ -236,7 +240,7 @@ const categoryLabel = category?.trim();
     margin-bottom: 4rem;
   }
   .dark .sec-head { border-color: rgba(244, 241, 234, 0.15); }
-  .sec-title { font-size: clamp(2.25rem, 6vw, 4.5rem); }
+  .sec-title { font-size: var(--type-section); }
 
   .grid {
     display: grid;
@@ -266,7 +270,7 @@ const categoryLabel = category?.trim();
   .close-p {
     margin: 3rem 0 6rem;
     max-width: 36rem;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-size: var(--type-title-sm);
     line-height: 1.25;
     letter-spacing: -0.015em;
     color: rgba(244, 241, 234, 0.85);
@@ -291,7 +295,7 @@ const categoryLabel = category?.trim();
   .nav-card.next { align-items: flex-end; text-align: right; }
   .nav-card.empty { color: rgba(244, 241, 234, 0.55); }
   .nav-t {
-    font-size: clamp(1.5rem, 3.2vw, 2.5rem);
+    font-size: var(--type-title-sm);
     line-height: 0.95;
   }
   .nav-card:hover .arr { display: inline-block; }
@@ -305,18 +309,21 @@ const categoryLabel = category?.trim();
   .cta {
     display: inline-flex;
     align-items: center;
-    gap: 1.25rem;
+    box-sizing: border-box;
+    max-width: 100%;
+    gap: clamp(0.75rem, 4vw, 1.25rem);
     background: var(--ox);
     color: #fff;
     border-radius: 999px;
-    padding: 1rem 1rem 1rem 2rem;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
+    padding: 1rem 1rem 1rem clamp(1.15rem, 5vw, 2rem);
+    font-size: clamp(0.7rem, 3.2vw, var(--type-body-sm));
+    letter-spacing: 0.06em;
+    white-space: nowrap;
     transition: transform 0.5s var(--e);
   }
   .cta:active { transform: scale(0.98); }
   .cta-i {
+    flex: 0 0 auto;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
@@ -330,10 +337,10 @@ const categoryLabel = category?.trim();
 
   /* Desktop --------------------------------------------------------- */
   @media (min-width: 768px) {
-    .hero { padding: 9rem 3rem 3rem; }
-    .bleed { padding: 0 3rem 10rem; }
+    .hero { padding-block: 9rem 3rem; }
+    .bleed { padding-block: 0 10rem; }
     .cover { height: 88vh; }
-    .section { padding: 11rem 3rem; }
+    .section { padding-block: 11rem; }
 
     .grid {
       grid-template-columns: repeat(12, 1fr);

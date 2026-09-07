@@ -5,14 +5,16 @@ use common::*;
 
 use axum::body::Body;
 use axum::http::{header, Request, StatusCode};
-use syle_types::{BlogPost, Gallery, ImageFormat, Photo, PostStatus, UploadedImage};
+use syle_types::{BlogPost, Gallery, ImageFormat, Photo, PostStatus, Project, UploadedImage};
 use tower::ServiceExt;
 use uuid::Uuid;
 
 #[tokio::test]
 #[serial_test::serial]
 async fn admin_create_gallery_requires_auth_and_persists() {
-    let Some((app, pool, _media)) = setup().await else { return };
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
 
     let unauth = app
         .clone()
@@ -53,8 +55,114 @@ async fn admin_create_gallery_requires_auth_and_persists() {
 
 #[tokio::test]
 #[serial_test::serial]
+async fn admin_project_crud_requires_auth_and_validates_destination() {
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
+
+    let unauth = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/projects")
+                .header(header::CONTENT_TYPE, "application/json")
+                .body(Body::from(
+                    r#"{"title":"Dango","url":"/proyectos/dango"}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(unauth.status(), StatusCode::UNAUTHORIZED);
+
+    let cookie = login_cookie(&app, &pool).await;
+    let invalid = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/projects")
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(
+                    r#"{"title":"Unsafe","url":"javascript:alert(1)"}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(invalid.status(), StatusCode::BAD_REQUEST);
+
+    let created = app
+        .clone()
+        .oneshot(
+            Request::post("/api/admin/projects")
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(
+                    r#"{"title":" Dango ","url":" /proyectos/dango ","category":" Festival ","position":7}"#,
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(created.status(), StatusCode::OK);
+    let project: Project = body_json(created).await;
+    assert_eq!(project.title, "Dango");
+    assert_eq!(project.url, "/proyectos/dango");
+    assert_eq!(project.category, "Festival");
+    assert!(!project.published);
+
+    let updated = app
+        .clone()
+        .oneshot(
+            Request::patch(format!("/api/admin/projects/{}", project.id))
+                .header(header::CONTENT_TYPE, "application/json")
+                .header(header::COOKIE, &cookie)
+                .body(Body::from(r#"{"published":true,"position":2}"#))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(updated.status(), StatusCode::OK);
+    let updated: Project = body_json(updated).await;
+    assert!(updated.published);
+    assert_eq!(updated.position, 2);
+
+    let listed = app
+        .clone()
+        .oneshot(
+            Request::get("/api/admin/projects")
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    let projects: Vec<Project> = body_json(listed).await;
+    assert_eq!(projects.len(), 1);
+
+    let deleted = app
+        .clone()
+        .oneshot(
+            Request::delete(format!("/api/admin/projects/{}", project.id))
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(deleted.status(), StatusCode::OK);
+    let count: (i64,) = sqlx::query_as("SELECT count(*) FROM projects")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(count.0, 0);
+}
+
+#[tokio::test]
+#[serial_test::serial]
 async fn admin_create_post_requires_auth_and_persists() {
-    let Some((app, pool, _media)) = setup().await else { return };
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
 
     let unauth = app
         .clone()
@@ -100,7 +208,9 @@ async fn admin_create_post_requires_auth_and_persists() {
 #[tokio::test]
 #[serial_test::serial]
 async fn admin_list_galleries_includes_unpublished() {
-    let Some((app, pool, _media)) = setup().await else { return };
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
     for (slug, pubd) in [("p", true), ("d", false)] {
         sqlx::query(
             "INSERT INTO galleries (id, slug, title, position, published) \
@@ -144,7 +254,9 @@ async fn admin_list_galleries_includes_unpublished() {
 #[tokio::test]
 #[serial_test::serial]
 async fn admin_list_posts_includes_drafts() {
-    let Some((app, pool, _media)) = setup().await else { return };
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
     sqlx::query(
         "INSERT INTO blog_posts (id, slug, title, body_md, status, published_at) \
          VALUES ($1,'a','A','x','published',1),($2,'b','B','y','draft',NULL)",
@@ -173,7 +285,9 @@ async fn admin_list_posts_includes_drafts() {
 #[tokio::test]
 #[serial_test::serial]
 async fn admin_upload_photo_ingests_and_persists() {
-    let Some((app, pool, media)) = setup().await else { return };
+    let Some((app, pool, media)) = setup().await else {
+        return;
+    };
     let cookie = login_cookie(&app, &pool).await;
 
     let gid = Uuid::new_v4();
@@ -230,8 +344,93 @@ async fn admin_upload_photo_ingests_and_persists() {
 
 #[tokio::test]
 #[serial_test::serial]
+async fn duplicate_photo_uploads_have_independent_file_lifetimes() {
+    let Some((app, pool, media)) = setup().await else {
+        return;
+    };
+    let cookie = login_cookie(&app, &pool).await;
+    let gid = make_gallery(&pool, "duplicates", true).await;
+    let source = synthetic_png(500, 350);
+
+    let mut uploaded = Vec::new();
+    for alt in ["first", "second"] {
+        let (ct, body) = multipart(gid, alt, &source);
+        let response = app
+            .clone()
+            .oneshot(
+                Request::post("/api/admin/photos")
+                    .header(header::CONTENT_TYPE, ct)
+                    .header(header::COOKIE, &cookie)
+                    .body(Body::from(body))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        uploaded.push(body_json::<Photo>(response).await);
+    }
+
+    let first_paths: std::collections::BTreeSet<_> = uploaded[0]
+        .variants
+        .iter()
+        .map(|variant| variant.path.clone())
+        .collect();
+    let second_paths: std::collections::BTreeSet<_> = uploaded[1]
+        .variants
+        .iter()
+        .map(|variant| variant.path.clone())
+        .collect();
+    assert!(first_paths.is_disjoint(&second_paths));
+
+    let first_digest = first_paths
+        .first()
+        .unwrap()
+        .rsplit('/')
+        .next()
+        .unwrap()
+        .split('-')
+        .next()
+        .unwrap();
+    let second_digest = second_paths
+        .first()
+        .unwrap()
+        .rsplit('/')
+        .next()
+        .unwrap()
+        .split('-')
+        .next()
+        .unwrap();
+    assert_eq!(first_digest.len(), 64, "SHA-256 content key");
+    assert_eq!(first_digest, second_digest, "same input, same content key");
+
+    let deleted = app
+        .oneshot(
+            Request::delete(format!("/api/admin/photos/{}", uploaded[0].id))
+                .header(header::COOKIE, &cookie)
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(deleted.status(), StatusCode::OK);
+
+    for path in first_paths {
+        assert!(!media.path().join(path.trim_start_matches('/')).exists());
+    }
+    for path in second_paths {
+        assert!(
+            media.path().join(path.trim_start_matches('/')).exists(),
+            "deleting a duplicate must not break the surviving photo"
+        );
+    }
+}
+
+#[tokio::test]
+#[serial_test::serial]
 async fn admin_upload_accepts_image_over_default_body_limit() {
-    let Some((app, pool, _media)) = setup().await else { return };
+    let Some((app, pool, _media)) = setup().await else {
+        return;
+    };
     let cookie = login_cookie(&app, &pool).await;
     let gid = make_gallery(&pool, "big", true).await;
 
@@ -260,7 +459,9 @@ async fn admin_upload_accepts_image_over_default_body_limit() {
 #[tokio::test]
 #[serial_test::serial]
 async fn uploaded_derivative_is_served_under_media() {
-    let Some((app, pool, _m)) = setup().await else { return };
+    let Some((app, pool, _m)) = setup().await else {
+        return;
+    };
     let cookie = login_cookie(&app, &pool).await;
     let gid = make_gallery(&pool, "g", true).await;
 
@@ -317,12 +518,8 @@ async fn admin_blog_asset_upload_ingests_and_is_served_without_a_gallery() {
     // several widths, a blur-up placeholder, and source dimensions.
     assert_eq!((asset.width, asset.height), (1600, 1067));
     assert!(asset.src.starts_with("/media/jpeg/"));
-    assert!(asset
-        .variants
-        .iter()
-        .any(|v| v.format == ImageFormat::Avif));
-    let widths: std::collections::BTreeSet<u32> =
-        asset.variants.iter().map(|v| v.width).collect();
+    assert!(asset.variants.iter().any(|v| v.format == ImageFormat::Avif));
+    let widths: std::collections::BTreeSet<u32> = asset.variants.iter().map(|v| v.width).collect();
     assert!(widths.len() >= 2, "expected multiple responsive widths");
     assert!(asset.placeholder.starts_with("data:image/png;base64,"));
 
@@ -351,19 +548,22 @@ async fn admin_blog_asset_upload_ingests_and_is_served_without_a_gallery() {
 
 #[tokio::test]
 #[serial_test::serial]
-async fn admin_blog_asset_upload_requires_auth() {
+async fn standalone_asset_uploads_require_auth() {
     let Some((app, _pool, _media)) = setup().await else {
         return;
     };
-    let (ct, body) = multipart_file(&synthetic_png(64, 64));
-    let resp = app
-        .oneshot(
-            Request::post("/api/admin/blog-assets")
-                .header(header::CONTENT_TYPE, ct)
-                .body(Body::from(body))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+    for path in ["/api/admin/blog-assets", "/api/admin/project-assets"] {
+        let (ct, body) = multipart_file(&synthetic_png(64, 64));
+        let resp = app
+            .clone()
+            .oneshot(
+                Request::post(path)
+                    .header(header::CONTENT_TYPE, ct)
+                    .body(Body::from(body))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+    }
 }

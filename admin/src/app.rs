@@ -1,6 +1,7 @@
 use crate::ui::{ToastHost, Toaster};
 use crate::views::{
-    AccessLog, Dashboard, GalleryView, Login, PostEditor, Recovery, Security, StudioShell,
+    AccessLog, Dashboard, GalleriesView, GalleryView, Login, PostEditor, PostsView, ProjectView,
+    ProjectsView, Recovery, Security, StudioShell,
 };
 use leptos::prelude::*;
 use leptos_router::components::{ParentRoute, Route, Router, Routes};
@@ -15,7 +16,11 @@ pub fn App() -> impl IntoView {
                 <Route path=path!("/login") view=Login />
                 <Route path=path!("/recovery") view=Recovery />
                 <ParentRoute path=path!("") view=StudioShell>
+                    <Route path=path!("/galleries") view=GalleriesView />
                     <Route path=path!("/galleries/:id") view=GalleryView />
+                    <Route path=path!("/projects") view=ProjectsView />
+                    <Route path=path!("/projects/:id") view=ProjectView />
+                    <Route path=path!("/posts") view=PostsView />
                     <Route path=path!("/posts/:id") view=PostEditor />
                     <Route path=path!("/security") view=Security />
                     <Route path=path!("/access-log") view=AccessLog />

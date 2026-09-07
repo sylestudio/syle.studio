@@ -1,0 +1,96 @@
+SYLE.STUDIO — TOKENS Y CONVENTIONS
+Fuente de verdad para layout horizontal y tipografia del sitio publico.
+
+IMPLEMENTACION AUTORITATIVA
+Los valores ejecutables viven en web/src/layouts/Base.astro, dentro de :root.
+Este documento explica su uso. Si se cambia un valor, se actualizan primero los
+tokens CSS de Base.astro y despues este documento en el mismo cambio.
+
+LAYOUT HORIZONTAL
+--layout-max: 106.25rem (1700px)
+  Ancho maximo compartido por navegacion, footer y contenido editorial.
+
+--shell-max: --layout-max + dos veces --page-gutter
+  Ancho exterior para componentes que contienen su propio padding horizontal.
+  Evita perder gutter util o desalinearse en viewports mayores a 1796px.
+
+--content-max: 72rem (1152px)
+  Reserva para bloques de contenido que necesiten una medida intermedia.
+
+--reading-max: 44rem (704px)
+  Medida de lectura para articulos y texto largo.
+
+--page-gutter: 1.5rem (24px) en mobile; 3rem (48px) desde 768px.
+  Todo contenido de interfaz alineado al viewport debe usar este token.
+  No crear paddings laterales locales de 20px, 32px, 40px, 5vw, etc.
+
+REGLA DE CONTENCION
+Navegacion, encabezados, textos, metadatos, captions, controles, listados,
+creditos y footer usan --page-gutter y --layout-max.
+
+EXCEPCIONES FULL-BLEED INTENCIONALES
+Pueden ocupar el ancho completo, sin --page-gutter en el medio visual:
+- heroes y portadas fotograficas;
+- galerias, mamposterias y carruseles de fotografia;
+- diptychs, triples y mosaicos donde el borde a borde sea parte del concepto;
+- fondos oscuros o graficos decorativos que sangran, siempre que su contenido
+  textual interno vuelva a alinearse al gutter compartido.
+
+Una excepcion full-bleed debe ser evidente por su funcion visual. No usarla para
+texto, navegacion, captions o controles.
+
+ESCALA TIPOGRAFICA
+--type-label: 0.625rem (10px)
+  Eyebrows, metadatos monoespaciados y etiquetas en mayusculas.
+
+--type-caption: 0.75rem (12px)
+  Captions de imagen, contadores y notas auxiliares.
+
+--type-body-sm: 0.875rem (14px)
+  Texto secundario, fechas, creditos y CTAs compactos.
+
+--type-body: 1rem (16px)
+  Cuerpo estandar y datos de interfaz.
+
+--type-body-lg: clamp(1rem, 0.25vw + 0.95rem, 1.125rem)
+  Entradillas y prosa destacada; rango 16–18px.
+
+--type-title-sm: clamp(1.75rem, 4vw, 3rem)
+  Titulos de tarjetas y navegacion de proyectos; rango 28–48px.
+
+--type-heading: clamp(1.75rem, 4vw, 4.5rem)
+  Encabezados editoriales internos de proyectos; rango 28–72px.
+
+--type-section: clamp(2.5rem, 7vw, 5rem)
+  Titulares principales de seccion; rango 40–80px.
+
+--type-page: clamp(3rem, 10vw, 9rem)
+  Titulo principal de una pagina de proyecto o galeria; rango 48–144px.
+
+--type-hero: clamp(3.25rem, 15vw, 12rem)
+  Hero exclusivo de home; rango 52–192px.
+
+--type-close: clamp(3rem, 12vw, 10rem)
+  Mensaje de cierre de home; rango 48–160px.
+
+--type-prose-title: clamp(2.5rem, 6vw, 3.5rem)
+--type-prose-h1: 1.875rem (30px)
+--type-prose-h2: 1.5rem (24px)
+--type-prose-h3: 1.25rem (20px)
+  Jerarquia exclusiva de articulos largos.
+
+CONVENTIONS DE USO
+1. Elegir el token por funcion semantica, no por la pagina donde aparece.
+2. No introducir un font-size nuevo si uno de estos roles ya cubre el caso.
+3. Una nueva escala requiere justificar un rol reutilizable en al menos dos
+   contextos; despues se registra aqui y en :root.
+4. Iconos y controles cuadrados pueden usar dimensiones propias, pero el texto
+   que contienen debe usar un token tipografico.
+5. Mantener Space Grotesk para display/cuerpo y Space Mono para .lbl, captions
+   tecnicos y codigo.
+6. Verificar a 390px, 768px, 1440px y viewport ancho antes de desplegar.
+
+BARRIDO 2026-08-30
+Se normalizaron Base, Nav, Footer, home, indice y detalle de blog, detalle de
+galeria y los seis proyectos codeados. Se conservaron como full-bleed las
+secciones fotograficas y graficas cuya composicion depende del ancho completo.

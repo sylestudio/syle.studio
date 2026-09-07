@@ -1,12 +1,10 @@
-use super::{ext, parse_format, remove_media_file};
+use super::{ext, parse_format, remove_media_file, MediaBatch};
 use crate::auth::AuthUser;
 use crate::error::ApiError;
 use crate::state::AppState;
 use axum::extract::{Multipart, Path, State};
 use axum::Json;
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
-use syle_core::ingest::ingest;
+use syle_core::ingest::{content_key, ingest};
 use syle_types::{ImageVariant, Photo, UpdatePhoto};
 use uuid::Uuid;
 
@@ -78,9 +76,7 @@ pub async fn upload_photo(
                 // The route's DefaultBodyLimit gates the request body; this
                 // per-field counter is the belt-and-suspenders guard.
                 let mut buf: Vec<u8> = Vec::new();
-                while let Some(chunk) =
-                    field.chunk().await.map_err(|_| ApiError::BadRequest)?
-                {
+                while let Some(chunk) = field.chunk().await.map_err(|_| ApiError::BadRequest)? {
                     if buf.len() + chunk.len() > crate::MAX_UPLOAD_BYTES {
                         return Err(ApiError::BadRequest);
                     }
@@ -94,6 +90,21 @@ pub async fn upload_photo(
 
     let gallery_id = gallery_id.ok_or(ApiError::BadRequest)?;
     let src = bytes.ok_or(ApiError::BadRequest)?;
+    let gallery_present: bool =
+        sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM galleries WHERE id = $1)")
+            .bind(gallery_id)
+            .fetch_one(&state.pool)
+            .await?;
+    if !gallery_present {
+        return Err(ApiError::BadRequest);
+    }
+
+    let _image_permit = state
+        .image_jobs
+        .clone()
+        .acquire_owned()
+        .await
+        .map_err(|_| ApiError::ServiceUnavailable)?;
     // Decode + resize + AVIF/JPEG encode is CPU-bound and easily multi-second
     // even in release. Hand it to the blocking pool so the tokio worker stays
     // free for other connections and the per-request handler doesn't stall.
@@ -104,18 +115,53 @@ pub async fn upload_photo(
         .map_err(|_| ApiError::Internal)?
         .map_err(|_| ApiError::BadRequest)?;
 
-    let (count,): (i64,) =
-        sqlx::query_as("SELECT count(*) FROM photos WHERE gallery_id = $1")
-            .bind(gallery_id)
-            .fetch_one(&state.pool)
-            .await?;
-    let position = count as i32;
-
-    let mut hasher = DefaultHasher::new();
-    src.as_slice().hash(&mut hasher);
-    let key = format!("{:016x}", hasher.finish());
-
     let pid = Uuid::new_v4();
+    // The digest keeps paths cache-friendly; the owner UUID deliberately keeps
+    // deletion lifetimes independent for duplicate uploads.
+    let key = format!("{}-{}", content_key(src.as_slice()), pid.simple());
+    let mut variants = Vec::with_capacity(out.derivatives.len());
+    let mut staged = Vec::with_capacity(out.derivatives.len());
+    for d in out.derivatives {
+        let e = ext(d.format);
+        let rel = format!("media/{e}/{key}_{}.{e}", d.width);
+        variants.push(ImageVariant {
+            format: d.format,
+            width: d.width,
+            path: format!("/{rel}"),
+        });
+        staged.push((rel, d.bytes));
+    }
+
+    let media_dir = state.media_dir.clone();
+    let mut media = tokio::task::spawn_blocking(move || {
+        MediaBatch::stage(
+            &media_dir,
+            staged
+                .iter()
+                .map(|(rel, bytes)| (rel.as_str(), bytes.as_slice())),
+        )
+    })
+    .await
+    .map_err(|_| ApiError::Internal)?
+    .map_err(|_| ApiError::Internal)?;
+
+    let mut tx = state.pool.begin().await?;
+    // Serialize position allocation per gallery and reject unknown gallery IDs
+    // before publishing any file.
+    let gallery_exists: Option<(Uuid,)> =
+        sqlx::query_as("SELECT id FROM galleries WHERE id = $1 FOR UPDATE")
+            .bind(gallery_id)
+            .fetch_optional(&mut *tx)
+            .await?;
+    if gallery_exists.is_none() {
+        return Err(ApiError::BadRequest);
+    }
+    let (position,): (i32,) =
+        sqlx::query_as("SELECT COALESCE(MAX(position), -1) + 1 FROM photos WHERE gallery_id = $1")
+            .bind(gallery_id)
+            .fetch_one(&mut *tx)
+            .await?;
+
     sqlx::query(
         "INSERT INTO photos \
          (id, gallery_id, alt, thumbhash, width, height, position) \
@@ -128,37 +174,26 @@ pub async fn upload_photo(
     .bind(out.width as i32)
     .bind(out.height as i32)
     .bind(position)
-    .execute(&state.pool)
+    .execute(&mut *tx)
     .await?;
 
-    let mut variants = Vec::with_capacity(out.derivatives.len());
-    for d in &out.derivatives {
-        let e = ext(d.format);
-        let rel = format!("media/{e}/{key}_{}.{e}", d.width);
-        let abs = state.media_dir.join(&rel);
-        if let Some(parent) = abs.parent() {
-            std::fs::create_dir_all(parent).map_err(|_| ApiError::Internal)?;
-        }
-        std::fs::write(&abs, &d.bytes).map_err(|_| ApiError::Internal)?;
-
-        let path = format!("/{rel}");
+    for variant in &variants {
+        let e = ext(variant.format);
         sqlx::query(
             "INSERT INTO photo_variants (photo_id, format, width, path) \
              VALUES ($1,$2,$3,$4)",
         )
         .bind(pid)
         .bind(e)
-        .bind(d.width as i32)
-        .bind(&path)
-        .execute(&state.pool)
+        .bind(variant.width as i32)
+        .bind(&variant.path)
+        .execute(&mut *tx)
         .await?;
-
-        variants.push(ImageVariant {
-            format: d.format,
-            width: d.width,
-            path,
-        });
     }
+
+    media.publish().map_err(|_| ApiError::Internal)?;
+    tx.commit().await?;
+    media.keep();
 
     Ok(Json(Photo {
         id: pid,
@@ -200,20 +235,24 @@ pub async fn delete_photo(
     State(state): State<AppState>,
     Path(id): Path<Uuid>,
 ) -> Result<(), ApiError> {
+    let mut tx = state.pool.begin().await?;
     let paths: Vec<(String,)> =
-        sqlx::query_as("SELECT path FROM photo_variants WHERE photo_id = $1")
+        sqlx::query_as("SELECT path FROM photo_variants WHERE photo_id = $1 FOR UPDATE")
             .bind(id)
-            .fetch_all(&state.pool)
+            .fetch_all(&mut *tx)
             .await?;
-    for (p,) in &paths {
-        remove_media_file(&state.media_dir, p);
-    }
     let done = sqlx::query("DELETE FROM photos WHERE id = $1")
         .bind(id)
-        .execute(&state.pool)
+        .execute(&mut *tx)
         .await?;
     if done.rows_affected() == 0 {
         return Err(ApiError::NotFound);
+    }
+    tx.commit().await?;
+    // Database truth changes first. A failed best-effort unlink can only leave
+    // an orphan; it can never leave a live record pointing at a missing file.
+    for (p,) in &paths {
+        remove_media_file(&state.media_dir, p);
     }
     Ok(())
 }

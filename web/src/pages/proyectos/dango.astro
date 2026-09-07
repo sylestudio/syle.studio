@@ -1,10 +1,15 @@
 ---
 import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="Dango">
+<ProyectoBase
+  title="Dango"
+  description="Dirección creativa y registro visual de la participación de Syle Studio como sponsor del Festival Dango en Teotihuacán."
+  image="/img/Dango/Main.jpg"
+>
   <div class="hero-fixed">
-    <img src="/img/Dango/Main.jpg" alt="Dango" />
+    <StaticPicture src="/img/Dango/Main.jpg" alt="Dango" eager fill />
   </div>
 
   <div class="page-wrap">
@@ -46,31 +51,31 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
             <!-- ESPACIO con imagen VERTICAL (retrato): una sola foto llena el slot.
                  Cuando tengas verticales, úsalas así:
             <div class="slot">
-              <img src="/img/Dango/Manposteria/TuVertical.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/TuVertical.jpg" alt="" sizes="70vw" fill />
             </div>
             -->
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_2.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_2.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_4.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_4.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Dango/Manposteria/Man_11.jpg" alt="" />
-              <img src="/img/Dango/Manposteria/Man_12.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_11.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Dango/Manposteria/Man_12.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_8.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_8.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_5.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_5.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot slot--stack">
-              <img src="/img/Dango/Manposteria/Man_13.jpg" alt="" />
-              <img src="/img/Dango/Manposteria/Man_14.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_13.jpg" alt="" sizes="70vw" fill />
+              <StaticPicture src="/img/Dango/Manposteria/Man_14.jpg" alt="" sizes="70vw" fill />
           </div>
           <div class="slot">
-              <img src="/img/Dango/Manposteria/Man_6.jpg" alt="" />
+              <StaticPicture src="/img/Dango/Manposteria/Man_6.jpg" alt="" sizes="70vw" fill />
           </div>
             <!-- ESPACIO con 2 HORIZONTALES apiladas (mismo tamaño que un slot vertical) -->
 
@@ -98,9 +103,9 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/Dango/Logo_1.jpg" alt="" />
-        <img src="/img/Dango/Logo_2.jpg" alt="" />
-        <img src="/img/Dango/Logo_4.jpg" alt="" />
+        <StaticPicture src="/img/Dango/Logo_1.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_2.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_4.jpg" alt="" sizes="(min-width: 700px) 34vw, 100vw" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -123,8 +128,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/Dango/Logo_5.jpg" alt="" />
-        <img src="/img/Dango/Logo_3.jpg" alt="" />
+        <StaticPicture src="/img/Dango/Logo_5.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
+        <StaticPicture src="/img/Dango/Logo_3.jpg" alt="" sizes="(min-width: 700px) 50vw, 100vw" />
       </div>
 
       <!-- ── Créditos ───────────────────────────────────────── -->
@@ -132,7 +137,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
         <div class="credits">
           <div class="credit-col">
             <span class="lbl muted">Proyecto</span>
-            <a href="#" class="ln credit-val disp">Dango</a>
+            <span class="credit-val disp">Dango</span>
           </div>
           <div class="credit-col">
             <span class="lbl muted">Fotografía</span>
@@ -156,13 +161,14 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   /* ── Shell ── */
   .hero-fixed {
@@ -170,7 +176,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     inset: 0;
     z-index: 0;
   }
-  .hero-fixed img {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -185,10 +191,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   .wrap {
-    max-width: 1700px;
+    max-width: var(--shell-max);
     margin: 0 auto;
-    padding-left: clamp(1.5rem, 3vw, 3rem);
-    padding-right: clamp(1.5rem, 3vw, 3rem);
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
   }
 
   /* ── Header ── */
@@ -200,7 +206,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 1.25rem;
   }
   .pg-title {
-    font-size: clamp(3rem, 10vw, 9rem);
+    font-size: var(--type-page);
     line-height: 0.88;
   }
 
@@ -223,11 +229,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     align-items: flex-end;
   }
   .intro-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
   }
 
   .body-s {
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    font-size: var(--type-body-sm);
     line-height: 1.65;
     color: rgba(22, 20, 15, 0.72);
   }
@@ -239,7 +245,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     margin-top: 8rem;
   }
-  .diptych img {
+  .diptych :global(img) {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -258,7 +264,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     max-width: 60%;
   }
   .sub2-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-r .body-s { max-width: 44ch; }
@@ -273,7 +279,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     padding-bottom: 6rem;
   }
   .center-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-c .body-s { max-width: 52ch; }
@@ -285,7 +291,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     align-items: start;
   }
-  .triple img {
+  .triple :global(img) {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -326,7 +332,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     height: 82dvh;
     width: 46vh;          /* más angosto → formato retrato más estilizado */
   }
-  .slot img {
+  .slot :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;     /* la vertical llena el espacio sin deformar */
@@ -396,10 +402,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
   .credit-val {
     width: fit-content;
-    font-size: 1rem;
+    font-size: var(--type-body);
   }
   .credit-val.disp {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: var(--type-title-sm);
   }
 
   /* ── Mobile ── */
@@ -434,9 +440,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     }
 
     /* Mostrar las fotos completas en móvil, sin recorte */
-    .diptych img,
-    .triple img,
-    .triple img:nth-child(2) {
+    .diptych :global(img),
+    .triple :global(img) {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
@@ -445,13 +450,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   /* ── Hover discreto + zoom al click ── */
-  .diptych img,
-  .triple img {
+  .diptych :global(img),
+  .triple :global(img) {
     cursor: zoom-in;
     transition: filter 0.35s ease, transform 0.35s ease;
   }
-  .diptych img:hover,
-  .triple img:hover {
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
     filter: brightness(1.05);
     transform: scale(1.012);
   }

@@ -5,7 +5,13 @@
 
 use crate::api;
 use crate::views::CommandPalette;
+use icondata::{
+    HiArrowRightOnRectangleOutlineLg, HiArrowTopRightOnSquareOutlineLg, HiBars3OutlineLg,
+    HiClockOutlineLg, HiDocumentTextOutlineLg, HiMagnifyingGlassOutlineLg, HiPhotoOutlineLg,
+    HiShieldCheckOutlineLg, HiSquares2x2OutlineLg,
+};
 use leptos::prelude::*;
+use leptos_icons::Icon as HeroIcon;
 use leptos_router::components::Outlet;
 use leptos_router::hooks::{use_location, use_navigate};
 use wasm_bindgen_futures::spawn_local;
@@ -30,11 +36,14 @@ const ITEM_CURRENT: &str = "bezel-core relative flex w-full items-center gap-3 \
 fn NavItem(
     #[prop(into)] href: String,
     #[prop(into)] label: String,
+    icon: icondata::Icon,
+    #[prop(into)] icon_class: String,
     /// Mark current when the path starts with this prefix ("/" = exact).
     #[prop(into)]
     matches: String,
 ) -> impl IntoView {
     let loc = use_location();
+    let icon_class = format!("flex size-5 shrink-0 items-center justify-center {icon_class}");
     let current = Signal::derive(move || {
         let p = loc.pathname.get();
         if matches == "/" {
@@ -44,10 +53,17 @@ fn NavItem(
         }
     });
     view! {
-        <a href=href class=move || if current.get() { ITEM_CURRENT } else { ITEM }>
+        <a
+            href=href
+            class=move || if current.get() { ITEM_CURRENT } else { ITEM }
+            aria-current=move || current.get().then_some("page")
+        >
             {move || current.get().then(|| view! {
                 <span class="absolute inset-y-1.5 -left-4 w-0.5 rounded-full bg-white"></span>
             })}
+            <span class=icon_class aria-hidden="true">
+                <HeroIcon icon=icon width="1.25rem" height="1.25rem" />
+            </span>
             <span class="truncate">{label}</span>
         </a>
     }
@@ -113,7 +129,13 @@ pub fn StudioShell() -> impl IntoView {
                                 motion-reduce:transition-none motion-reduce:active:scale-100"
                             on:click=move |_| palette.set(true)
                         >
-                            <span>"Buscar…"</span>
+                            <span class="flex items-center gap-2">
+                                <span class="flex size-4" aria-hidden="true">
+                                    <HeroIcon icon=HiMagnifyingGlassOutlineLg
+                                        width="1rem" height="1rem" />
+                                </span>
+                                <span>"Buscar…"</span>
+                            </span>
                             <kbd class="rounded border border-white/10 bg-white/5 px-1.5 \
                                 py-0.5 text-xs text-zinc-500">"⌘K"</kbd>
                         </button>
@@ -121,16 +143,23 @@ pub fn StudioShell() -> impl IntoView {
                             "Trabajo"
                         </h3>
                         <div class="flex flex-col gap-0.5">
-                            <NavItem href="/" label="Portafolio" matches="/" />
-                            <NavItem href="/" label="Galerías" matches="/galleries" />
-                            <NavItem href="/" label="Blog" matches="/posts" />
+                            <NavItem href="/" label="Portafolio" matches="/"
+                                icon=HiSquares2x2OutlineLg icon_class="text-violet-400" />
+                            <NavItem href="/galleries" label="Galerías" matches="/galleries"
+                                icon=HiPhotoOutlineLg icon_class="text-fuchsia-400" />
+                            <NavItem href="/projects" label="Proyectos" matches="/projects"
+                                icon=HiArrowTopRightOnSquareOutlineLg icon_class="text-sky-400" />
+                            <NavItem href="/posts" label="Blog" matches="/posts"
+                                icon=HiDocumentTextOutlineLg icon_class="text-amber-400" />
                         </div>
                         <h3 class="mt-6 mb-1 px-2 text-xs/6 font-medium text-zinc-500">
                             "Cuenta"
                         </h3>
                         <div class="flex flex-col gap-0.5">
-                            <NavItem href="/security" label="Seguridad" matches="/security" />
-                            <NavItem href="/access-log" label="Accesos" matches="/access-log" />
+                            <NavItem href="/security" label="Seguridad" matches="/security"
+                                icon=HiShieldCheckOutlineLg icon_class="text-emerald-400" />
+                            <NavItem href="/access-log" label="Accesos" matches="/access-log"
+                                icon=HiClockOutlineLg icon_class="text-cyan-400" />
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 border-t border-white/5 p-4">
@@ -138,11 +167,16 @@ pub fn StudioShell() -> impl IntoView {
                             {move || email.get()}
                         </span>
                         <button
-                            class="rounded-lg px-2 py-2 text-left text-sm/5 font-medium \
+                            class="flex items-center gap-3 rounded-lg px-2 py-2 text-left \
+                                text-sm/5 font-medium \
                                 text-zinc-400 hover:bg-white/5 hover:text-white transition-colors"
                             on:click=logout
                         >
-                            "Salir"
+                            <span class="flex size-5 shrink-0" aria-hidden="true">
+                                <HeroIcon icon=HiArrowRightOnRectangleOutlineLg
+                                    width="1.25rem" height="1.25rem" />
+                            </span>
+                            <span>"Salir"</span>
                         </button>
                     </div>
                 </nav>
@@ -161,11 +195,9 @@ pub fn StudioShell() -> impl IntoView {
                         on:click=move |_| nav_open.set(true)
                         aria-label="Abrir navegación"
                     >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="1.5" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-                        </svg>
+                        <span class="flex size-6" aria-hidden="true">
+                            <HeroIcon icon=HiBars3OutlineLg width="1.5rem" height="1.5rem" />
+                        </span>
                     </button>
                     <span class="text-sm font-semibold tracking-tight text-white">
                         "syle"<span class="text-zinc-500">".studio"</span>

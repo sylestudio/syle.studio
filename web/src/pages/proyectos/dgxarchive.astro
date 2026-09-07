@@ -1,10 +1,15 @@
 ---
 import ProyectoBase from "../../layouts/ProyectoBase.astro";
+import StaticPicture from "../../components/StaticPicture.astro";
 ---
 
-<ProyectoBase title="DGX Archive">
+<ProyectoBase
+  title="DGX Archive"
+  description="Sesión fotográfica de Syle Studio para DGX Archive: streetwear, long sleeves y un entorno que forma parte de la identidad de cada prenda."
+  image="/img/DGX/Portada.jpg"
+>
   <div class="hero-fixed">
-    <img src="/img/DGX/Portada.jpg" alt="DGX Archive" />
+    <StaticPicture src="/img/DGX/Portada.jpg" alt="DGX Archive" eager fill />
   </div>
 
   <div class="page-wrap">
@@ -39,8 +44,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Diptych ────────────────────────────────────────── -->
       <div class="diptych">
-        <img src="/img/DGX/DGX_2.jpg" alt="" />
-        <img src="/img/DGX/DGX_3.jpg" alt="" />
+        <StaticPicture src="/img/DGX/DGX_2.jpg" alt="Sesión de DGX Archive, imagen 1" sizes="(min-width: 769px) 50vw, 100vw" />
+        <StaticPicture src="/img/DGX/DGX_3.jpg" alt="Sesión de DGX Archive, imagen 2" sizes="(min-width: 769px) 50vw, 100vw" />
       </div>
 
       <!-- ── Texto de la derecha ───────────────────── -->
@@ -58,9 +63,9 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
 
       <!-- ── Triple imágenes ────────────────────────────────── -->
       <div class="triple">
-        <img src="/img/DGX/DGX_1.jpg" alt="" />
-        <img src="/img/DGX/DGX_4.jpg" alt="" />
-        <img src="/img/DGX/DGX_5.jpg" alt="" />
+        <StaticPicture src="/img/DGX/DGX_1.jpg" alt="Sesión de DGX Archive, imagen 3" sizes="(min-width: 769px) 34vw, 100vw" />
+        <StaticPicture src="/img/DGX/DGX_4.jpg" alt="Sesión de DGX Archive, imagen 4" sizes="(min-width: 769px) 34vw, 100vw" />
+        <StaticPicture src="/img/DGX/DGX_5.jpg" alt="Sesión de DGX Archive, imagen 5" sizes="(min-width: 769px) 34vw, 100vw" />
       </div>
 
       <!-- ── Texto centrado ─────────────────────────────────── -->
@@ -77,21 +82,22 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
       </div>
 
       <!-- ── Slider ─────────────────────────────────────────── -->
-      <div class="slider-wrap">
+      <div class="slider-wrap" role="region" aria-roledescription="carrusel" aria-label="Fotografías de DGX Archive">
         <div class="slider" id="slider">
-          <div class="slide active"><img src="/img/DGX/DGX_6.jpg" alt="Slide 1" /></div>
-          <div class="slide"><img src="/img/DGX/DGX_9.jpg" alt="Slide 2" /></div>
-          <div class="slide"><img src="/img/DGX/DGX_8.jpg" alt="Slide 3" /></div>
-          <div class="slide"><img src="/img/DGX/DGX_7.jpg" alt="Slide 4" /></div>
+          <div class="slide active" aria-hidden="false"><StaticPicture src="/img/DGX/DGX_6.jpg" alt="DGX Archive, fotografía 1 de 4" fill /></div>
+          <div class="slide" aria-hidden="true"><StaticPicture src="/img/DGX/DGX_9.jpg" alt="DGX Archive, fotografía 2 de 4" fill /></div>
+          <div class="slide" aria-hidden="true"><StaticPicture src="/img/DGX/DGX_8.jpg" alt="DGX Archive, fotografía 3 de 4" fill /></div>
+          <div class="slide" aria-hidden="true"><StaticPicture src="/img/DGX/DGX_7.jpg" alt="DGX Archive, fotografía 4 de 4" fill /></div>
         </div>
-        <button class="sl-btn sl-prev" aria-label="Anterior">&#8592;</button>
-        <button class="sl-btn sl-next" aria-label="Siguiente">&#8594;</button>
+        <button type="button" class="sl-btn sl-prev" aria-label="Imagen anterior">&#8592;</button>
+        <button type="button" class="sl-btn sl-next" aria-label="Imagen siguiente">&#8594;</button>
         <div class="sl-dots">
-          <span class="dot active" data-i="0"></span>
-          <span class="dot" data-i="1"></span>
-          <span class="dot" data-i="2"></span>
-          <span class="dot" data-i="3"></span>
+          <button type="button" class="dot active" data-i="0" aria-label="Mostrar imagen 1" aria-current="true"></button>
+          <button type="button" class="dot" data-i="1" aria-label="Mostrar imagen 2" aria-current="false"></button>
+          <button type="button" class="dot" data-i="2" aria-label="Mostrar imagen 3" aria-current="false"></button>
+          <button type="button" class="dot" data-i="3" aria-label="Mostrar imagen 4" aria-current="false"></button>
         </div>
+        <button type="button" class="sl-toggle" aria-controls="slider">Pausar presentación</button>
       </div>
 
       <!-- ── Créditos ───────────────────────────────────────── -->
@@ -117,13 +123,14 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   </div>
 
   <!-- ── Lightbox ── -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada">
-    <img src="" alt="" />
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Vista ampliada" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+    <img alt="" />
   </div>
 </ProyectoBase>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
 
   /* ── Shell ── */
   .hero-fixed {
@@ -131,7 +138,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     inset: 0;
     z-index: 0;
   }
-  .hero-fixed img {
+  .hero-fixed :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -146,10 +153,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   .wrap {
-    max-width: 1700px;
+    max-width: var(--shell-max);
     margin: 0 auto;
-    padding-left: clamp(1.5rem, 3vw, 3rem);
-    padding-right: clamp(1.5rem, 3vw, 3rem);
+    padding-left: var(--page-gutter);
+    padding-right: var(--page-gutter);
     background: var(--paper);
   }
 
@@ -162,7 +169,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 1.25rem;
   }
   .pg-title {
-    font-size: clamp(3rem, 10vw, 9rem);
+    font-size: var(--type-page);
     line-height: 0.88;
   }
 
@@ -185,11 +192,11 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     align-items: flex-end;
   }
   .intro-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
   }
 
   .body-s {
-    font-size: clamp(0.7rem, 1.1vw, 0.85rem);
+    font-size: var(--type-body-sm);
     line-height: 1.65;
     color: rgba(22, 20, 15, 0.72);
   }
@@ -200,7 +207,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     grid-template-columns: 1fr 1fr;
     gap: 3px;
   }
-  .diptych img {
+  .diptych :global(img) {
     width: 100%;
     aspect-ratio: 3 / 4;
     object-fit: cover;
@@ -219,7 +226,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     max-width: 60%;
   }
   .sub2-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-r .body-s { max-width: 44ch; }
@@ -234,7 +241,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     padding-bottom: 6rem;
   }
   .center-h {
-    font-size: clamp(1.75rem, 4vw, 4.5rem);
+    font-size: var(--type-heading);
     margin-bottom: 1.5rem;
   }
   .text-c .body-s { max-width: 52ch; }
@@ -246,7 +253,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     gap: 3px;
     align-items: start;
   }
-  .triple img {
+  .triple :global(img) {
     width: 100%;
     display: block;
     object-fit: cover;
@@ -271,7 +278,7 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     transition: opacity 0.6s ease;
   }
   .slide.active { opacity: 1; }
-  .slide img {
+  .slide :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -297,18 +304,41 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   .sl-dots {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.125rem;
     padding: 1rem 0;
   }
   .dot {
+    padding: 0;
+    border: 0;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    cursor: pointer;
+  }
+  .dot::before {
+    content: "";
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: rgba(22,20,15,0.25);
-    cursor: pointer;
     transition: background 0.2s;
   }
-  .dot.active { background: rgba(22,20,15,0.75); }
+  .dot.active::before { background: rgba(22,20,15,0.75); }
+  .sl-toggle {
+    display: block;
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--type-body-sm);
+    cursor: pointer;
+  }
+  .dot:focus-visible,
+  .sl-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 
   /* ── Créditos ── */
   .credits {
@@ -328,10 +358,10 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
   .credit-val {
     width: fit-content;
-    font-size: 1rem;
+    font-size: var(--type-body);
   }
   .credit-val.disp {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: var(--type-title-sm);
   }
 
   /* ── Mobile ── */
@@ -356,9 +386,8 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
       grid-template-columns: 1fr;
     }
 
-    .diptych img,
-    .triple img,
-    .triple img:nth-child(2) {
+    .diptych :global(img),
+    .triple :global(img) {
       width: 100%;
       height: auto;
       aspect-ratio: auto;
@@ -367,13 +396,13 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
   }
 
   /* ── Hover discreto + zoom al click ── */
-  .diptych img,
-  .triple img {
+  .diptych :global(img),
+  .triple :global(img) {
     cursor: zoom-in;
     transition: filter 0.35s ease, transform 0.35s ease;
   }
-  .diptych img:hover,
-  .triple img:hover {
+  .diptych :global(img:hover),
+  .triple :global(img:hover) {
     filter: brightness(1.05);
     transform: scale(1.012);
   }
@@ -408,26 +437,66 @@ import ProyectoBase from "../../layouts/ProyectoBase.astro";
     transition: transform 0.3s ease;
   }
   .lightbox.open img { transform: scale(1); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide,
+    .lightbox,
+    .lightbox img,
+    .diptych :global(img),
+    .triple :global(img) { transition: none; }
+    .diptych :global(img:hover),
+    .triple :global(img:hover) { transform: none; }
+  }
 </style>
 
 <script>
   const slides = document.querySelectorAll<HTMLElement>('.slide');
-  const dots   = document.querySelectorAll<HTMLElement>('.dot');
+  const dots   = document.querySelectorAll<HTMLButtonElement>('.dot');
+  const toggle = document.querySelector<HTMLButtonElement>('.sl-toggle');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let cur = 0;
+  let paused = reducedMotion.matches;
+  let timer: number | undefined;
 
   function goTo(n: number) {
+    if (!slides.length) return;
     slides[cur].classList.remove('active');
     dots[cur].classList.remove('active');
     cur = (n + slides.length) % slides.length;
     slides[cur].classList.add('active');
     dots[cur].classList.add('active');
+    dots.forEach((dot, index) => dot.setAttribute('aria-current', String(index === cur)));
+    slides.forEach((slide, index) => slide.setAttribute('aria-hidden', String(index !== cur)));
   }
 
-  document.querySelector('.sl-prev')?.addEventListener('click', () => goTo(cur - 1));
-  document.querySelector('.sl-next')?.addEventListener('click', () => goTo(cur + 1));
-  dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+  function updatePlayback() {
+    window.clearInterval(timer);
+    timer = undefined;
+    if (!paused && !document.hidden && slides.length > 1) {
+      timer = window.setInterval(() => goTo(cur + 1), 4000);
+    }
+    if (toggle) toggle.textContent = paused ? 'Reproducir presentación' : 'Pausar presentación';
+  }
 
-  setInterval(() => goTo(cur + 1), 4000);
+  function navigate(n: number) {
+    paused = true;
+    updatePlayback();
+    goTo(n);
+  }
+
+  document.querySelector('.sl-prev')?.addEventListener('click', () => navigate(cur - 1));
+  document.querySelector('.sl-next')?.addEventListener('click', () => navigate(cur + 1));
+  dots.forEach(d => d.addEventListener('click', () => navigate(Number(d.dataset.i))));
+  toggle?.addEventListener('click', () => {
+    paused = !paused;
+    updatePlayback();
+  });
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) paused = true;
+    updatePlayback();
+  });
+  document.addEventListener('visibilitychange', updatePlayback);
+  updatePlayback();
 
   // ── Lightbox ──
   const lightbox  = document.getElementById('lightbox') as HTMLElement | null;

@@ -18,9 +18,14 @@ const fecha = post.published_at
       day: "numeric",
     })
   : "";
+const summary = post.body_html
+  .replace(/<[^>]*>/g, " ")
+  .replace(/\s+/g, " ")
+  .trim()
+  .slice(0, 160) || `Artículo de Syle Studio: ${post.title}.`;
 ---
 
-<Base title={post.title}>
+<Base title={post.title} description={summary} type="article">
   <article class="post">
     {fecha && <p class="lbl post-date">{fecha}</p>}
     <h1 class="disp post-title">{post.title}</h1>
@@ -31,7 +36,7 @@ const fecha = post.published_at
 
 <style>
   .post {
-    max-width: 44rem;
+    max-width: var(--reading-max);
     margin: 0 auto;
   }
   .post-date {
@@ -39,13 +44,13 @@ const fecha = post.published_at
     margin-bottom: 1rem;
   }
   .post-title {
-    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-size: var(--type-prose-title);
     margin-bottom: 2.5rem;
   }
 
   /* Block content — styled to match the structure authored in the CRM. */
   .post-content {
-    font-size: 1.0625rem;
+    font-size: var(--type-body-lg);
     line-height: 1.7;
   }
   .post-content :global(h1),
@@ -56,9 +61,9 @@ const fecha = post.published_at
     line-height: 1.1;
     margin: 2.25rem 0 0.9rem;
   }
-  .post-content :global(h1) { font-size: 1.9rem; }
-  .post-content :global(h2) { font-size: 1.5rem; }
-  .post-content :global(h3) { font-size: 1.2rem; }
+  .post-content :global(h1) { font-size: var(--type-prose-h1); }
+  .post-content :global(h2) { font-size: var(--type-prose-h2); }
+  .post-content :global(h3) { font-size: var(--type-prose-h3); }
   .post-content :global(p) { margin: 1rem 0; }
   .post-content :global(a) {
     color: var(--ox);
@@ -107,7 +112,7 @@ const fecha = post.published_at
   .post-content :global(pre code) {
     background: none;
     padding: 0;
-    font-size: 0.875rem;
+    font-size: var(--type-body-sm);
     line-height: 1.6;
   }
   /* Syntax tokens — emitted by syle-render, identical to the CRM preview. */
@@ -124,7 +129,7 @@ const fecha = post.published_at
   .post-content :global(figure img) { border-radius: 10px; }
   .post-content :global(figcaption) {
     font-family: "Space Mono", ui-monospace, monospace;
-    font-size: 0.78rem;
+    font-size: var(--type-caption);
     letter-spacing: 0.04em;
     color: #6b665b;
     margin-top: 0.5rem;

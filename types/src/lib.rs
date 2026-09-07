@@ -10,6 +10,7 @@ pub mod endpoints;
 mod gallery;
 mod history;
 mod photo;
+mod project;
 mod site;
 mod slug;
 
@@ -23,6 +24,7 @@ pub use history::History;
 pub use blog::{BlogPost, NewPost, PostStatus, UpdatePost, UploadedImage};
 pub use gallery::{Gallery, GalleryDetail, NewGallery, UpdateGallery};
 pub use photo::{ImageFormat, ImageVariant, Photo, Reorder, UpdatePhoto};
+pub use project::{is_valid_project_url, NewProject, Project, UpdateProject};
 pub use site::{SiteBuildState, SiteBuildStatus};
 pub use slug::is_valid_slug;
 

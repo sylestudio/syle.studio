@@ -5,16 +5,21 @@
 // authoritative vector and inherits the nav's `currentColor`, so it re-tones
 // with the same toggle — no CSS filter needed.
 import Wordmark from "./Wordmark.astro";
+
+interface Props {
+  initialDark?: boolean;
+}
+const { initialDark = false } = Astro.props;
 ---
 
-<nav id="nav">
+<nav id="nav" class:list={{ "on-dark": initialDark }}>
   <div class="nav-row">
     <a href="/" class="nav-mark-link" aria-label="syle.studio — inicio">
       <Wordmark class="nav-mark" />
     </a>
     <div class="nav-links lbl">
       <a href="/#proyectos">Proyectos</a>
-      <a href="/blog">Blog</a>
+      <a href="/blog/">Blog</a>
       <a href="/#contacto" class="ln">Contacto</a>
     </div>
   </div>
@@ -32,9 +37,9 @@ import Wordmark from "./Wordmark.astro";
     transform: translateY(-110%);
   }
   .nav-row {
-    max-width: 1700px;
+    max-width: var(--shell-max);
     margin: 0 auto;
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem var(--page-gutter);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -65,9 +70,6 @@ import Wordmark from "./Wordmark.astro";
     color: var(--paper);
   }
   @media (min-width: 768px) {
-    .nav-row {
-      padding: 1.25rem 3rem;
-    }
     .nav-mark-link :global(.nav-mark) {
       height: 1.75rem;
     }

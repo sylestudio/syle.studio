@@ -1,0 +1,99 @@
+---
+import { thumbHashToDataURL } from "thumbhash";
+import manifest from "../generated/static-images.json";
+
+interface Variant {
+  format: "avif" | "jpeg";
+  width: number;
+  path: string;
+}
+
+interface ImageEntry {
+  width: number;
+  height: number;
+  thumbhash: string;
+  variants: Variant[];
+}
+
+interface Props {
+  src: string;
+  alt?: string;
+  sizes?: string;
+  eager?: boolean;
+  fill?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  alt = "",
+  sizes = "100vw",
+  eager = false,
+  fill = false,
+  class: imageClass,
+} = Astro.props;
+const entry = (manifest as Record<string, ImageEntry>)[src];
+if (!entry) {
+  throw new Error(`Static image is missing from the generated manifest: ${src}`);
+}
+
+const sources = (format: Variant["format"]) =>
+  entry.variants
+    .filter((variant) => variant.format === format)
+    .sort((a, b) => a.width - b.width);
+const avif = sources("avif");
+const jpeg = sources("jpeg");
+const fallback = jpeg.at(-1);
+if (!fallback) {
+  throw new Error(`Static image has no JPEG fallback: ${src}`);
+}
+const srcset = (variants: Variant[]) =>
+  variants.map((variant) => `${variant.path} ${variant.width}w`).join(", ");
+const hash = Uint8Array.from(
+  entry.thumbhash.match(/.{2}/g)?.map((byte) => Number.parseInt(byte, 16)) ?? [],
+);
+const placeholder = hash.length > 0 ? thumbHashToDataURL(hash) : "";
+---
+
+<picture
+  class:list={["static-picture", { "is-fill": fill }]}
+  style={placeholder
+    ? `background-image:url(${placeholder});background-size:cover`
+    : undefined}
+>
+  {avif.length > 0 && (
+    <source type="image/avif" srcset={srcset(avif)} {sizes} />
+  )}
+  <source type="image/jpeg" srcset={srcset(jpeg)} {sizes} />
+  <img
+    src={fallback.path}
+    srcset={srcset(jpeg)}
+    {sizes}
+    width={entry.width}
+    height={entry.height}
+    alt={alt}
+    class={imageClass}
+    loading={eager ? "eager" : "lazy"}
+    fetchpriority={eager ? "high" : "auto"}
+    decoding="async"
+  />
+</picture>
+
+<style>
+  .static-picture {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .static-picture > img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .static-picture.is-fill,
+  .static-picture.is-fill > img {
+    height: 100%;
+  }
+</style>

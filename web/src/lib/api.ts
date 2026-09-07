@@ -38,6 +38,25 @@ export interface GalleryDetail {
   photos: Photo[];
 }
 
+export interface UploadedImage {
+  src: string;
+  variants: ImageVariant[];
+  placeholder: string;
+  width: number;
+  height: number;
+}
+
+/** Standalone grid card that navigates directly to its configured URL. */
+export interface Project {
+  id: string;
+  title: string;
+  url: string;
+  category: string;
+  position: number;
+  published: boolean;
+  cover: UploadedImage | null;
+}
+
 export interface BlogPost {
   id: string;
   slug: string;
@@ -65,6 +84,9 @@ export const listGalleries = () =>
 
 export const getGallery = (slug: string) =>
   get<GalleryDetail | null>(`/api/public/galleries/${slug}`, null);
+
+export const listProjects = () =>
+  get<Project[]>("/api/public/projects", []);
 
 export const listPosts = () => get<BlogPost[]>("/api/public/posts", []);
 

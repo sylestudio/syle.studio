@@ -1,32 +1,67 @@
 ---
 import Base from "../layouts/Base.astro";
 import Photo from "../components/Photo.astro";
+import UploadedPicture from "../components/UploadedPicture.astro";
+import StaticPicture from "../components/StaticPicture.astro";
 import Mark from "../components/Mark.astro";
 import Wordmark from "../components/Wordmark.astro";
-import { listGalleries, getGallery } from "../lib/api";
+import {
+  listGalleries,
+  getGallery,
+  listProjects,
+  type Photo as GalleryPhoto,
+  type UploadedImage,
+} from "../lib/api";
 import { projectHref } from "../lib/proyectos";
 
-// Each published gallery is a "Proyecto". The list endpoint carries no cover,
-// so we pull each detail for its first photo. Resilient: if the API is down
-// at build time everything falls back to empty and the static sections still
-// render. Title + category come straight from the list payload.
-const galleries = await listGalleries();
-const projects = await Promise.all(
+interface HomeProject {
+  id: string;
+  title: string;
+  url: string;
+  category: string;
+  position: number;
+  galleryCover: GalleryPhoto | null;
+  uploadedCover: UploadedImage | null;
+}
+
+// Published galleries and standalone project links share one ordered grid.
+// Galleries still resolve their first photo; standalone projects carry their
+// own optimized cover and navigate straight to their configured URL.
+const [galleries, standaloneProjects] = await Promise.all([
+  listGalleries(),
+  listProjects(),
+]);
+const galleryProjects: HomeProject[] = await Promise.all(
   galleries.map(async (g) => ({
-    slug: g.slug,
+    id: `gallery:${g.id}`,
     title: g.title,
+    url: projectHref(g.slug),
     category: g.category,
-    cover: (await getGallery(g.slug))?.photos?.[0] ?? null,
+    position: g.position,
+    galleryCover: (await getGallery(g.slug))?.photos?.[0] ?? null,
+    uploadedCover: null,
   })),
+);
+const linkedProjects: HomeProject[] = standaloneProjects.map((project) => ({
+  id: `project:${project.id}`,
+  title: project.title,
+  url: project.url,
+  category: project.category,
+  position: project.position,
+  galleryCover: null,
+  uploadedCover: project.cover,
+}));
+const projects = [...galleryProjects, ...linkedProjects].sort(
+  (a, b) => a.position - b.position,
 );
 
 // Slides del slider "Bleed". Cada entrada:
 const slides = [
-  { img: "/img/hero.webp", caption: "Símbolo Vivo — Syle Studio",ref: "SYL · 001", url: "/proyectos/catedral" },
-  { img: "/img/Slide/Dango.jpg", caption: "Dango — Festival",ref: "SYL · 002", url: "/proyectos/dango" },
-  { img: "/img/Slide/Insom.jpg", caption: "Insomnio — Fotografía",ref: "SYL · 003", url: "/proyectos/insomnio" },
-  { img: "/img/Slide/Concierto.jpg", caption: "La Obsesión — Fotografía",ref: "SYL · 004", url: "/proyectos/laobsesion" },
-  { img: "/img/Slide/Portada.jpg", caption: "Syle Studio — Estudio Creativo",ref: "SYL · 005", url: "/proyectos/syle" }
+  { img: "/img/hero.webp", caption: "Símbolo Vivo — Syle Studio",ref: "SYLE · 008", url: "/proyectos/catedral/" },
+  { img: "/img/Slide/Dango.jpg", caption: "Dango — Festival",ref: "SYL · 002", url: "/proyectos/dango/" },
+  { img: "/img/Slide/Insom.jpg", caption: "Insomnio — Fotografía",ref: "SYL · 003", url: "/proyectos/insomnio/" },
+  { img: "/img/Slide/Concierto.jpg", caption: "La Obsesión — Fotografía",ref: "SYL · 004", url: "/proyectos/laobsesion/" },
+  { img: "/img/Slide/Portada.jpg", caption: "Syle Studio — Estudio Creativo",ref: "SYL · 005", url: "/proyectos/syle/" }
 
 ];
 
@@ -36,27 +71,26 @@ const slides = [
 //   label → texto pequeño en esquina inferior izquierda
 //   inv   → true = fondo oscuro (usa variante blanca del logo)
 const clients = [
-  { logo: "/img/Logos/logo-b.png", href: "https://sylestudio.com", label: "Syle Studio",   inv: false },
-  { logo: "/img/Logos/Dango2025.svg", href: "https://festivaldango.com", label: "Festival Dango",   inv: false },
-  { logo: "/img/Logos/DGX.png", href: "https://www.instagram.com/dgx.archive/", label: "Cliente tres",  inv: true  },
-  { logo: "/img/Logos/in.png", href: "#", label: "Cliente cuatro",inv: false },
-  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente cinco", inv: false },
-  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente seis",  inv: true  },
-  { logo: "/img/Logos/logo-b.png", href: "#", label: "Cliente siete", inv: false },
+  { logo: "/img/Logos/logo-b.png", width: 640, height: 237, href: "https://sylestudio.com", label: "Syle Studio", inv: false },
+  { logo: "/img/Logos/Dango2025.svg", width: 7231, height: 1664, href: "https://festivaldango.com", label: "Festival Dango", inv: false },
+  { logo: "/img/Logos/achronyme-mono.svg", width: 32, height: 32, href: "https://achrony.me", label: "Achronyme", inv: false },
+  { logo: "/img/Logos/ataulfo-mono.svg", width: 1024, height: 1024, href: "https://ataulfo.app", label: "Ataúlfo", inv: false },
+  { logo: "/img/Logos/eddndev-wordmark.png", width: 348, height: 58, href: "https://eddndev.com", label: "edd n’ dev", inv: true },
 ];
 ---
 
 <Base title="Estudio creativo" bare>
+  <main>
   <!-- HERO · light -->
   <header class="hero">
     <div class="hero-in">
       <div class="hero-mark" aria-hidden="true"><Mark /></div>
-      <div class="lbl muted" data-reveal>Estudio creativo — Estado de México · 2025</div>
-      <h1 class="disp hero-h" data-reveal>
-        Syle Studio, <br/> Nunca dejes de <span class="rw" id="rewrite">crear.</span>
+      <div class="lbl muted">Estudio creativo — Estado de México · 2025</div>
+      <h1 class="disp hero-h" aria-label="Syle Studio, nunca dejes de crear.">
+        Syle Studio, <br/> Nunca dejes de <span class="rw" id="rewrite" aria-hidden="true">crear.</span>
       </h1>
       <div class="hero-foot">
-        <p class="hero-lede" data-reveal>
+        <p class="hero-lede">
           Estudio Creativo nacido en México. Todos tienen una
           historia que contar, y nuestra inspiración es ayudarlos
           a contarla.
@@ -76,7 +110,7 @@ const clients = [
             data-url={s.url}
           >
             <a href={s.url} class="sl-img-link" tabindex="-1" aria-label={s.caption}>
-              <img src={s.img} alt={s.caption} />
+              <StaticPicture src={s.img} alt={s.caption} fill />
             </a>
           </div>
         ))}
@@ -85,7 +119,10 @@ const clients = [
       </div>
       <figcaption class="lbl muted cap">
         <a class="sl-cap-text" href={slides[0].url}>{slides[0].caption}</a>
-        <span class="sl-counter">{`01 / ${String(slides.length).padStart(2, "0")}`}</span>
+        <span class="sl-status">
+          <span class="sl-counter">{`01 / ${String(slides.length).padStart(2, "0")}`}</span>
+          <button class="sl-toggle" type="button" aria-pressed="false">Pausar</button>
+        </span>
         <span class="sl-ref-text">{slides[0].ref}</span>
       </figcaption>
     </figure>
@@ -105,9 +142,15 @@ const clients = [
     ) : (
       <div class="grid">
         {projects.map((p) => (
-          <a href={projectHref(p.slug)} class="card" data-reveal>
+          <a href={p.url} class="card" data-reveal>
             <div class="card-img">
-              {p.cover ? <Photo photo={p.cover} /> : <div class="ph" />}
+              {p.galleryCover ? (
+                <Photo photo={p.galleryCover} />
+              ) : p.uploadedCover ? (
+                <UploadedPicture image={p.uploadedCover} alt={p.title} />
+              ) : (
+                <div class="ph" />
+              )}
             </div>
             {p.category && <span class="lbl muted card-cat">{p.category}</span>}
             <h3 class="disp card-title">
@@ -138,7 +181,11 @@ const clients = [
         </p>
       </div>
       <figure class="proc-fig" data-reveal>
-        <img src="/img/about-manifiesto-2.webp" alt="" />
+        <StaticPicture
+          src="/img/about-manifiesto-2.webp"
+          alt=""
+          sizes="(min-width: 900px) 55vw, 100vw"
+        />
       </figure>
     </div>
   </section>
@@ -158,7 +205,7 @@ const clients = [
     <div class="arch-grid" data-reveal data-no-split>
       {clients.map((c) => (
         <a href={c.href} class={`arch-cell${c.inv ? " inv" : ""}`} target="_blank" rel="noopener noreferrer">
-          <img src={c.logo} alt="" class="arch-logo" />
+          <img src={c.logo} alt="" class="arch-logo" width={c.width} height={c.height} loading="lazy" decoding="async" />
           <span class="arch-label lbl">{c.label}</span>
         </a>
       ))}
@@ -176,10 +223,12 @@ const clients = [
         <!-- el CTA es un control, no prosa: entra de una pieza con el reveal
              normal para no dejar la píldora medio encendida ni desalinear la
              flecha, que vive en un inline-flex centrado. -->
+        <!--email_off-->
         <a href="mailto:contacto@sylestudio.com" class="cta" data-reveal data-no-split>
-          Iniciar proyecto
+          contacto@sylestudio.com
           <span class="cta-i" aria-hidden="true">↗</span>
         </a>
+        <!--/email_off-->
       </div>
       <dl class="spec">
         <div><dt class="lbl dim">Trabajos</dt><dd>Dirección Creativa · Animación · Fotografía · Diseño · Branding </dd></div>
@@ -188,12 +237,13 @@ const clients = [
       </dl>
     </div>
   </section>
+  </main>
 </Base>
 
 <style>
-  .muted { color: rgba(22, 20, 15, 0.42); }
-  .dim { color: rgba(244, 241, 234, 0.4); }
-  .faint { color: rgba(22, 20, 15, 0.32); }
+  .muted { color: rgba(22, 20, 15, 0.68); }
+  .dim { color: rgba(244, 241, 234, 0.68); }
+  .faint { color: rgba(22, 20, 15, 0.62); }
   .ox { color: var(--ox); }
 
   /* HERO */
@@ -201,11 +251,11 @@ const clients = [
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    padding: 8rem 1.5rem 2.5rem;
+    padding: 8rem var(--page-gutter) 2.5rem;
   }
   .hero-in {
     position: relative;
-    max-width: 1700px;
+    max-width: var(--layout-max);
     margin: 0 auto;
     width: 100%;
     flex: 1;
@@ -240,7 +290,7 @@ const clients = [
     stroke-linecap: round;
   }
   .hero-h {
-    font-size: clamp(3.25rem, 15vw, 12rem);
+    font-size: var(--type-hero);
     line-height: 0.86;
     margin-top: auto;
   }
@@ -276,17 +326,23 @@ const clients = [
   }
   .hero-lede {
     max-width: 34rem;
-    font-size: 1.125rem;
+    font-size: var(--type-body-lg);
     line-height: 1.6;
     color: rgba(22, 20, 15, 0.65);
   }
 
   .bleed { padding: 0 0 7rem; }
   .bleed figure { overflow: hidden; }
-  .cap { padding: 0 1.5rem; }
+  .cap {
+    width: 100%;
+    max-width: var(--shell-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--page-gutter);
+  }
   .hero-img { height: 62vh; position: relative; overflow: hidden; }
   .sl-img-link { display: block; width: 100%; height: 100%; }
-  .hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-img :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
   .cap {
     margin-top: 1rem;
     display: grid;
@@ -295,6 +351,19 @@ const clients = [
     gap: 0.75rem;
   }
   .sl-ref-text { justify-self: end; }
+  .sl-status { display: inline-flex; align-items: center; gap: 0.75rem; }
+  .sl-toggle {
+    min-height: 1.5rem;
+    border: 0;
+    border-left: 1px solid rgba(22, 20, 15, 0.25);
+    padding: 0 0 0 0.75rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
 
   /* slider */
   .sl-slide {
@@ -317,27 +386,29 @@ const clients = [
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
+    font-size: var(--type-body-sm);
     color: rgba(22, 20, 15, 0.8);
     opacity: 0;
     transition: opacity 0.35s, transform 0.35s var(--e);
     z-index: 2;
   }
   .bleed-sl:hover .sl-arrow { opacity: 1; }
+  .sl-arrow:focus-visible { opacity: 1; }
   .sl-arrow:hover { transform: scale(1.08); }
   .sl-prev { right: 4.5rem; }
   .sl-next { right: 1.25rem; }
   .sl-cap-text { color: inherit; text-decoration: none; }
   .sl-cap-text:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .sl-counter { font-size: 0.7rem; letter-spacing: 0.06em; }
+  .sl-counter { font-size: var(--type-caption); letter-spacing: 0.06em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sl-toggle { display: none; }
+  }
 
   /* SECTION shell */
-  .section { padding: 7rem 1.5rem; }
-  /* El grid de proyectos sangra a los lados: la seccion no le pone margen
-     horizontal y son la cabecera y el estado vacio los que se re-insertan
-     (ver `#proyectos .sec-head`). */
+  .section { padding: 7rem var(--page-gutter); }
   #proyectos { padding-inline: 0; }
-  .section > * { max-width: 1700px; margin-left: auto; margin-right: auto; }
+  .section > * { max-width: var(--layout-max); margin-left: auto; margin-right: auto; }
   /* Las oscuras respiran menos que las claras: aqui el padding es negro puro,
      no aire de papel, y a 7rem x2 pesaba de mas. Solo el eje vertical, para no
      tocar el margen lateral. */
@@ -391,10 +462,10 @@ const clients = [
     padding-top: 1.5rem;
     margin-bottom: 4rem;
   }
-  .dark .sec-head { border-color: rgba(244, 241, 234, 0.15); }
   #proyectos .sec-head,
-  #proyectos .empty { width: calc(100% - 3rem); }
-  .sec-title { font-size: clamp(2.5rem, 7vw, 5rem); }
+  #proyectos .empty { width: calc(100% - (2 * var(--page-gutter))); }
+  .dark .sec-head { border-color: rgba(244, 241, 234, 0.15); }
+  .sec-title { font-size: var(--type-section); }
   .empty { padding: 2rem 0 4rem; }
 
   /* alternating project grid: two cards, then three */
@@ -416,7 +487,7 @@ const clients = [
   .ph { background: rgba(22, 20, 15, 0.06); }
   .card-title {
     margin-top: 1.25rem;
-    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-size: var(--type-title-sm);
   }
   .card-cat { display: block; margin-top: 1.25rem; }
   .card-cat + .card-title { margin-top: 0.4rem; }
@@ -451,22 +522,22 @@ const clients = [
 
   /* dark contrast moment */
   .proc { display: grid; gap: 3rem; }
-  .proc-h { font-size: clamp(2.5rem, 7vw, 5.5rem); }
+  .proc-h { font-size: var(--type-section); }
   .proc-p {
     margin-top: 2rem;
     max-width: 24rem;
-    font-size: 1.125rem;
+    font-size: var(--type-body-lg);
     line-height: 1.6;
     color: rgba(244, 241, 234, 0.55);
   }
   .proc-fig { overflow: hidden; }
-  .proc-fig img { height: 48vh; object-fit: cover; }
+  .proc-fig :global(img) { height: 48vh; object-fit: cover; }
 
   /* lettering archive */
   .wrap-head { margin-bottom: 1.5rem; }
   .arch-note {
     max-width: 28rem;
-    color: rgba(22, 20, 15, 0.5);
+    color: rgba(22, 20, 15, 0.68);
     margin-bottom: 4rem;
   }
   .arch-grid {
@@ -487,6 +558,10 @@ const clients = [
     overflow: hidden;
   }
   .arch-cell.inv { background: var(--dark); }
+  .arch-cell.next {
+    grid-column: span 2;
+    aspect-ratio: 2 / 1;
+  }
   .arch-logo {
     width: 65%;
     height: auto;
@@ -502,34 +577,37 @@ const clients = [
     position: absolute;
     bottom: 1.25rem;
     left: 1.5rem;
-    color: rgba(22, 20, 15, 0.4);
-    font-size: 0.7rem;
+    color: rgba(22, 20, 15, 0.68);
+    font-size: var(--type-caption);
     letter-spacing: 0.04em;
   }
-  .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.35); }
+  .arch-cell.inv .arch-label { color: rgba(244, 241, 234, 0.72); }
 
   /* closing */
   .close { min-height: 70dvh; display: flex; align-items: center; }
   .close-in { display: grid; gap: 4rem; width: 100%; }
   .close-h {
-    font-size: clamp(3rem, 12vw, 10rem);
+    font-size: var(--type-close);
     margin: 1.5rem 0 2.5rem;
   }
   .cta {
     display: inline-flex;
     align-items: center;
-    gap: 1.25rem;
+    box-sizing: border-box;
+    max-width: 100%;
+    gap: clamp(0.75rem, 4vw, 1.25rem);
     background: var(--ox);
     color: #fff;
     border-radius: 999px;
-    padding: 1rem 1rem 1rem 2rem;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
+    padding: 1rem 1rem 1rem clamp(1.15rem, 5vw, 2rem);
+    font-size: clamp(0.7rem, 3.2vw, var(--type-body-sm));
+    letter-spacing: 0.06em;
+    white-space: nowrap;
     transition: transform 0.5s var(--e);
   }
   .cta:active { transform: scale(0.98); }
   .cta-i {
+    flex: 0 0 auto;
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 999px;
@@ -540,7 +618,7 @@ const clients = [
     transition: transform 0.5s var(--e);
   }
   .cta:hover .cta-i { transform: translate(3px, -2px); }
-  .spec { display: flex; flex-direction: column; gap: 1.5rem; font-size: 0.9rem; }
+  .spec { display: flex; flex-direction: column; gap: 1.5rem; font-size: var(--type-body-sm); }
   .spec > div {
     display: flex;
     justify-content: space-between;
@@ -551,19 +629,14 @@ const clients = [
   .spec dd { color: rgba(244, 241, 234, 0.8); }
 
   @media (min-width: 768px) {
-    .hero { padding: 8rem 3rem 2.5rem; }
+    .hero { padding-block: 8rem 2.5rem; }
     .bleed { padding: 0 0 10rem; }
-    .cap { padding: 0 3rem; }
     .hero-img { height: 86vh; }
-    .section { padding: 11rem 3rem; }
-    #proyectos .sec-head,
-    #proyectos .empty { width: calc(100% - 6rem); }
+    .section { padding-block: 11rem; }
     .section.dark { padding-block: 7rem; }
     .sec-mark { width: min(115vw, 2100px); }
     .close .sec-mark { width: min(75vw, 1350px); }
 
-    /* dos tarjetas anchas (span 3) y luego una fila de tres (span 2),
-       repitiendo cada 5. */
     #proyectos > .grid {
       grid-template-columns: repeat(6, minmax(0, 1fr));
     }
@@ -573,7 +646,7 @@ const clients = [
     .card:nth-child(5n + 5) { grid-column: span 2; }
 
     .proc { grid-template-columns: 5fr 7fr; align-items: center; }
-    .proc-fig img { height: 68vh; }
+    .proc-fig :global(img) { height: 68vh; }
     .arch-grid { grid-template-columns: repeat(4, 1fr); }
 
     .close-in {
@@ -581,7 +654,7 @@ const clients = [
       align-items: end;
       gap: 4rem 6rem;
     }
-    .spec { font-size: 0.95rem; }
+    .spec { font-size: var(--type-body); }
   }
 </style>
 
@@ -596,6 +669,7 @@ const clients = [
     const capEl    = bleedSl.querySelector<HTMLAnchorElement>(".sl-cap-text");
     const refEl    = bleedSl.querySelector<HTMLElement>(".sl-ref-text");
     const ctrEl    = bleedSl.querySelector<HTMLElement>(".sl-counter");
+    const toggleEl = bleedSl.querySelector<HTMLButtonElement>(".sl-toggle");
     const total    = slSlides.length;
     let cur = 0;
     let restart = () => {}; // reasignado abajo si el autoplay esta activo
@@ -624,38 +698,59 @@ const clients = [
       if (Math.abs(dx) > 40) { goTo(cur + (dx < 0 ? 1 : -1)); restart(); }
     });
 
-    // Autoplay: avanza sola cada AUTOPLAY_MS. En pausa mientras el puntero
-    // esta encima (mismo gesto que ya revela las flechas), mientras el dedo
-    // toca en movil, y mientras el slider no esta en pantalla — asi no quema
-    // ciclos ni se le adelanta una slide al usuario al volver a hacer scroll
-    // hasta ahi. Cualquier interaccion manual (flecha o swipe) reinicia el
-    // temporizador para no cortarle el avance automatico a medio camino.
+    // Autoplay: pausa por interaccion, foco, pestana oculta, salida de viewport
+    // o eleccion explicita del usuario. Cada reanudacion empieza un periodo
+    // completo para que nunca cambie una imagen inmediatamente tras interactuar.
     if (total > 1 && !reduce) {
       const AUTOPLAY_MS = 5500;
       let timer: ReturnType<typeof setInterval> | undefined;
       let onScreen = true;
+      let userPaused = false;
+      const pauseReasons = new Set<string>();
 
       function stop() {
         clearInterval(timer);
         timer = undefined;
       }
       function start() {
-        if (timer || !onScreen) return;
+        if (timer) return;
         timer = setInterval(() => goTo(cur + 1), AUTOPLAY_MS);
       }
-      restart = () => { stop(); start(); };
+      function sync() {
+        if (userPaused || !onScreen || document.hidden || pauseReasons.size > 0) stop();
+        else start();
+      }
+      function setReason(reason: string, paused: boolean) {
+        paused ? pauseReasons.add(reason) : pauseReasons.delete(reason);
+        sync();
+      }
+      restart = () => { stop(); sync(); };
 
-      bleedSl.addEventListener("mouseenter", stop);
-      bleedSl.addEventListener("mouseleave", start);
-      bleedSl.addEventListener("touchstart", stop, { passive: true });
-      bleedSl.addEventListener("touchend", () => setTimeout(start, AUTOPLAY_MS), { passive: true });
+      bleedSl.addEventListener("mouseenter", () => setReason("hover", true));
+      bleedSl.addEventListener("mouseleave", () => setReason("hover", false));
+      bleedSl.addEventListener("focusin", () => setReason("focus", true));
+      bleedSl.addEventListener("focusout", (event) => {
+        if (!bleedSl.contains(event.relatedTarget as Node | null)) setReason("focus", false);
+      });
+      bleedSl.addEventListener("touchstart", () => setReason("touch", true), { passive: true });
+      bleedSl.addEventListener("touchend", () => setReason("touch", false), { passive: true });
+      document.addEventListener("visibilitychange", sync);
+
+      toggleEl?.addEventListener("click", () => {
+        userPaused = !userPaused;
+        toggleEl.textContent = userPaused ? "Reanudar" : "Pausar";
+        toggleEl.setAttribute("aria-pressed", String(userPaused));
+        sync();
+      });
 
       new IntersectionObserver(([e]) => {
         onScreen = e.isIntersecting;
-        onScreen ? start() : stop();
+        sync();
       }).observe(bleedSl);
 
-      start();
+      sync();
+    } else if (toggleEl) {
+      toggleEl.hidden = true;
     }
   }
 
@@ -667,8 +762,9 @@ const clients = [
   // cubre el perimetro entero: UNA linea, con un unico hueco.
   const FRAME_LIT = 0.8; // fraccion del perimetro encendida (falta el 20%)
   const FRAME_SPEED = 0.2; // ritmo del marco respecto al de las marcas grandes
+  const frameLengths = new WeakMap<SVGGeometryElement, number>();
   document.querySelectorAll<HTMLElement>(".card-frame").forEach((host) => {
-    const rect = host.querySelector("rect");
+    const rect = host.querySelector<SVGGeometryElement>("rect");
     if (!rect) return;
 
     const fit = () => {
@@ -683,6 +779,7 @@ const clients = [
       rect.setAttribute("height", String(Math.max(0, height - sw)));
 
       const len = rect.getTotalLength();
+      frameLengths.set(rect, len);
       const seg = len * FRAME_LIT;
       rect.style.strokeDasharray = `${seg} ${len - seg}`;
     };
@@ -729,14 +826,14 @@ const clients = [
 
     marks.forEach((host) => {
       // El marco de tarjeta ya trae su guion puesto por `fit` (y re-puesto en
-      // cada resize), asi que aqui solo se le mueve el offset; el largo se
-      // vuelve a medir en cada frame porque cambia con el viewport. Las marcas
-      // de line-art, en cambio, fijan aqui su guion una sola vez.
+      // cada resize), asi que aqui solo se le mueve el offset. Su largo queda
+      // cacheado por ResizeObserver para no forzar una medicion SVG en cada
+      // frame. Las marcas de line-art fijan aqui su guion una sola vez.
       const isFrame = host.classList.contains("card-frame");
       const starters = Array.from(
         host.querySelectorAll<SVGGeometryElement>("path, rect"),
       ).map((path) => {
-        let len = path.getTotalLength();
+        let len = frameLengths.get(path) ?? path.getTotalLength();
         if (!isFrame) {
           const seg = len * 0.6; // lit portion of the line
           path.style.strokeDasharray = `${seg} ${len - seg}`;
@@ -761,7 +858,7 @@ const clients = [
           const dt = Math.min(0.05, (now - last) / 1000);
           last = now;
 
-          if (isFrame) len = path.getTotalLength(); // el marco cambia al redimensionar
+          if (isFrame) len = frameLengths.get(path) ?? len;
 
           if (now >= retargetAt) {
             target = len * (0.07 + Math.random() * 0.4) * pace; // new random cruise speed

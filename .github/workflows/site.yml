@@ -4,7 +4,7 @@ name: site-rebuild
 # or the CRM wasm. Triggered from the CRM ("Publicar al sitio") via the API,
 # which fires a repository_dispatch; also runnable by hand. The full `deploy`
 # workflow still rebuilds everything on push to main — this is the fast path for
-# content-only changes (~15s vs ~9min).
+# content-only changes without rebuilding the API or CRM.
 #
 # repository_dispatch always runs the workflow file from the DEFAULT branch, so
 # this must live on `main` to be callable (it does, once merged).
@@ -27,17 +27,27 @@ jobs:
     runs-on: [self-hosted, vps2]
     timeout-minutes: 10
     env:
+      NO_COLOR: "false"
       API_BASE: http://127.0.0.1:8080
+      PUBLIC_BUILD_SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Ensure pnpm (idempotent, no sudo)
+      - name: Reuse deployed responsive images
         run: |
           set -euo pipefail
-          export npm_config_prefix="$HOME/.npm-global"
-          mkdir -p "$npm_config_prefix/bin"
-          command -v pnpm >/dev/null 2>&1 || npm install -g pnpm >/dev/null 2>&1
-          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
+          test -d /opt/syle/web/project-media
+          mkdir -p web/public/project-media
+          rsync -a /opt/syle/web/project-media/ web/public/project-media/
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
 
       - name: Wait for the API to be healthy
         run: |
@@ -57,7 +67,7 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile --ignore-scripts
-          pnpm --dir web build
+          pnpm --dir web build:cached
 
       - name: Deploy public site, reload nginx, verify
         run: |
@@ -65,6 +75,7 @@ jobs:
           rsync -a --delete web/dist/ /opt/syle/web/
           sudo /usr/bin/systemctl reload nginx
           # Verify nginx serves the rebuilt site (matches the public vhost by Host).
-          code=$(curl -s -o /dev/null -w '%{http_code}' -H 'Host: syle.studio' http://127.0.0.1/ || true)
-          [ "$code" = "200" ] || { echo "Public site did not return 200 after reload (got $code)"; exit 1; }
-          echo "Site rebuilt and serving."
+          html=$(curl -fsS --noproxy '*' --resolve syle.studio:443:127.0.0.1 \
+            https://syle.studio/)
+          grep -Fq "name=\"syle-revision\" content=\"$GITHUB_SHA\"" <<<"$html"
+          echo "Site rebuilt and serving $GITHUB_SHA."

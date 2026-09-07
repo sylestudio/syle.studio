@@ -21,26 +21,60 @@ jobs:
     runs-on: [self-hosted, vps2]
     env:
       CARGO_TERM_COLOR: always
+      NO_COLOR: "false"
       API_BASE: http://127.0.0.1:8080
+      PUBLIC_BUILD_SHA: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Toolchain (rust + wasm + trunk + pnpm, idempotent, no sudo)
+      - name: Reuse this runner's Cargo build artifacts
+        run: |
+          target="/opt/syle/cache/cargo/$RUNNER_NAME"
+          mkdir -p "$target"
+          echo "CARGO_TARGET_DIR=$target" >> "$GITHUB_ENV"
+
+      - name: Restore generated responsive images
+        id: responsive-image-cache
+        uses: actions/cache@v4
+        with:
+          path: web/public/project-media
+          key: static-images-${{ runner.os }}-${{ hashFiles('web/src/generated/static-images.json') }}
+
+      - name: Reuse responsive images already deployed on VPS2
+        if: steps.responsive-image-cache.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
-          if [ ! -x "$HOME/.cargo/bin/rustc" ]; then
+          mkdir -p web/public/project-media
+          if [ -d /opt/syle/web/project-media ]; then
+            rsync -a --ignore-existing /opt/syle/web/project-media/ web/public/project-media/
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
+
+      - name: Toolchain (rust + wasm + trunk, idempotent, no sudo)
+        run: |
+          set -euo pipefail
+          if ! command -v rustup >/dev/null 2>&1; then
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
-              | sh -s -- -y --default-toolchain stable --profile minimal
+              | sh -s -- -y --default-toolchain none --profile minimal
           fi
           . "$HOME/.cargo/env"
-          rustup target add wasm32-unknown-unknown
+          # CI and deploy share RUSTUP_HOME across the VPS2 runners. Lock only
+          # the toolchain mutation so concurrent Cargo builds stay parallel.
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable \
+              --target wasm32-unknown-unknown \
+              --profile minimal \
+              --no-self-update
           command -v trunk >/dev/null 2>&1 || cargo install trunk --locked
-          export npm_config_prefix="$HOME/.npm-global"
-          mkdir -p "$npm_config_prefix/bin"
-          command -v pnpm >/dev/null 2>&1 || "$HOME/.npm-global/bin/pnpm" --version >/dev/null 2>&1 \
-            || npm install -g pnpm >/dev/null 2>&1
           echo "$HOME/.cargo/bin"     >> "$GITHUB_PATH"
-          echo "$HOME/.npm-global/bin" >> "$GITHUB_PATH"
 
       - name: Build API (release)
         run: cargo build --release -p syle-api
@@ -58,7 +92,7 @@ jobs:
       - name: Deploy API + CRM, restart API
         run: |
           set -euo pipefail
-          install -m 0755 target/release/syle-api /opt/syle/bin/syle-api.new
+          install -m 0755 "$CARGO_TARGET_DIR/release/syle-api" /opt/syle/bin/syle-api.new
           mv -f /opt/syle/bin/syle-api.new /opt/syle/bin/syle-api
           rsync -a --delete admin/dist/ /opt/syle/admin/
           sudo /usr/bin/systemctl restart syle-api
@@ -76,11 +110,66 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir web install --frozen-lockfile --ignore-scripts
-          pnpm --dir web build
+          if pnpm --dir web images:check; then
+            echo "Responsive images are complete; skipping the Rust optimizer."
+            pnpm --dir web build:cached
+          else
+            echo "Responsive images are incomplete; generating only missing derivatives."
+            pnpm --dir web build
+          fi
 
       - name: Deploy public site, reload nginx
         run: |
           set -euo pipefail
+          rsync -a --delete deploy/nginx/ /opt/syle/nginx/
           rsync -a --delete web/dist/ /opt/syle/web/
           sudo /usr/bin/systemctl reload nginx
-          echo "Deploy complete."
+          origin=(--noproxy '*' --resolve syle.studio:443:127.0.0.1)
+          html=$(curl -fsS "${origin[@]}" https://syle.studio/)
+          grep -Fq "name=\"syle-revision\" content=\"$GITHUB_SHA\"" <<<"$html"
+          compact_html=$(tr -d '\n\r' <<<"$html")
+          grep -Fq 'href="mailto:contacto@sylestudio.com"' <<<"$html"
+          grep -Eq '>[[:space:]]*contacto@sylestudio\.com[[:space:]]*<span' <<<"$compact_html"
+          ! grep -Fq '/cdn-cgi/l/email-protection' <<<"$html"
+          for favicon in favicon.ico favicon-dark.ico favicon-light.ico; do
+            grep -Fq "href=\"/$favicon\"" <<<"$html"
+            curl -fsS "${origin[@]}" "https://syle.studio/$favicon" >/dev/null
+          done
+          ! grep -Fq '/favicon.svg' <<<"$html"
+          curl -fsS "${origin[@]}" \
+            https://syle.studio/api/public/galleries >/dev/null
+          if [[ "$html" =~ (/project-media/[a-f0-9]+\.(avif|jpeg)) ]]; then
+            media_path="${BASH_REMATCH[1]}"
+          else
+            echo "No responsive project-media URL found in deployed HTML"
+            exit 1
+          fi
+          media_headers=$(curl -fsSI "${origin[@]}" \
+            "https://syle.studio$media_path")
+          grep -Eiq '^cache-control:.*immutable' <<<"$media_headers"
+          missing_headers=$(curl -sSI "${origin[@]}" \
+            -A 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' \
+            https://syle.studio/__deploy_missing__)
+          missing_code=$(awk 'toupper($1) ~ /^HTTP\// { code=$2 } END { print code }' <<<"$missing_headers")
+          [ "$missing_code" = "404" ]
+          grep -Eiq '^x-robots-tag:.*noindex.*follow' <<<"$missing_headers"
+          missing_html=$(curl -sS "${origin[@]}" https://syle.studio/__deploy_missing__)
+          grep -Fq 'content="noindex,follow"' <<<"$missing_html"
+          ! grep -Fq 'rel="canonical"' <<<"$missing_html"
+
+          robots=$(curl -fsS "${origin[@]}" https://syle.studio/robots.txt)
+          grep -Fq 'Disallow: /cdn-cgi/' <<<"$robots"
+          grep -Fq 'Sitemap: https://syle.studio/sitemap-index.xml' <<<"$robots"
+          sitemap_index=$(curl -fsS "${origin[@]}" https://syle.studio/sitemap-index.xml)
+          grep -Fq '<sitemapindex' <<<"$sitemap_index"
+          grep -Fq '<loc>https://syle.studio/sitemap-pages.xml</loc>' <<<"$sitemap_index"
+          sitemap_pages=$(curl -fsS "${origin[@]}" https://syle.studio/sitemap-pages.xml)
+          grep -Fq '<urlset' <<<"$sitemap_pages"
+
+          apex_redirect=$(curl -sSI http://syle.studio/__deploy_redirect__?source=smoke)
+          grep -Eq '^HTTP/[^ ]+ 301' <<<"$apex_redirect"
+          grep -Eiq '^location: https://syle\.studio/__deploy_redirect__\?source=smoke' <<<"$apex_redirect"
+          www_redirect=$(curl -sSI https://www.syle.studio/__deploy_redirect__?source=smoke)
+          grep -Eq '^HTTP/[^ ]+ 301' <<<"$www_redirect"
+          grep -Eiq '^location: https://syle\.studio/__deploy_redirect__\?source=smoke' <<<"$www_redirect"
+          echo "Deploy complete; public site serves $GITHUB_SHA."

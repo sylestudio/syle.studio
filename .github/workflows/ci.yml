@@ -1,0 +1,143 @@
+name: ci
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    runs-on: [self-hosted, Linux, X64, vps2]
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: syle
+          POSTGRES_PASSWORD: syle
+          POSTGRES_DB: syle_test
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U syle -d syle_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      TEST_DATABASE_URL: postgres://syle:syle@127.0.0.1:55432/syle_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reuse this runner's Cargo build artifacts
+        run: |
+          target="/opt/syle/cache/cargo/$RUNNER_NAME"
+          mkdir -p "$target"
+          echo "CARGO_TARGET_DIR=$target" >> "$GITHUB_ENV"
+      - name: Verify AVIF build dependency
+        run: command -v nasm
+      - name: Install stable Rust toolchain (cross-runner locked)
+        run: |
+          set -euo pipefail
+          # The VPS2 runners share RUSTUP_HOME. Serialize only rustup mutations;
+          # the expensive Cargo jobs remain parallel and keep per-runner targets.
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable \
+              --target wasm32-unknown-unknown \
+              --profile minimal \
+              --no-self-update
+      - name: Check native workspace
+        run: cargo check --workspace --all-targets
+      - name: Check CRM wasm target
+        run: cargo check -p syle-admin --target wasm32-unknown-unknown
+      - name: Test workspace with PostgreSQL integration tests
+        run: cargo test --workspace --all-targets
+
+  rust-security:
+    runs-on: [self-hosted, Linux, X64, vps2]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install stable Rust toolchain (cross-runner locked)
+        run: |
+          set -euo pipefail
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable --profile minimal --no-self-update
+      - uses: rustsec/audit-check@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  web:
+    runs-on: [self-hosted, Linux, X64, vps2]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reuse this runner's Cargo build artifacts
+        run: |
+          target="/opt/syle/cache/cargo/$RUNNER_NAME"
+          mkdir -p "$target"
+          echo "CARGO_TARGET_DIR=$target" >> "$GITHUB_ENV"
+      - name: Verify AVIF build dependency
+        run: command -v nasm
+      - name: Restore generated responsive images
+        id: responsive-image-cache
+        uses: actions/cache@v4
+        with:
+          path: web/public/project-media
+          key: static-images-${{ runner.os }}-${{ hashFiles('web/src/generated/static-images.json') }}
+      - name: Reuse responsive images already deployed on VPS2
+        if: steps.responsive-image-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p web/public/project-media
+          if [ -d /opt/syle/web/project-media ]; then
+            rsync -a --ignore-existing /opt/syle/web/project-media/ web/public/project-media/
+          fi
+      - name: Install stable Rust toolchain (cross-runner locked)
+        run: |
+          set -euo pipefail
+          flock /opt/syle/cache/rustup.lock \
+            rustup toolchain install stable --profile minimal --no-self-update
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
+      - name: Install web dependencies
+        run: pnpm --dir web install --frozen-lockfile --ignore-scripts
+      - name: Type and Astro diagnostics
+        run: pnpm --dir web check
+      - name: Unit tests
+        run: pnpm --dir web test
+      - name: Production build and image budgets
+        run: |
+          set -euo pipefail
+          if pnpm --dir web images:check; then
+            echo "Responsive images are complete; skipping the Rust optimizer."
+            pnpm --dir web build:cached
+          else
+            echo "Responsive images are incomplete; generating only missing derivatives."
+            pnpm --dir web build
+          fi
+      - name: Generated manifest is reproducible
+        run: git diff --exit-code -- web/src/generated/static-images.json
+
+  admin-assets:
+    runs-on: [self-hosted, Linux, X64, vps2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+          dest: ${{ runner.temp }}/setup-pnpm
+      - name: Install CRM dependencies
+        run: pnpm --dir admin install --frozen-lockfile --ignore-scripts
+      - name: Build CRM CSS
+        run: pnpm --dir admin build:css
