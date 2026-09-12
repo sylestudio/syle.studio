@@ -1,4 +1,5 @@
 ---
+import TheDashMark from "../assets/brand/the-dash-studios-mark.svg";
 ---
 
 <footer class="site-footer">
@@ -25,6 +26,16 @@
     <!-- Símbolo -->
     <a href="/" class="foot-mark" aria-label="syle.studio">
       <img src="/img/Syle_Logo_Negro%20(1).svg" alt="Syle" width="5383" height="5059" decoding="async" />
+    </a>
+  </div>
+
+  <div class="foot-signature">
+    <a class="footer-affiliation" href="https://thedashstudios.mx/">
+      <TheDashMark class="footer-affiliation__mark" width="32" height="32" aria-hidden="true" focusable="false" />
+      <span class="footer-affiliation__copy">
+        <span class="footer-affiliation__label">Parte de la organización</span>
+        <span class="footer-affiliation__name">The Dash Studios</span>
+      </span>
     </a>
   </div>
 </footer>
@@ -100,6 +111,62 @@
   .foot-mark img {
     width: auto;
     height: 1.4rem;
+  }
+
+  .foot-signature {
+    max-width: var(--layout-max);
+    margin: 1.25rem auto 0;
+  }
+
+  .footer-affiliation {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .footer-affiliation :global(.footer-affiliation__mark) {
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    color: var(--ink);
+  }
+
+  .footer-affiliation__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    line-height: 1.4;
+  }
+
+  .footer-affiliation__label {
+    color: rgba(22, 20, 15, 0.65);
+    font-size: var(--type-caption);
+  }
+
+  .footer-affiliation__name {
+    color: var(--ink);
+    font-size: var(--type-body-sm);
+    font-weight: 550;
+  }
+
+  .footer-affiliation:hover .footer-affiliation__name,
+  .footer-affiliation:focus-visible .footer-affiliation__name {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  .footer-affiliation:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 6px;
+  }
+
+  @media (forced-colors: active) {
+    .footer-affiliation :global(.footer-affiliation__mark),
+    .footer-affiliation__label,
+    .footer-affiliation__name {
+      color: LinkText;
+    }
   }
 
   @media (max-width: 640px) {
