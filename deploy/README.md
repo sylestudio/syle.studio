@@ -43,13 +43,21 @@ Provisioned out of band (the runner user is unprivileged):
 
 ## nginx + TLS
 
-Install the two vhosts in `nginx/` to `/etc/nginx/sites-available/`, symlink
-them into `sites-enabled/`, then issue certs (DNS must resolve to the host
-first; for issuance keep the Cloudflare record DNS-only):
+The public certificate uses the persistent ACME webroot `/var/www/syle-acme`.
+All three public nginx server blocks serve `/.well-known/acme-challenge/`
+from this directory. The Cloudflare canonical redirect must exclude that path
+so renewal remains possible even when the origin certificate has expired.
+Install `certbot-reload.sh` as executable
+`/etc/letsencrypt/renewal-hooks/deploy/syle-reload`.
+
+For an existing host with the vhosts installed:
 
 ```sh
-sudo certbot --nginx -d syle.studio -d www.syle.studio
+sudo install -d -m 755 /var/www/syle-acme/.well-known/acme-challenge
+sudo certbot certonly --webroot -w /var/www/syle-acme --cert-name syle.studio -d syle.studio -d www.syle.studio
 sudo certbot --nginx -d admin.syle.studio
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot renew --dry-run --cert-name syle.studio
 ```
 
 After issuance, flip the public records (`syle.studio`, `www`) to **proxied**
@@ -60,10 +68,19 @@ control for this site. A Cloudflare **Configuration Rule** matching
 `http.host in {"syle.studio" "www.syle.studio"}` sets SSL to **Full (strict)**.
 Both names have valid Let's Encrypt certificates at the VPS. A **Single
 Redirect** matches
-`http.host in {"syle.studio" "www.syle.studio"} and (http.host eq "www.syle.studio" or not ssl)`
+`http.host in {"syle.studio" "www.syle.studio"} and (http.host eq "www.syle.studio" or not ssl) and not starts_with(http.request.uri.path, "/.well-known/acme-challenge/")`
 and sends a `301` to
 `concat("https://syle.studio", http.request.uri.path)` with the query string
 preserved. nginx mirrors the same canonical policy for direct-origin traffic.
+
+On 2026-10-27 (Mexico City), the expired public origin certificate was renewed
+after fixing the ACME redirect. Renewal now uses `webroot`, the certbot timer
+is active, and a complete `certbot renew --dry-run --cert-name syle.studio`
+passed. HTTPS checks returned 200 for the public site, public API, admin, and
+direct origin. The new origin certificate expires 2027-01-26 02:57:46 UTC.
+Pre-repair nginx and renewal settings are backed up on the VPS under
+`/root/syle-tls-backup-20261028/`. Include these nginx changes in the next
+deployment; deploying an older vhost would remove the ACME route again.
 
 `admin.syle.studio` stays DNS-only and returns `X-Robots-Tag: noindex` plus a
 dedicated disallowing `robots.txt`. The public API is also explicitly noindex;
